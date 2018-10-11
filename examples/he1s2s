@@ -1,0 +1,47 @@
+  1 1    1 0 0   14 7 1    7 11 0    0 0 1    1
+
+  20 20 20    0 0 0  0.0 0.0   
+
+  1   0.0    0.0   0.0
+
+
+
+  2.0   7
+0   5
+      4785.0000000              0.0000006        
+       717.0000000              0.0000047        
+       163.2000000              0.0000244        
+        46.2600000              0.0001012        
+        15.1000000              0.0003486        
+0   1
+         5.4370000              
+0   1
+         2.0880000              
+0   1
+         0.8297000              
+0   1
+         0.3366000              
+0   1
+         0.1369000              
+0   1
+         0.0447300              
+
+  1 2
+  2 1
+
+
+      1        1   7
+   1    0.05361454   2    0.12436129   3    0.28850300   4    0.43466846
+   5    0.23097817   6    0.00954064   7   -0.00000491
+      1        1   7
+   1   -0.00806529   2   -0.02173712   3   -0.01822888   4   -0.13989755
+   5   -0.05356555   6   -0.51073385   7    1.36640523
+
+
+Helium atom, singlet-S excited state, with aug-cc-V6Z basis set ('s' functions only).
+The second solution ('root 1') for the second orbital is selected to make the single-reference excited state wave function. 
+(the above orbitals are optimized to 1d-6 kCal/Mol in the total energy, output given below)
+
+ guess energy in atomic units           -2.1365129715011388
+
+

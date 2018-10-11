@@ -1,0 +1,27 @@
+ number of processors                                  64
+
+ variational subspace valence bond                                      
+
+ orbital basis set version 01                                           
+ bgq hack nspinc=1                                                      
+ nuclear repulsion                       8.9081858332635537
+ guess energy                          -75.9781013035254063
+ orbital optimization                                                   
+
+ (full) first-order method                                              
+
+ cycle  orbital   relaxation(kCal)   (..per orb.)/tol                   
+    1     1           -0.008256       -0.8256E+04
+    1     2           -0.016417       -0.8161E+04
+    1     3           -0.016417       -0.2586E-03
+    1     4           -0.016417       -0.2943E-03
+    1     5           -0.016417       -0.2051E-03
+    2     1           -0.016418       -0.3281E+00
+    2     2           -0.016418       -0.3245E+00
+    2     3           -0.016418       -0.1694E-03
+    2     4           -0.016418       -0.8917E-05
+    2     5           -0.016418       -0.1159E-03
+
+ calculation converged                                                  
+
+ total energy                          -75.9781274674631817

@@ -1,0 +1,35 @@
+     2   1   1   0     0    12   6   1   3   5   1   0   0   0   2
+
+  20 20 20   0 0 0  0.0 0.0   
+
+  1   0.0    0.0   0.0000 
+  1   0.0    0.0   0.7480 
+
+  1.0   3
+0   3
+       13.0100000              0.0196850        
+        1.9620000              0.1379770        
+        0.4446000              0.4781480        
+0   1
+        0.1220000                     
+1   1
+        0.7270000                     
+
+
+   1  2
+
+
+      2        1   2   6
+   1   -0.69671081   2   -0.23092669   5   -0.00887672   6   -0.08327736
+   7   -0.08872106  10    0.02558104
+      2        1   2   6
+   1   -0.08320142   2   -0.08880042   5   -0.02552510   6   -0.69661855
+   7   -0.23105858  10    0.00881025
+
+
+Dihydrogen, H2, singlet-Sigma ground state, at the RHF/cc-pVDZ geometry.
+Same as 'h2.sz' but with a 'double-zeta' atomic basis set, cc-pVDZ.
+(the above orbitals are optimized to 1d-6 kCal/Mol in the total energy, output given below)
+
+ guess energy in atomic units           -1.1471520768516472
+

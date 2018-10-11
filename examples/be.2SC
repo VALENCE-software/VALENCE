@@ -1,0 +1,59 @@
+  1 1   2 0 0   16 4 2   5 21 0   0 0 0    1
+
+  20 20 20   0 0 0  0.0 0.0  
+
+  1   0.0    0.0   0.0
+
+
+
+  4.0   5
+0   9
+    14630.0000000              0.0000920        
+     2191.0000000              0.0007130        
+      498.2000000              0.0037350        
+      140.9000000              0.0154680        
+       45.8600000              0.0528740        
+       16.4700000              0.1456940        
+        6.3190000              0.3026810        
+        2.5350000              0.4049360        
+        1.0350000              0.2223870        
+0   9
+    14630.0000000             -0.0000170        
+     2191.0000000             -0.0001300        
+      498.2000000             -0.0006790        
+      140.9000000             -0.0028570        
+       45.8600000             -0.0098130        
+       16.4700000             -0.0286090        
+        6.3190000             -0.0637600        
+        2.5350000             -0.1172310        
+        1.0350000             -0.1212020        
+0   1
+        0.2528000                     
+0   1
+        0.1052000                     
+0   1
+        0.0426100                     
+
+
+    0.28613755  1  2    3  4
+    0.02435745  1  3    2  4
+
+
+      1        1   4
+   1    2.04468084   2    1.08510278   3    0.06760375   4   -0.08225021
+      1        1   4
+   1    0.08795929   2    1.09357982   3    0.05323659   4   -0.06567380
+      1        1   4
+   2    0.40901809   3    0.66520392   4    0.38644720   5    0.11934164
+      1        1   4
+   2    0.14161563   3   -0.17596193   4    0.71862322   5    0.47255306
+
+
+The above input is the same as the 'be.sv' example, except that both double-occupied orbitals are 'split', giving two pairs of spin-coupled (SC) orbitals, and re-optimized. In addition, two spin couplings are used, and the spin coupling weights are optimized.
+(the above orbitals are optimized to 1d-6 kCal/Mol in the total energy, output given below)
+
+ guess energy in atomic units          -14.5883977218582270
+
+The energy is lower than the VSHF energy, due to static correlations.
+
+

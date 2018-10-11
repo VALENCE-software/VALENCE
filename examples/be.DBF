@@ -1,0 +1,61 @@
+  1 1   0 0 2   9 4 0   5 21 0   1 0 0    1 
+
+  20 20 20   0 0 0  0.0 0.0  
+
+  1   0.0    0.0   0.0
+
+
+
+  4.0   5
+0   9
+    14630.0000000              0.0000920        
+     2191.0000000              0.0007130        
+      498.2000000              0.0037350        
+      140.9000000              0.0154680        
+       45.8600000              0.0528740        
+       16.4700000              0.1456940        
+        6.3190000              0.3026810        
+        2.5350000              0.4049360        
+        1.0350000              0.2223870        
+0   9
+    14630.0000000             -0.0000170        
+     2191.0000000             -0.0001300        
+      498.2000000             -0.0006790        
+      140.9000000             -0.0028570        
+       45.8600000             -0.0098130        
+       16.4700000             -0.0286090        
+        6.3190000             -0.0637600        
+        2.5350000             -0.1172310        
+        1.0350000             -0.1212020        
+0   1
+        0.2528000                     
+0   1
+        0.1052000                     
+0   1
+        0.0426100                     
+
+
+    1 1         4
+   0    0.99540412   2   -0.00127460   3    0.01184657   4   -0.00709520
+    1 1         4
+   2   -0.30245891   3   -0.25322584   4   -0.58184061   5   -0.29195242
+
+  1 1  1
+ 1   1.0
+
+
+
+The above input is the same as the 'be' example except that it includes a simple demonstration of the use of a derived basis function (DBF). 
+Here, the first basis function ('1') of the set is defined as a DBF using an orbital basis set specification (given following the two double-occupied orbitals, above). The DBF has the label '0' (DBFs are distinguished by having labels <1) and replaces the original function 1 in the definition of the first double-occupied orbital.
+The energy should be the same as before, i.e. 
+
+ guess energy in atomic units          -14.5729681271981626
+
+For comparison, the original orbital definitions are-
+
+    1 1         4
+   1    0.99540412   2   -0.00127460   3    0.01184657   4   -0.00709520
+    1 1         4
+   2   -0.30245891   3   -0.25322584   4   -0.58184061   5   -0.29195242
+
+

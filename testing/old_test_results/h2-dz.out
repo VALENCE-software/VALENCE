@@ -1,0 +1,18 @@
+ number of processors                                   1
+
+ variational subspace valence bond                                      
+
+ orbital basis set version 01                                           
+ nuclear repulsion                       0.6872431808311208
+ guess energy                           -1.1474697575959574
+ orbital optimization                                                   
+
+ (full) first-order method                                              
+
+ cycle  orbital   relaxation(kCal)   (..per orb.)/tol                   
+    1     1           -0.000000       -0.1965E-04
+    1     2           -0.000000       -0.1282E-04
+
+ calculation converged                                                  
+
+ total energy                           -1.1474697575960091

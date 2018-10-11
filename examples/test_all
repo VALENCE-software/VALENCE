@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+#  This is an example bash script to run each test case in the "examples" array below
+#  and compare the output to the correct output in testing.py
+#  Usage:
+#
+#  ./examples_script name_of_executable_in_src_directory
+#
+#  This assumes you're running from the testing directory, and the executable is in src.
+#
+
+  examples=(be  be.2SC  be.DBF  be.sv  be2s3s.2SC  be3s2  c2h6  c3h8  ch4  cu+.3d10  cu+.3d94s1  f-  fe2+  fe3+  h  h2.dz  h2.sz  h2o  h2o.SC  he  he1s2s  he1s3sT  li  li_opt  lih.SCval  lih.SDVB  lih.VSHF  lih.exstate  n2.VSHF  nme3)
+
+# check number of arguments
+if [ "$#" -ne 1 ]; then
+    echo "Need one input--the name of the executable to test"
+    exit
+fi
+
+# check if $1 exists and is executable
+  if [[ -x "../src/$1" ]]
+  then
+      for i in ${examples[@]}
+      do
+          ../src/$1 < ./$i > $i.out
+          python ./test_examples.py $i.out $i
+      done
+  else
+      echo "Input file '../src/$1' is not executable or found"
+  fi
