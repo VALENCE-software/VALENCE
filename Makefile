@@ -2,40 +2,54 @@
 #
 # 1. choose parallel (PARALLEL) or sequential (SEQ) build
 
-COMP=PARALLEL
-#COMP=SEQ
+#SEQUENTIAL=true
+SEQUENTIAL=false
 
-ifeq ($(COMP), PARALLEL) 
+ifeq ($(SEQUENTIAL), false) 
   FFLAGS+=-DVALENCE_MPI
 endif
 
-ifeq ($(COMP), SEQ)
-  FC=ifort
-  F77=ifort
-else
-  FC=mpifort
-  F77=mpifort
- # LINK_FLAGS+=MPI_LIBRARY
+# 2. choose compiler (INTEL or GNU)
+
+COMPILER_VENDOR=INTEL
+#COMPILER_VENDOR=GNU
+
+ifeq ($(COMPILER_VENDOR), GNU)
+  ifeq ($(SEQUENTIAL), false) 
+    FC=mpif90
+    F77=mpif90
+    CC=mpicc
+  else
+    FC=gfortran
+    F77=gfortran
+    CC=gcc
+  endif
 endif
 
-
-# 2. choose compiler (INTEL or gfortran)
-
-COMPILER=INTEL
-COMPILER=mpif90
-
+ifeq ($(COMPILER_VENDOR), INTEL)
+  ifeq ($(SEQUENTIAL), false) 
+    FC=mpiifort
+    F77=mpiifort
+    CC=mpiicc
+  else
+    FC=ifort
+    F77=ifort
+    CC=icc
+  endif
+  FFLAGS+=-align array64byte -mkl
+endif
 
 # 3. choose SIMINT base path
 
-SIMINT_BASE=/Users/keceli/Dropbox/work/simint-generator/install
+SIMINT_BASE=/home/user/lib/
 INTEGRALS=USE_SIMINT
 ifeq ($(INTEGRALS), USE_SIMINT)
-  SIMINT_LIBRARY=$(SIMINT_BASE)/lib/
+  SIMINT_LIBRARY=$(SIMINT_BASE)/lib64/
   SIMINT_INCLUDE=$(SIMINT_BASE)/include/simint
-endif
+
 # alignment here is necessary if simint is vectorized
 # CCA order changes the ordering of integrals to Common Component Architecture order 
-ifeq ($(INTEGRALS), USE_SIMINT)
+
   FFLAGS+=-DSIMINT_INT -DCCA_ORDER -I$(SIMINT_INCLUDE)
   LINK_FLAGS+=$(SIMINT_LIBRARY)libsimint.a
 endif
@@ -61,42 +75,26 @@ PRINT_TIMING=no
 #PRINT_COUNTERS=yes
 PRINT_COUNTERS=no
 
-#INTEGRALS=  #place holder
-#CC=clang++
-CC=gcc
-
 ifeq ($(findstring theta,$(HOSTNAME)),theta)
-  COMP=PARALLEL
   FC=ftn
   F77=ftn
   CC=cc
+  FFLAGS+=-align array64byte -mkl
 endif
 
 ifeq ($(findstring mira,$(HOSTNAME)),mira)
- COMP=PARALLEL
  FC=mpixlf90_r
  F77=mpixlf77_r
  CC=mpixlc
 endif
 
-
 TARGET=bin/valence
 TARGETLIB=lib/libvalence.a
 
 CFLAGS=-O3 -g
-FFLAGS=-O3 -g
+FFLAGS+=-O3 -g
 
 OBJS=givens.o rsg.o moduletools.o modulevalence_simint.o moduledensity.o moduleintegrals.o valence.o timing_flops.o xm.o valence_api.o valence_initialize.o  valence_finalize.o
-
-ifeq ($(COMPILER), gfortran)
-  FC=mpif90
-  F77=mpif90
-  CC=mpicc
-endif
-
-ifeq ($(COMPILER), INTEL)
- FFLAGS+=-align array64byte -mkl
-endif
 
 ifeq ($(GIVENS), USE_C)
   FFLAGS=-O3 -g -DUSE_C_VERSION

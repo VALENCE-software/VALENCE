@@ -19,12 +19,12 @@ if [ "$#" -ne 1 ]; then
 fi
 
 # check if $1 exists and is executable
-  if [[ -x "../obs01/$1" ]]
+  if [[ -x "./$1" ]]
   then
       for i in ${examples[@]}
       do
-          mpirun -n $NCORE ../obs01/$1 < ./test_cases/$i > $i.out
-          python ../testing/testing.py $i.out $i
+          mpirun -n $NCORE ./$1 < ./testing/test_cases/$i > $i.out
+          python ./testing/testing.py $i.out $i
       done
   else
       echo "Input file '../obs01/$1' is not executable or found"
