@@ -6,14 +6,20 @@ subroutine init(info)
   use integrals
   use valence_init
   implicit none
+#ifdef VALENCE_MPI
   include "mpif.h"
+#endif
   integer info,i, status, ierr, mpi_new_comm
   integer d
   real(dp) e
   ! call initialization of VSVB code
-!  call valence( d, e, .false., .false. )
+  !  call valence( d, e, .false., .false. )
+#ifdef VALENCE_MPI
   call mpi_init(status)
   call mpi_comm_dup( mpi_comm_world, mpi_new_comm, ierr)
+#else
+  mpi_new_comm = 0
+#endif
   call valence_initialize( mpi_new_comm )
   info = 0
 end subroutine init
@@ -37,7 +43,9 @@ subroutine calcsurface(x,v)
   use integrals
   use xm
   implicit none
+#ifdef VALENCE_MPI
   include "mpif.h"
+#endif
   real(dp), dimension(*) :: x
   real(dp) v
   integer i,k
@@ -80,8 +88,11 @@ subroutine calcsurface(x,v)
 
   call angs2bohr(natom,coords)
   call calculate_vsvb_energy( v )
+#ifdef VALENCE_MPI
   call xm_end( mpi_comm_world )
-
+#else
+  call xm_end( )
+#endif
 ! convert from hartrees to cm^{-1}
   v = v*219474.631_dp
   
@@ -90,8 +101,14 @@ end subroutine calcsurface
 subroutine finalize
   use valence_finit
   implicit none
+#ifdef VALENCE_MPI
   include "mpif.h"
+#endif
   integer status
+#ifdef VALENCE_MPI
   call mpi_finalize( status )
   call valence_finalize( mpi_comm_world )
+#else
+  call valence_finalize( )
+#endif
 end subroutine finalize
