@@ -1,3 +1,4 @@
+! currently, PRINT_TIMING needs MPI to work (PRINT_COUNTERS will work without MPI)
 
   !                   ... The XM interface ...
   !              ('XM' stands for eXecution Manager)
@@ -22,7 +23,9 @@ contains
        totlen,xpmax,nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr )
 
     implicit     none
+#ifdef VALENCE_MPI
     include "mpif.h"
+#endif
     integer      natom,ndocc,totlen,npair,nunpd, ndf, mxctr
     integer      natom_t,num_sh,num_pr,xpmax,nspinc,nang,nset,nxorb
 
@@ -33,6 +36,7 @@ contains
     if ( myrank .eq. master ) read *, natom,natom_t, npair,nunpd,ndocc,  &
          totlen,xpmax, nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr
 
+#ifdef VALENCE_MPI
     from = 0
     comm = valence_global_communicator
 
@@ -51,6 +55,7 @@ contains
     call mpi_bcast( nset, 1, mpi_integer4, from, comm, ierr )
     call mpi_bcast( nxorb, 1, mpi_integer4, from, comm, ierr )
     call mpi_bcast( mxctr, 1, mpi_integer4, from, comm, ierr )
+#endif
 
   end subroutine  xm_getdims
 
@@ -65,7 +70,9 @@ contains
     use         densitywork
     use tools, only: dp
     implicit    none
+#ifdef VALENCE_MPI
     include "mpif.h"
+#endif
     !     generic print buffers
 
     integer     int_out(2)     !  lengths not 
@@ -210,6 +217,7 @@ contains
     end if    !  myrank = master process
 
 
+#ifdef VALENCE_MPI
     !     share input data with other processes
     !  bcast the INT's as a single vector?
     from = 0
@@ -247,6 +255,7 @@ contains
     call mpi_bcast( con_coeff, num_pr, mpi_real8, from, comm, ierr )
     call mpi_bcast( coeff, totlen, mpi_real8, from, comm, ierr )
     call mpi_bcast( coeff_sc, nspinc, mpi_real8, from, comm, ierr )
+#endif
 
   end subroutine  xm_input
 
@@ -501,13 +510,16 @@ contains
     use timing_flops
     use tools, only: dp
     implicit    none
+#ifdef VALENCE_MPI
     include    'mpif.h'
+#endif
     integer     ierr
     integer     int_out(2)     !  lengths not 
     real(dp)     dbl_out(2)     !   protected
     integer, intent(in), optional :: comm
 
 
+#ifdef VALENCE_MPI
     ! if there is an argument, set valence_global_communicator = input
     ! otherwise, set valence_global_communicator to mpi_comm_world
     if( present( comm ) ) then
@@ -522,6 +534,10 @@ contains
     int_out(1) = nrank
     call xm_print( 'dimension', 'number of processors;',  &
          int_out, dbl_out ) 
+#else
+irank = 0
+nrank = 1
+#endif
 
     kernel_time = 0.0_dp
 #ifdef PRINT_TIMING
@@ -540,7 +556,9 @@ contains
   subroutine  xm_end( comm )
     use timing_flops  
     implicit    none
+#ifdef VALENCE_MPI
     include    'mpif.h'
+#endif
     integer     ierr
     integer nproc, myrank,master
     integer, intent(in), optional :: comm
@@ -573,15 +591,21 @@ contains
 #endif
 
 #ifdef PRINT_COUNTERS
+#ifdef VALENCE_MPI
     call MPI_Allreduce( count_determinants, sum_determinants, 1, mpi_integer8, mpi_sum,valence_global_communicator, ierr )
+#else
+sum_determinants = count_determinants
+#endif
     if ( myrank .eq. 0) then
        write( *,'(A, I20)' ) 'Average over ranks: Determinants count:', sum_determinants/ nrank
     endif
 #endif
 
 
+#ifdef VALENCE_MPI
     ! if the user input a communicator, don't finalize--they will finalize later
     if( .not. present( comm ) ) call mpi_finalize( ierr )
+#endif
 
   stop
   end subroutine  xm_end
@@ -600,9 +624,12 @@ contains
     character(1)  chtype
     integer       buff(*), len
 
+#ifdef VALENCE_MPI
     include    'mpif.h'
+#endif
     integer     type, from, comm, ierr
 
+#ifdef VALENCE_MPI
     if ( chtype .eq. 'i' ) then
        type = mpi_integer4
     else if ( chtype .eq. 'd' ) then
@@ -613,6 +640,7 @@ contains
     from = 0
     comm = valence_global_communicator
     call mpi_bcast( buff, len, type, from, comm, ierr )
+#endif
   end subroutine  xm_share
 
 
@@ -626,13 +654,16 @@ contains
     real(dp)     buff(*)
     integer     datalen
 
+#ifdef VALENCE_MPI
     include    'mpif.h'
+#endif
     integer     type, oper, comm, ierr
     integer     maxrcv
     parameter  (maxrcv = 16384 )
     real(dp)     rcv( maxrcv )
     integer     i,j,loc,npass,len
 
+#ifdef VALENCE_MPI
     type = mpi_real8
     oper = mpi_sum
     comm = valence_global_communicator
@@ -651,6 +682,7 @@ contains
        end do
        loc = loc + len
     end do
+#endif
   end subroutine  xm_equalize
 
 
@@ -660,13 +692,20 @@ contains
 
   subroutine  xm_inherit ( num_proc, myrank, master )
     implicit    none
+#ifdef VALENCE_MPI
     include    'mpif.h'
+#endif
     integer     num_proc, myrank, master
     integer     ierr
 
     master   = 0
+#ifdef VALENCE_MPI
     call mpi_comm_rank( valence_global_communicator, myrank,   ierr ) 
     call mpi_comm_size( valence_global_communicator, num_proc, ierr )
+#else
+myrank = 0
+num_proc = 1
+#endif
   end subroutine  xm_inherit
 
 
