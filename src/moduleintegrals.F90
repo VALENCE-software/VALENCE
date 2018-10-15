@@ -59,7 +59,7 @@
 
 
       integer,  allocatable ::   nxyz( : , : ) !< powers of x,y,z coordinates for s, p, d shells in order
-      real(dp),  allocatable ::   pnrm( : ) !< pnym(ij) = ashl(i) * 1/(ashl(power of x)) * 1/(ashl(power of y)) * 1/(ashl((power of z))
+      real(dp),  allocatable ::   angn( : ) !< pnym(ij) = ashl(i) * 1/(ashl(power of x)) * 1/(ashl(power of y)) * 1/(ashl((power of z))
                                            !! for each primitive in each angular momentum i
                                            !! (where power of x + power of y + power of z = i).
                                            !!  index ij walks over all primitives--1 for s, 3 for p, etc. 
