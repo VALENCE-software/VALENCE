@@ -1,9 +1,9 @@
 #  User-editable options
 #
-# 1. choose parallel (PARALLEL) or sequential (SEQ) build
+# 1. choose parallel or sequential build
 
-#SEQUENTIAL=true
-SEQUENTIAL=false
+ SEQUENTIAL=true
+#SEQUENTIAL=false
 
 ifeq ($(SEQUENTIAL), false) 
   FFLAGS+=-DVALENCE_MPI
@@ -11,8 +11,8 @@ endif
 
 # 2. choose compiler (INTEL or GNU)
 
-COMPILER_VENDOR=INTEL
-#COMPILER_VENDOR=GNU
+#COMPILER_VENDOR=INTEL
+ COMPILER_VENDOR=GNU
 
 ifeq ($(COMPILER_VENDOR), GNU)
   ifeq ($(SEQUENTIAL), false) 
@@ -41,10 +41,10 @@ endif
 
 # 3. choose SIMINT base path
 
-SIMINT_BASE=/home/user/lib/
+SIMINT_BASE=/Users/grahamfletcher/quantum_chemistry/vsvb/distrib/open_source/simint/
 INTEGRALS=USE_SIMINT
 ifeq ($(INTEGRALS), USE_SIMINT)
-  SIMINT_LIBRARY=$(SIMINT_BASE)/lib64/
+  SIMINT_LIBRARY=$(SIMINT_BASE)/lib/
   SIMINT_INCLUDE=$(SIMINT_BASE)/include/simint
 
 # alignment here is necessary if simint is vectorized

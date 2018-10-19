@@ -2,20 +2,23 @@
 How to build VALENCE
 
 VALENCE currently uses the SIMINT library to compute integrals. 
-To build SIMINT, please see in the instructions given at https://github.com/simint-chem, or feel free to try the instructions below.
+To build SIMINT, please see the instructions given at https://github.com/simint-chem, or feel free to try the instructions below.
+(Unfortunately, the generated code by B. Pritchard lacks one-electron integrals and cannot be used.)
+
+Requirements:
+gcc 8.2.0 or later
 
 a) code generate phase (can be done somewhere different to the library build)
 
 1. go to SIMINT GitHub page
 2. click on 'simint generator'
 3. click 'clone or download'
-4. click copy to clipboard
+4. click copy to clipboard icon
 5. git clone [paste URL], enter
 6. cd simint_generator
-[follow instructions in GitHub, needs cmake
-for example ...]
+[Follow instructions in GitHub, needs cmake. For example ...]
 7. mkdir build; cd build
-8. CC=cc CXX=g++ cmake ../
+8. CC=[your c compiler] CXX=[your c++ compiler] cmake ../
 9. make
 10. cd ..
 11. python ./create.py -g build/generator/ostei -l 3 -p 3 outdir
@@ -27,19 +30,21 @@ b) library build phase
 [where you've placed 'outdir' ...]
 12. mkdir [choose a path here]/simint
 13. cd outdir
-14. CC=cc CXX=CC FC=ftn cmake -DSIMINT_C_FLAGS=-g  -DENABLE_FORTRAN=ON -DCMAKE_INSTALL_PREFIX=[the same path you chose]/simint/ ../
+14. CC=[your c compiler] CXX=[your c++ compiler] FC=[your fortran compiler] cmake -DSIMINT_C_FLAGS=-g  -DENABLE_FORTRAN=ON -DSIMINT_VECTOR=scalar -DCMAKE_INSTALL_PREFIX=[the same path you chose]/simint/ ../
 
-Additional vectorization options are available. If, for example, you are building for Intel Xeon Phi with AVX2 instructions, then add  -DSIMINT_VECTOR=avx2  after 'cmake', above.
+Step 14 is given for a scalar processor (-DSIMINT_VECTOR=scalar). Vectorization options are available. If, for example, you are building for Intel Xeon Phi with AVX2 instructions, then use  -DSIMINT_VECTOR=avx2. 
+
 15. make
+16. make install
 [only the test code uses c]
 
-The SIMINT library is   [that path]/simint/lib64/libsimint.a
+The SIMINT library path will resemble   [your path choice]/simint/libsimint.a   possibly including directories such as 'lib64' depending on the architecture.
 
 
 Next, to build VALENCE itself, please edit the Makefile to reflect your choices for the following options:
 
-1.  parallel or sequential build (COMP=PARALLEL or SEQ)
-2.  compiler (COMPILER=INTEL or gfortran)
+1.  parallel or sequential build (SEQUENTIAL=true or false)
+2.  compiler (COMPILER_VENDOR=INTEL, GNU, ...)
 3.  SIMINT base path (SIMINT_BASE)
 4.  (optional) MPI library path (MPI_LIBRARY)
 
