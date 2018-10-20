@@ -1,5 +1,5 @@
-# usage: python testing.py name_of_output name_of_example_to_compare_output_to
-#        for instance: python testing.py be.out be
+# usage: python test_examples.py name_of_output name_of_example_to_compare_output_to
+#        for instance: python test_examples.py be.out be
 #
 #        if you want to test the whole example directory (which will take a decently
 #        long time), one option is to write a script like this:
@@ -8,8 +8,8 @@
 #
 #        for i in $(ls /path/examples/)
 #        do
-#            /path/valence.exe < /path/examples/$i > $i.out
-#            python /path/testing.py $i.out $i
+#            /path/valence < /path/examples/$i > $i.out
+#            python /path/test_examples.py $i.out $i
 #        done
 #
 #        This compares a few output values. It doesn't catch everything,
@@ -61,94 +61,94 @@ class vsvb_output:
 # here are our standard tests
 # results from running in serial with obs01 on tnt.alcf.anl.gov
 list_of_tests = [ vsvb_output( 0,    -14.5729681271981626, 
-                               True, -14.5729681271981626, "be"),
+                               False, 0.0, "be"),
 
                   vsvb_output( 0,    -14.5729681271981626,
-                               True, -14.5729681271981626, "be.DBF"),
+                               False, 0.0,  "be.DBF"),
 
                   vsvb_output( 0,    -14.5763526671383907,
-                               True, -14.5763526671383907, "be.sv"),
+                               False, 0.0,  "be.sv"),
 
                   vsvb_output( 0,    -14.5883977218582270,
-                               True, -14.5883977218582270, "be.2SC"),
+                               False, 0.0,  "be.2SC"),
 
                   vsvb_output( 0,    -14.3173525131283803,
-                               True, -14.3173525131283803, "be2s3s.2SC"),
+                               False, 0.0,  "be2s3s.2SC"),
 
                   vsvb_output( 0,    -13.9617965781858562,
-                               True, -13.9617965781858562, "be3s2"),
+                               False, 0.0,  "be3s2"),
 
                   vsvb_output( 42.3777749240206134, -79.1739950294178385,
-                               True, -79.1739950294178385, "c2h6"),
+                               False, 0.0,  "c2h6"),
 
                   vsvb_output( 82.6758971084159811, -118.1767010509024658,
-                               True, -118.1767010509024658, "c3h8"),
+                               False, 0.0,  "c3h8"),
 
                   vsvb_output( 13.5333409938694693, -40.1730886556952527,
-                               True, -40.1730886556952527, "ch4"),
+                               False, 0.0,  "ch4"),
 
                   vsvb_output( 0,    -1638.3464829508911862,
-                               True, -1638.3464829508911862, "cu+.3d10"),
+                               False, 0.0,  "cu+.3d10"),
 
                   vsvb_output( 0,    -1638.3747554835470055,
-                               True, -1638.3747554835470055, "cu+.3d94s1"),
+                               False, 0.0,  "cu+.3d94s1"),
 
                   vsvb_output( 0,    -99.4130881819624221,
-                               True, -99.4130881819624221, "f-"),
+                               False, 0.0,  "f-"),
 
                   vsvb_output( 0,    -1261.4826418871418809,
-                               True, -1261.4826418871418809, "fe2+"),
+                               False, 0.0,  "fe2+"),
 
                   vsvb_output( 0,    -1260.4285111866975058,
-                               True, -1260.4285111866975058, "fe3+"),
+                               False, 0.0,  "fe3+"),
 
                   vsvb_output( 0,    -0.4999455685829772,
-                               True, -0.4999455685829772, "h"),
+                               False, 0.0,  "h"),
 
                   vsvb_output( 0.7074562155614478, -1.1471520768516472,
-                               True, -1.1471520768516472, "h2.dz"),
+                               False, 0.0,  "h2.dz"),
 
                   vsvb_output( 0.7430177607974767, -1.1368465732971214,
-                               True, -1.1368465732971214, "h2.sz"),
+                               False, 0.0,  "h2.sz"),
 
                   vsvb_output( 9.2527676629424676, -75.9853591758974005,
-                               True, -75.9853591758974005, "h2o"),
+                               False, 0.0,  "h2o"),
 
                   vsvb_output( 9.2527676629424676, -75.9959067344043291,
-                               True, -75.9959067344043291, "h2o.SC"),
+                               False, 0.0,  "h2o.SC"),
 
                   vsvb_output( 0,    -2.8615142272282199,
-                               True, -2.8615142272282199, "he"),
+                               False, 0.0,  "he"),
 
                   vsvb_output( 0,    -2.1365129715011388,
-                               True, -2.1365129715011388, "he1s2s"),
+                               False, 0.0,  "he1s2s"),
 
                   vsvb_output( 0,    -2.0680536967364547,
-                               True, -2.0680536967364547, "he1s3sT"),
+                               False, 0.0,  "he1s3sT"),
 
                   vsvb_output( 0,    -7.4324082125278759,
-                               True, -7.4324082125278759, "li"),
+                               False, 0.0,  "li"),
 
                   vsvb_output( 0,    -7.4272143140964362,
                                True, -7.4326245198905436, "li_opt"),
 
                   vsvb_output( 0.9682433201511886, -7.9795127137798501,
-                               True, -7.9795127137798501, "lih.VSHF"),
+                               False, 0.0,  "lih.VSHF"),
 
                   vsvb_output( 0.9682433201511886, -7.9790401124852277,
-                               True, -7.9790401124852277, "lih.SDVB"),
+                               False, 0.0,  "lih.SDVB"),
 
                   vsvb_output( 0.9682433201511886, -7.9959273242325057,
-                               True, -7.9959273242325057, "lih.SCval"),
+                               False, 0.0,  "lih.SCval"),
 
                   vsvb_output( 0.9682433201511886, -7.8782983082260758,
-                               True, -7.8782983082260758, "lih.exstate"),
+                               False, 0.0,  "lih.exstate"),
 
                   vsvb_output( 24.0445894035220533, -108.9439496018654978,
-                               True, -108.9439496018654978, "n2.VSHF")
+                               False, 0.0,  "n2.VSHF"),
 
                   vsvb_output( 138.2471998809889158, -173.1023795379115882,
-                               True, -173.1023795379115882, "nme3")
+                               False, 0.0,  "nme3")
 
                 ]
 
