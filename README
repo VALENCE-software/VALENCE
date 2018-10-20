@@ -18,7 +18,8 @@ Contents:
 5. Examples
 6. How to make spin-coupled orbitals
 7. How to use derived basis functions 
-8. Contact information
+8. Acknowledgements
+9. Contact information
 
 
 
@@ -53,7 +54,7 @@ As mentioned above, the tendency for VSVB orbitals to be highly local also bring
 Section 2. About the code
 
 
-VALENCE is the 'number-crunching' code in an overall system for executing VSVB calculations that includes various tools (the 'vsvbtools') for generating input and processing output. Currently, VALENCE can compute energies and optimize single-reference wave functions for the following types of situation-
+VALENCE is the 'number-crunching' code in an overall system for executing VSVB calculations that includes various tools (the 'vtools') for generating input and processing output. Currently, VALENCE can compute energies and optimize single-reference wave functions for the following types of situation-
 
 1. Ground states. 
 2. Excited states, including multiple excitations (single-reference).
@@ -82,11 +83,11 @@ See section 5 for example input files. To run VALENCE in parallel, please consul
 Section 3. Input
 
 
-The direct input to VALENCE is a plain-text numerical input file. No attempt is made to improve the 'look' of the input because advanced tools are included in this release to generate input automatically and offer a more user-friendly environment (see 'vsvbtools'). Although the tools continue to be refined and improved in our research group, it is important to understand how the direct input is structured since it offers the highest degree of generality. 
+The direct input to VALENCE is a plain-text numerical input file. No attempt is made to improve the 'look' of the input because advanced tools are included in this release to generate input automatically and offer a more user-friendly environment (see 'vtools'). Although the tools continue to be refined and improved in our research group, it is important to understand how the direct input is structured since it offers the highest degree of generality. 
 
 In what follows, a helpful concept is that of the 'orbital basis set' (OBS). In contrast to the more familiar 'molecular' basis set, an OBS spans the basis sets of just those atoms needed to support a given spatial orbital in VSVB. OBS often involve just one or two atoms in order to represent, for example, core electrons and 'lone pairs', or chemical bonds, respectively. Unlike a molecular basis set, as the molecular system increases in size the component OBS stay approximately the same size. Thus, OBS facilitate a concise and efficient definition of an orbital that is independent of the target molecule, allowing orbitals to be stored and re-combined to make new wave functions.
 
-Broadly, the input to VALENCE consists of specifications for the geometry, basis set, and a guess wave function, structured to facilitate dynamic memory. Thus, all the counts/sizes/dims/lengths, etc, are given on the first line so the program can allocate sufficient memory to read the data that follow. Lines may be separated by blank lines and items on a line by spaces, as permitted by FORTRAN free-format input rules. All data items are of INTeger type, unless specified to be FLOAT/REAL. Note also that VALENCE checks few input errors, but many errors can be avoided by using the 'vsvbtools'.
+Broadly, the input to VALENCE consists of specifications for the geometry, basis set, and a guess wave function, structured to facilitate dynamic memory. Thus, all the counts/sizes/dims/lengths, etc, are given on the first line so the program can allocate sufficient memory to read the data that follow. Lines may be separated by blank lines and items on a line by spaces, as permitted by FORTRAN free-format input rules. All data items are of INTeger type, unless specified to be FLOAT/REAL. Note also that VALENCE checks few input errors, but many errors can be avoided by using the 'vtools'.
 
 The input is organized in the order: 
 A) sizes, counts, array dims  (1 line)
@@ -215,7 +216,11 @@ Broadly, the output of VALENCE is the VSVB wave function and its total energy. V
 Section 5. Examples
 
 
-In this section, five examples are described in detail, though the current release includes thirty total examples (see './examples/' directory). The latter examples can be tested using the 'test_all' script to verify correct execution of the code. In what follows, narrative text is contained within brackets where it is helpful to distinguish it from the example input text. It is also helpful to note the following: the magnitude of a linear weight can occasionally be greater than unity; the overall sign of an orbital is arbitrary as the wave function is only determined to within a phase; agreement between total energies from the same run on different hardware is rarely greater than 10 places, and 6 places is more typical.
+The current release includes many examples (see directory './examples/') chosen to illustrate the main features and types of calculation that can currently be performed with VALENCE, while also being of a convenient size for verifying correct execution. The examples can be tested using the 'test_all' script and take less than five minutes on a typical processor. In /examples/, simply type-
+
+./test_all valence
+
+In this section, five examples are described in detail. Narrative text is contained within brackets where it is helpful to distinguish it from the example input text. It is also helpful to note the following: the magnitude of a linear weight can occasionally be greater than unity; the overall sign of an orbital is arbitrary as the wave function is only determined to within a phase; agreement between total energies from the same run on different hardware is rarely greater than 10 places, and 6 places is more typical.
 
 
 
@@ -767,9 +772,16 @@ The example below is for the ground state of dinitrogen. Bonding and anti-bondin
 
 
 
-Section 8. Contact information
+Section 8. Acknowledgements
 
-Please feel free to send questions/comments to any/all members of 'The VSVB Group, at Argonne':
+This work was supported by Argonne Leadership Computing Facility, which is a DOE Office of Science User Facility supported under Contract DE-AC02-06CH11357. 
+The name, 'VALENCE', was chosen in honor of the famous book of the same name by Charles Coulson, an early pioneer of valence bond theory.
+
+
+
+Section 9. Contact information
+
+Please feel free to send questions/comments to any/all members of 'The VALENCE Group, at Argonne':
 
 Graham D. Fletcher 
 Computational Science Division 
