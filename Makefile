@@ -129,10 +129,10 @@ SRCDIR   = src
 BINDIR   = bin
 
 all: $(TARGETLIB) $(TARGET) clean
-lib/libvalence.a: $(OBJS)
+$(TARGETLIB): $(OBJS)
 	mkdir -p lib
 	ar rcs $(TARGETLIB) $(OBJS)
-bin/valence: $(OBJS) valence_driver.o
+$(TARGET): $(OBJS) valence_driver.o
 	mkdir -p bin
 	$(FC) -o $(TARGET) $(FFLAGS) valence_driver.o $(TARGETLIB) $(LINK_FLAGS)
 valence_driver.o : $(SRCDIR)/valence_driver.F90 moduletools.o  tools.mod
@@ -164,7 +164,7 @@ valence_finalize.o : $(SRCDIR)/valence_finalize.F90
 xm.o : $(SRCDIR)/xm.F90 moduletools.o moduledensity.o moduleintegrals.o integrals.mod densitywork.mod timing_flops.o timing_flops.mod tools.mod
 	$(FC) $(FFLAGS) -c $< -o $@
 doc:
-	doxygen Doxyfile
+	doxygen doc/Doxyfile
 clean:
 	rm -f *.o *.mod 
 veryclean:

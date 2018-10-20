@@ -1,0 +1,777 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=1.75cm,right=2cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{braket}
+\usepackage{scalerel}
+
+
+
+\title{\vspace{-2.0cm}Notes about VSVB energy}
+\author{\vspace{-2.0cm}Colleen Bertoni, Graham Fletcher}
+
+\begin{document}
+\maketitle
+
+
+
+\section{Implemented energy calculation}
+
+Without giving too much detail, for a VSVB wave function with $N$ electrons,  $N_p$ spin coupled pairs, and $N_{sc}$ spin couplings, the VSVB energy can be written:
+\begin{equation}
+ \begin{aligned}
+ E &= \\
+ =& \frac{ 
+  \begin{aligned} &\sum_{ij}^{N} (\sum_q^{M_{sc}} d^1_{q,ij} w_{q,ij} ) h_{s,ij}                                                                                                                                               
+    + \sum_i^{N}\sum_{j<i}\sum_k^{N}\sum_{l<k}                                                                                                                                                                               
+         \left(\sum_q^{M_{sc}} d^2_{q,ikjl}                                                                                                                                                                                          
+          (  w_{q,ikjl} \left< \phi_i(1) \phi_j(2) | \phi_k(1) \phi_l(2) \right>_s                                                                                                                                                                                  
+           - w_{q,iljk} \left< \phi_i(1) \phi_j(2) | \phi_l(1) \phi_k(2) \right>_s \right) 
+            \end{aligned}
+     }
+     { \displaystyle \sum_{ij}^{N} (\sum_q^{M_{sc}} d^1_{q,ij} w_{q,ij} ) \left< \phi_i(1) | \phi_j(1) \right>_s / N}                                                                                                                                                             
+ \end{aligned}
+ \end{equation}
+
+where 
+\begin{itemize}
+\item $M_{sc} = N_{sc}^2 2^{2N_p}$ if there are spin couplings, $M_{sc} = 1$ if there are no spin couplings
+\item $\phi$ is a one-electron spin orbital
+\item $h_{s,ij} = \left< \phi_i(1) | h_s | \phi_j(1) \right>  $ where h is the standard one-electron integral. The s subscript is meant to denote that this integral does not include spin. ($w_{q,ij}$ contains the corresponding spin function integration)
+\item $d^1_{q,ij} $ is the first-order cofactor of the matrix of overlap integrals between spin orbitals. That is, it is the determinant of the overlap matrix with row i and column j removed, multiplied by $(-1)^{i+j}$ . $q$ denotes the term in the spin coupling/pairs expansion 
+\item $w_{q,ij}$ is the spin function integration, where the spin functions are $\alpha$ or $\beta$, whichever are associated with spin orbital $\phi_i(1)$ and $\phi_j(1)$. $q$ denotes the term in the spin coupling/pairs expansion
+\item $ \left< \phi_i(1) \phi_j(2) | \phi_k(1) \phi_l(2) \right>_s$ is the electron-electron repulsion integral. the s subscript is meant to denote that this integral does not include spin integration (this is in the "w" variable)
+\item $d^2_{q,ikjl} $ is the second-order cofactor of the matrix of overlap integrals between the spin orbitals. That is, it is the determinant of the overlap matrix with row i, column k, row j, and column l removed multiplied by $(-1)^{i+j+k+l}$. $q$ denotes the term in the spin coupling/pairs expansion
+\item $ w_{q,ijkl} $ is the spin function integration, where the spin functions are alpha or beta, whichever are associated with spin orbitals $\phi_i(1),\phi_k(1),\phi_j(2),\phi_l(2)$. $q$ denotes the term in the spin coupling/pairs expansion
+\end{itemize}
+
+The rest of the notes show where this expression comes from.
+
+\section{General energy expression}
+
+The VSVB wave function with one spin coupling is defined as an antisymmetrized product of orbitals, where some are double occupied, some contain spin coupled electron pairs, and some contain unpaired electrons:
+
+\begin{equation}
+ \begin{aligned}
+ \Psi_{VSVB} = &\hat{A} \{ \Xi_{(docc+unpaired)}\Phi_{sc} \} 
+ \label{init_wave}
+ \end{aligned}
+ \end{equation}
+     
+     \begin{itemize}
+     \item $\Xi_{(docc+unpaired)} $ is a product of double occupied orbitals and singly occupied orbitals with unpaired electrons.
+     
+     Expanding, $\Xi_{(docc+unpaired)} = \phi_1(1)\alpha(1)\phi_1(2) \beta(2)\phi_2(3)\alpha(3)\phi_2(2) \beta(4)...$.
+     
+     where $\phi$ is a spatial orbital with no spin coordinates
+     
+     \item $\Phi_{sc}$ is the weighted sum of products of spin-coupled pairs of spin orbitals. 
+     That is, for $N_{sc}$ spin couplings and $N_p$ spin coupled pairs (so $2*N_p$ total orbitals) , 
+     
+     $\displaystyle \Phi_{sc} = \phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...\sum_m^{N_{sc}} C_m \Theta_m(i,j,k,l,...)  $,
+     where $C_m$ is an expansion coefficient, $\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...$ is the product of $2*N_p$ spatial orbitals, and each $\Theta_m$ is a spin eigenfunction which couples the $N_p$ electron pairs.
+     For example,
+     
+     $\Theta_1(i,j,k,l...) = \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big] \big[\alpha(k)\beta(l)-\alpha(l)\beta(k)\big]... $ ( $i$ is coupled to $j$ and $k$ is coupled to $l$)
+     
+     $\Theta_2(i,j,k,l...) = \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] \big[\alpha(j)\beta(l)-\alpha(l)\beta(j)\big]... $ ( $i$ is coupled to $k$ and $i$ is coupled to $l$)
+     
+     ...
+     
+     See other resources, such as "A Chemist's Guide to Valence Bond Theory" for more information about spin eigenfunctions. Each $\Theta_m$ will have $2^{N_p}$ terms if it is expanded out.
+     
+     
+      Expanding and collecting related terms,  $\displaystyle \Phi_{sc} = C_1 \phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...  \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big] \big[\alpha(k)\beta(l)-\alpha(l)\beta(k)\big]... + C_2 \phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l) \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] \big[\alpha(j)\beta(l)-\alpha(l)\beta(j)\big]... + C_3... $
+     \end{itemize}
+     
+Expanding out Eq. \ref{init_wave} :
+      
+ \begin{equation}
+ \begin{aligned}
+ \Psi_{VSVB} = &\hat{A} \{ \Xi_{(docc+unpaired)}\Phi_{sc} \} \\
+ = &\hat{A} \{\phi_1(1)\alpha(1)\phi_1(2) \beta(2)... \phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...\sum_m^{N_{sc}} C_m \Theta_m(i,j,k,l,...)  \} \\
+ =& \hat{A} \{ \phi_1(1)\alpha(1)\phi_1(2) \beta(2)... C_1 \phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...  \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]\big[\alpha(k)\beta(l)-\alpha(l)\beta(k)\big]... \\ &
+ + \phi_1(1)\alpha(1)\phi_1(2) \beta(2)... C_2\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] \big[\alpha(j)\beta(l)-\alpha(l)\beta(j)\big]... \\ &+  ... \} 
+ \label{exp_init_wave}
+ \end{aligned}
+ \end{equation}
+ 
+ If Eq. \ref{exp_init_wave} is expanded out, there will be $N_{sc}2^{N_p}$ total terms in the wavefunction if there are spin couplings. If there are no spin couplings, there is only 1 term (the docc+unpaired term).
+
+
+
+The general energy expression is \[E = \frac{\Braket{\Psi|\hat{H}|\Psi}}{\Braket{\Psi|\Psi}} \]
+
+
+Subbing in the VSVB wave function:
+
+ \begin{equation}
+ \begin{aligned}
+     E &= \frac{    \Braket{\Psi_{VSVB}|H|\Psi_{VSVB}} }{\Braket{\Psi_{VSVB}|\Psi_{VSVB}}} \\
+     &= \frac{   \Braket{   \begin{aligned} 
+     \hat{A}& \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ...\} 
+       \end{aligned}
+       |H|
+  \begin{aligned}
+     \hat{A}& \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j) ... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ...\}
+       \end{aligned}
+         }}
+       {\Braket{  \begin{aligned}
+     \hat{A}& \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ...\} 
+       \end{aligned}
+              |
+               \begin{aligned}
+     \hat{A}& \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ...\} 
+       \end{aligned}
+       }} 
+     \end{aligned}
+     \end{equation}
+
+Since $\hat{A}$ is Hermitian, commutes with the Hamiltonian, and $\hat{A}\hat{A}\phi = \sqrt{N!}\hat{A}\phi$, this can be written as
+
+ \begin{equation}
+ \begin{aligned}
+     &= \frac{  \Braket{   \begin{aligned}
+     \hat{A}& \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ...\} 
+       \end{aligned}
+       |H|
+  \begin{aligned}
+     &  \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j) ... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ... 
+       \end{aligned}
+         }}
+       {\Braket{  \begin{aligned}
+     \hat{A}& \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ...\} 
+       \end{aligned}
+              |
+               \begin{aligned}
+     & \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i)\big]... \\ &
+ + \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \big[\alpha(i)\beta(k)-\alpha(k)\beta(i)\big] ... \\ &+ ... 
+       \end{aligned}
+       }} 
+     \end{aligned}
+     \end{equation}
+     
+To shed light on the expression, we can expand the spin coupled pairs in each spin coupling term. This results in a sum of $2^{N_p}$ terms 
+(where each spatial function is associated with one spin function) for each $N_{sc}$ spin coupling (so $N_{sc}2^{N_{p}}$ total terms if there are spin couplings. If there are no spin couplings, there is only 1 term) .
+
+For the first spin coupling (associated with $C_1$) this is:
+
+\begin{equation}
+ \begin{aligned}
+     =& \hat{A} \{ \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)... \big[\alpha(i)\beta(j)-\alpha(j)\beta(i) \big] \big[\alpha(k)\beta(l)-\alpha(l)\beta(k) \big]... \} \\
+     =& \hat{A} \{ \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)... \alpha(i)\beta(j) \alpha(k)\beta(l)... \\
+     &- \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...\alpha(j)\beta(i) \alpha(k)\beta(l)... \\
+     &+...
+     \}
+     \end{aligned}
+     \end{equation}
+
+Since $\hat{A}$ is a linear operator, each term in the sum can be written separately with $\hat{A}$ operating on it:
+
+\begin{equation}
+ \begin{aligned}
+     =& \hat{A} \{ \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)... \alpha(i)\beta(j) \alpha(k)\beta(l)... \} \\
+     &- \hat{A} \{ \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) \phi_k(k) \phi_l(l)...\alpha(j)\beta(i) \alpha(k)\beta(l)... \} \\
+     &+...
+     \end{aligned}
+     \end{equation}
+
+So the wave function is a sum of antisymmetrized products of spin orbitals.
+
+We can plug this back into the energy expression to get:
+
+
+ \begin{equation}
+ \begin{aligned}
+  E &= \\
+     &= \frac{    \Braket{   
+     \begin{aligned} 
+     &\hat{A} \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j) ... \alpha(i)\beta(j)\alpha(k)\beta(l)... \}   \\ 
+ - &\hat{A} \{ \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) ...  \alpha(j)\beta(i)\alpha(k)\beta(l) ... \}\\ 
+  +    &\hat{A} \{ \phi_1(1)\alpha(1)... C_2 \phi_i(i) \phi_j(j)... \alpha(i)\beta(k)\alpha(j)\beta(l)... \} \\ 
+ - &\hat{A} \{ \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \alpha(k)\beta(i)\alpha(j)\beta(l)... \}\\ 
+ +& ...
+       \end{aligned} 
+       |H|
+   \begin{aligned} 
+     & \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \alpha(i)\beta(j)\alpha(k)\beta(l)...    \\ 
+ - & \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) ...  \alpha(j)\beta(i)\alpha(k)\beta(l) ... \\ 
+  +    & \phi_1(1)\alpha(1)... C_2 \phi_i(i) \phi_j(j)... \alpha(i)\beta(k)\alpha(j)\beta(l)...  \\ 
+ - &\phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \alpha(k)\beta(i)\alpha(j)\beta(l)... \\ 
+ +& ...
+       \end{aligned} 
+         }   }
+       {\Braket{   \begin{aligned} 
+&\hat{A} \{ \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j) ... \alpha(i)\beta(j)\alpha(k)\beta(l)... \}   \\ 
+ - &\hat{A} \{ \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) ...  \alpha(j)\beta(i)\alpha(k)\beta(l) ... \}\\ 
+  +    &\hat{A} \{ \phi_1(1)\alpha(1)... C_2 \phi_i(i) \phi_j(j)... \alpha(i)\beta(k)\alpha(j)\beta(l)... \} \\ 
+ - &\hat{A} \{ \phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \alpha(k)\beta(i)\alpha(j)\beta(l)... \}\\ 
+ +& ...
+       \end{aligned}
+              |
+   \begin{aligned} 
+      & \phi_1(1)\alpha(1)... C_1 \phi_i(i) \phi_j(j)... \alpha(i)\beta(j)\alpha(k)\beta(l)...    \\ 
+ - & \phi_1(1)\alpha(1)... C_1\phi_i(i) \phi_j(j) ...  \alpha(j)\beta(i)\alpha(k)\beta(l) ... \\ 
+  +    & \phi_1(1)\alpha(1)... C_2 \phi_i(i) \phi_j(j)... \alpha(i)\beta(k)\alpha(j)\beta(l)...  \\ 
+ - &\phi_1(1)\alpha(1)... C_2\phi_i(i) \phi_j(j) ...  \alpha(k)\beta(i)\alpha(j)\beta(l)... \\ 
+ +& ...
+       \end{aligned}
+       }} 
+     \label{gen_energy}
+     \end{aligned}
+     \end{equation}
+
+
+where the kets have been expanded as well.
+
+Since $\hat{H}$ is linear, we can look at one term at a time. If there are spin couplings, there will be $N_{sc}^22^{2N_{p}}$ total terms, since the wavefunction in the bra contains $N_{sc}2^{N_{p}}$ terms, and the ket also has  $N_{sc}2^{N_{p}}$ terms. If there are no spin couplings, there is only 1 term in the bra and ket. We will come back to the full expression later.
+
+\section{Single term in the energy expansion}
+
+\begin{equation}
+ \begin{aligned}
+ T_1 = \frac{\Braket{\hat{A} \{ \phi_1(1)\alpha(1)... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)... \}
+     |H|  ( \phi_1(1)\alpha(1)... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)...)
+     }}{\Braket{\hat{A} \{ \phi_1(1)\alpha(1)... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)... \}
+     |  ( \phi_1(1)\alpha(1)... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)...)
+    }} 
+    \label{t1}
+     \end{aligned}
+     \end{equation}
+
+Let $T_1$ arbitrarily be one of the terms in the expansion in \ref{gen_energy}. (Leaving the $C_m$ out for simplicity.) First, let's combine the spatial and spin parts associated with each electron, and replace them with spin orbitals, $\psi$. 
+Also, note that an antisymmetrized product of spin orbitals can be written as a Slater determinant.
+
+\begin{equation}
+ \begin{aligned}
+  &=\frac{\Braket{\hat{A} \{ \psi_1(1)\psi_2(2)...\psi_N(N) \}
+     |H|  (\psi_1(1)\psi_2(2)...\psi_N(N))
+     }}{\Braket{\hat{A} \{ \psi_1(1)\psi_2(2)...\psi_N(N) \}
+     |  ( \psi_1(1)\psi_2(2)...\phi_N(N))
+    }} \\
+    &=\frac{\Braket{ 
+    \begin{vmatrix} \psi_1(1) & \psi_1(2) & ... \\
+    \psi_2(1) & \psi_2(2) & ... \\
+    ... & ... & ...\\
+    \psi_N(1) & ... & \psi_N(N)\\
+    \end{vmatrix}
+     |H|  (\psi_1(1)\psi_2(2)...\psi_N(N))
+     }}{\Braket{ \begin{vmatrix} \psi_1(1) & \psi_1(2) & ... \\
+    \psi_2(1) & \psi_2(2) & ... \\
+    ... & ... & ...\\
+    \psi_N(1) & ... & \psi_N(N)\\
+    \end{vmatrix}
+     |  ( \psi_1(1)\psi_2(2)...\psi_N(N))
+    }}
+     \end{aligned}
+     \end{equation}
+
+where there are $N$ electrons.
+
+This can be written as the equation below, using derivations carried out in "Handbook of Computational Quantum Chemistry" by Cook, "Method of Molecular Quantum Mechanics" by McWeeney, or in the section "Calculating matrix elements" below. The section below also discusses how the cofactors are calculated in the code. (Note that this is different than Hartree-Fock, since we do not assume that orbitals are orthogonal.) 
+
+\begin{equation}
+ \begin{aligned}
+  &=\frac{\displaystyle \sum_{ij}^{N} d^1_{ij} h_{ij}                                                                                                                                                            
+     + \sum_i^{N}\sum_{j<i}\sum_k^{N}\sum_{l<k}                                                                                                                                                     
+          d^2_{ikjl} \big(\Braket{  \psi_i(1) \psi_j(2) | \psi_k(1) \psi_l(2) }-\Braket{  \psi_i(1) \psi_j(2) | \psi_l(1) \psi_k(2) } \big) }{\displaystyle \sum_{j}^{N}  d^1_{1j} \Braket{\psi_1(1) | \psi_j(1)}  }
+          \label{spin_orb_form}
+     \end{aligned}
+     \end{equation}
+
+Note that the nuclear repulsion term is being neglected for clarity.
+
+\subsection{Terms in \ref{spin_orb_form} }
+\subsubsection{One electron term}
+    The first term in the numerator is the one electron term.                                                                                                                                                                 
+                                                                                                                                                                                                             
+    $h_{ij} = \Braket{ \psi_i(1) | \hat{h} | \psi_j(1) }$ where $\hat{h}$ is the standard one-electron kinetic and nuclei-electron attraction operator.                                                                                                                                                                  
+                                                                                                                                                                                                             
+    $d^1_{ij}$ is the first-order cofactor of the matrix of overlap integrals                                                                                                                                  
+    between the spin orbitals. That is, it is the determinant of the                                                                                                                                 
+    matrix of overlap integrals between spin functions with row i and column j removed, multiplied by $(-1)^{i+j}$.                                                                                                                                          
+
+To be explicit, the matrix of overlap integrals between spin functions for $N$ electrons is a $N \times N$ matrix shown in Eq. \ref{overlap}:
+
+\begin{equation}
+ \begin{aligned}
+    \begin{vmatrix} 
+    \Braket{ \psi_1(1)| \psi_1(1) }  &  \Braket{ \psi_1(2) | \psi_2(2) } & \Braket{ \psi_1(3) | \psi_3(3) } & ... &  \Braket{ \psi_1(N) | \psi_N(N) } \\
+    \Braket{ \psi_2(1) |\psi_1(1) }  &  \Braket{ \psi_2(2) | \psi_2(2) } & \Braket{ \psi_2(3) | \psi_3(3) } & ... &  \Braket{ \psi_2(N) | \psi_N(N) } \\
+    \Braket{ \psi_3(1)|  \psi_1(1) }  &  \Braket{ \psi_3(2) | \psi_2(2) } & \Braket{ \psi_3(3) | \psi_3(3) } &... &  \Braket{ \psi_3(N) | \psi_N(N) } \\
+    ... & ... & ... & ...& ...\\
+     \Braket{ \psi_N(1)|  \psi_1(1) } &  \Braket{ \psi_N(2)|  \psi_2(2) }& \Braket{ \psi_N(3) | \psi_3(3) } & ...&  \Braket{ \psi_N(N) | \psi_N(N) }\\
+    \end{vmatrix}
+    \label{overlap}
+         \end{aligned}
+     \end{equation}
+
+Then $d^1_{21}$ is a $(N-1) \times (N-1)$ matrix below:
+
+\begin{equation}
+ \begin{aligned}
+   (-1)^{2+1} \begin{vmatrix} 
+    \Braket{ \psi_1(2) | \psi_2(2) } & \Braket{ \psi_1(3) | \psi_3(3) } & ... &  \Braket{ \psi_1(N) | \psi_N(N) } \\
+      \Braket{ \psi_3(2) | \psi_2(2) } & \Braket{ \psi_3(3) | \psi_3(3) } &... &  \Braket{ \psi_3(N) | \psi_N(N) } \\
+     ... & ... & ...& ...\\
+      \Braket{ \psi_N(2)|  \psi_2(2) }& \Braket{ \psi_N(3) | \psi_3(3) } & ...&  \Braket{ \psi_N(N) | \psi_N(N) }\\
+    \end{vmatrix}
+    \label{cof}
+         \end{aligned}
+     \end{equation}
+
+Note that by the definition of determinants, Eq. \ref{cof} is equivalent to computing:
+
+
+\begin{equation}
+ \begin{aligned}
+    \begin{vmatrix} 
+   0  &  \Braket{ \psi_1(2) | \psi_2(2) } & \Braket{ \psi_1(3) | \psi_3(3) } & ... &  \Braket{ \psi_1(N) | \psi_N(N) } \\
+   1 & 0& 0 & ... & 0 \\
+   0  &  \Braket{ \psi_3(2) | \psi_2(2) } & \Braket{ \psi_3(3) | \psi_3(3) } &... &  \Braket{ \psi_3(N) | \psi_N(N) } \\
+    ... & ... & ... & ...& ...\\
+    0&  \Braket{ \psi_N(2)|  \psi_2(2) }& \Braket{ \psi_N(3) | \psi_3(3) } & ...&  \Braket{ \psi_N(N) | \psi_N(N) }\\
+    \end{vmatrix}
+         \end{aligned}
+     \end{equation}
+
+\subsubsection{Normalization integral}
+
+    The denominator is the normalization integral. It is the determinant of the matrix of overlap integrals between spin orbitals, and can be expressed as in \ref{spin_orb_form}. 
+
+
+\subsubsection{Two electron term}
+    The second term in the numerator is the two electron term.                                                                                                                                                                
+                                                                                                                                                                                                             
+    $\Braket{ i(1) j(2) | k(1) l(2) }$ is the electron-electron repulsion integral.                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                             
+    $d^2_{ikjl}$ is the second-order cofactor of the matrix of overlap integrals                                                                                                                               
+    between the spin orbitals. That is, it is the determinant of the overlap                                                                                                                                 
+    matrix with row i, column k, row j, and column l removed,                                                                                                                                                
+    multipled by $(-1)^{i+j+k+l}$. 
+
+\subsection{ Switching to spatial orbitals }
+Then we pull the spin functions out of the spin orbitals, since spin integration should help remove a lot of terms. 
+
+\subsubsection{One electron term}
+
+First we expand the spin orbitals into spatial and spin parts:
+
+\begin{equation}
+ \begin{aligned}
+  & \displaystyle \sum_{ij}^{N} d^1_{ij,T_1} h_{ij,T_1}                \\                                                                                                                                             
+ &=  \displaystyle \sum_{ij}^{N} d^1_{ij,T_1} \Braket{ \psi_{i}(1)  | \hat{h}| \psi_{j}(1)  }      \\                                                                                                                                             
+ &=  \displaystyle \sum_{ij}^{N} d^1_{ij,T_1}  w_{T_1}( i(1) j(1) ) \Braket{ \phi_{i}(1)  | \hat{h}| \phi_{j}(1)  } 
+ \label{onee}
+     \end{aligned}
+     \end{equation}
+
+Where $w_{T_1}( i(1) j(1) )$ is a function containing the integrated spins of spin orbitals $i,j$. As used above, $\phi_i$, is the spatial portion of the spin orbital $\psi_i$. The $T_1$ subscript is to be clear which term in \ref{gen_energy} this refers to. Note that each each will only differ in spin, so will only affect $d^1_{ij, T_1}$ and  $w_{T_1}( i(1) j(1) )$, not the integration over spatial orbitals.
+
+Letting 
+\begin{equation}
+ \begin{aligned}
+ 	\text{D}_{T_1, ij}^1 = d^1_{ij,T_1}  w_{T_1}( i(1) j(1) )                                                          
+     \end{aligned}
+     \end{equation}
+     
+     Eq. \ref{onee} can be written as 
+     
+ \begin{equation}
+ \begin{aligned}                                                                                                                                         
+ &=  \displaystyle \sum_{ij}^{N}\text{D}_{T_1, ij}^1 \Braket{ \phi_{i}(1)  | \hat{h}| \phi_{j}(1)  } 
+ \label{final_onee}
+     \end{aligned}
+     \end{equation}
+
+This form, looping over spin orbitals, is used in the code. Note that the sum is over spin orbitals. This means that if there are doubly occupied orbitals, this form could compute the spatial orbital integral twice--once when both spins are alpha and once when both are beta. However, one-electron integrals are not too expensive, so this is not important. 
+
+
+\subsubsection{Normalization integral}
+
+Similar to the one-electron term, we split the spin orbitals to the spin and spatial forms:
+
+\begin{equation}
+ \begin{aligned}
+  & \displaystyle \sum_{j}^{N}  d^1_{1j,T_1} \Braket{\psi_1(1) | \psi_j(1)}_{T_1} \\
+  &= \displaystyle \sum_{j}^{N}  d^1_{1j} w_{T_1}( i(1) j(1) ) \Braket{\phi_1(1) | \phi_j(1)}\\
+  &= \displaystyle \sum_{j}^{N}  \text{D}_{T_1, 1j}^1 \Braket{\phi_1(1) | \phi_j(1)}
+ \label{norm}
+     \end{aligned}
+     \end{equation}
+     
+ using the same density as in the one-electron term.
+ 
+ Note that the normalization integral is the determinant of the spin orbital overlap matrix (Eq. \ref{overlap} ). The expression in Eq. \ref{norm} is an expansion in terms of cofactors along the first row. Calculating the determinant by expanding along any over row is equivalent (the cofactor provides the appropriate sign change). That is,  $\displaystyle \sum_{j}^{N}  \text{D}_{T_1, 1j}^1 \Braket{\phi_1(1) | \phi_j(1)}$ = $ \displaystyle \sum_{j}^{N}  \text{D}_{T_1, 2j}^1 \Braket{\phi_2(1) | \phi_j(1)}$ = $ \displaystyle\sum_{j}^{N}  \text{D}_{T_1, 3j}^1 \Braket{\phi_3(1) | \phi_j(1)}$ and so on.
+     
+Thus, we can write \ref{norm} as
+
+\begin{equation}
+ \begin{aligned}
+  &=  \frac{\displaystyle \sum_{ij}^{N}  \text{D}_{T_1, ij}^1 \Braket{\phi_i(1) | \phi_j(1)}}{N}
+    \label{final_norm}
+     \end{aligned}
+     \end{equation}
+     
+
+This form is used in the code, in the same place as the one-electron term.
+ 
+\subsubsection{Two electron term}
+
+Since two electron integrals are expensive, we don't want to recompute the integral between spatial orbitals if we already computed them. 
+So this time the loops are over spatial orbitals only, not spin orbitals. 
+
+\begin{equation}
+ \begin{aligned}
+  &  \displaystyle \sum_i^{N}  \sum_{j<i}\sum_k^{N}\sum_{l<k}                                                                                                                                                     
+          d^2_{ikjl, T_1} \big(\Braket{  \psi_i(1) \psi_j(2) | \psi_k(1) \psi_l(2) }_{T_1}-\Braket{  \psi_i(1) \psi_j(2) | \psi_l(1) \psi_k(2) }_{T_1} \big) \\
+          =& \sum_{io}^{orbitals}\sum_{jo\leq io}\sum_{ko}^{orbitals}\sum_{lo\leq ko}        
+          \sum_l^{\substack{spins \\ \in lo<ko}}                                                                                                                                  
+ \sum_i^{\substack{spins \\ \in io}}\sum_j^{\substack{spins \\ \in jo<io}}\sum_k^{\substack{spins \\ \in ko}} 
+  d^2_{io+i,ko+k,jo+j,lo+l,T_1}      \\                                                                                                                                                  
+    & \Big(  w_{T_1}( i(1) j(2), k(1) l(2) ) \Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{ko}(1) \phi_{lo}(2) }                                                                                                                                              
+    - w_{T_1}( i(1) j(2), l(1) k(2) ) \Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{lo}(1) \phi_{ko}(2) } \Big) 
+    \label{spat}
+     \end{aligned}
+     \end{equation}
+
+where $io,jo,ko,lo$ are indexes which run over spatial orbitals, not spin functions.
+
+($io,jo,ko,lo$ are what they are called in the code, so I'm trying to match notation.)
+
+
+$w_{T_1}( i(1) j(2), l(1) k(2) )$ is a function containing the integrated spins of spin orbitals $i,j,l,k$. The possible spins depend on the associated spatial orbital, since in VSVB some are doubly occupied, and can be $\alpha$ or $\beta$, and some can be unpaired or spin coupled. For the spin coupled orbitals, the spin depends on which term in the sum in Eq.\ref{gen_energy} we're evaluating. Since \ref{t1} is called $T_1$, there is a $T_1$ subscript.
+
+Eq. \ref{spat} can be rearranged:
+
+\begin{equation}
+ \begin{aligned}
+          =& \sum_{io}^{orbitals}\sum_{jo\leq io}\sum_{ko}^{orbitals}\sum_{lo\leq ko}                                                                                                                                         
+   \sum_i^{\substack{spins \\ \in io}}\sum_j^{\substack{spins \\ \in jo<io}}\sum_k^{\substack{spins \\ \in ko}}  
+   \sum_l^{\substack{spins \\ \in lo<ko}}      \\                                                                                                                                                  
+    & \Big( \Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{ko}(1) \phi_{lo}(2) }d^2_{io+i,ko+k,jo+j,lo+l,T_1} w_{T_1}( i(1) j(2), k(1) l(2) )        \\                                                                                                                                       
+    &-  \Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{lo}(1) \phi_{ko}(2) } d^2_{io+i,ko+k,jo+j,lo+l,T_1} w_{T_1}( i(1) j(2), l(1) k(2) )  \Big)
+\label{rearr_single}
+    \end{aligned}
+     \end{equation}
+
+Letting 
+\begin{equation}
+ \begin{aligned}
+ 	\text{D}_{T_1, io,ko,jo,lo}^2 =                                                                                                                                                                 
+       \sum_i^{\substack{spins \\ \in io}}\sum_j^{\substack{spins \\ \in jo<io}}\sum_k^{\substack{spins \\ \in ko}}                                                                                                                                            
+   \sum_l^{\substack{spins \\ \in lo<ko}} d^2_{io+i,ko+k,jo+j,lo+l,T_1} w_{T_1}(i(1) j(2) k(1) l(2))
+     \end{aligned}
+     \end{equation}
+     
+     and
+      
+\begin{equation}
+ \begin{aligned}
+ 	\text{D}_{T_1,exch, io,ko,jo,lo}^2 =                                                                                                                                                                 
+       \sum_i^{\substack{spins \\ \in io}}\sum_j^{\substack{spins \\ \in jo<io}}\sum_k^{\substack{spins \\ \in ko}}                                                                                                                                           
+   \sum_l^{\substack{spins \\ \in lo<ko}}  d^2_{io+i,ko+k,jo+j,lo+l,T_1} w_{T_1}(i(1) j(2) l(1) k(2))
+     \end{aligned}
+     \end{equation}
+
+     
+The two electron part of Eq.\ref{rearr_single}  can be written as
+
+\begin{equation}
+ \begin{aligned}
+          & \sum_{io}^{orbitals}\sum_{jo\leq io}\sum_{ko}^{orbitals}\sum_{lo\leq ko}                                                                                                                                                
+    \Big( \text{D}_{T_1, io,ko,jo,lo}^2 \Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{ko}(1) \phi_{lo}(2) }   -  \text{D}_{T_1,exch, io,ko,jo,lo}^2\Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{lo}(1) \phi_{ko}(2) } \Big)
+    \label{final_twoe}
+    \end{aligned}
+     \end{equation}
+
+     
+     Note that the only differences between $\text{D}_{T_1, io,ko,jo,lo}^2$ and $\text{D}_{T_1,exch, io,ko,jo,lo}^2)$ are in the spin integration ($w_{T}$).  The cofactor ($d^2_{io+i,ko+k,jo+j,lo+l,T_1}$) is the same for both, so it only needs to be calculated once.
+
+
+\section{Final expressions for the three terms}
+
+For a single determinant wave function (that is, one that has no spin couplings), Eq. \ref{final_onee}, \ref{final_norm}, and \ref{final_twoe} are those which are calculated in the code.
+
+For a muti-determinant wave function with multiple spin coupling, there is the expansion of terms as in  Eq.\ref{gen_energy}. However, the only thing that will differ between the $M_{sc} = {N_{sc}^22^{2N_p}}$ terms in Eq.\ref{gen_energy} is the cofactors and the spin, not the spatial functions. 
+That is, if we let Eq.\ref{gen_energy} be $T_1 + T_2 + ...+T_{M_{sc}}$, then the following expressions can be written:
+
+\subsection{One electron term}
+
+ \begin{equation}
+ \begin{aligned}                                                                                                                            
+ &=  \displaystyle \sum_{ij}^{N}  \big( \text{D}_{T_1, ij}^1 + \text{D}_{T_1, ij}^1 + \text{D}_{T_1, ij}^1 +...\big) \Braket{ \phi_{i}(1)  | \hat{h}| \phi_{j}(1)  }   \\                                                                                                                                
+ &=  \displaystyle \sum_{ij}^{N}  \text{D}_{ij}^1 \Braket{ \phi_{i}(1)  | \hat{h}| \phi_{j}(1)  } 
+ \label{total_onee}
+     \end{aligned}
+     \end{equation}
+
+where we let $\text{D}_{ij}^1 = \text{D}_{T_1, ij}^1 + \text{D}_{T_1, ij}^1 + \text{D}_{T_1, ij}^1 +...+\text{D}_{T_{M_{sc}}, ij}^1$
+
+\subsection{Normalization integral}
+
+Similarly, the normalization integral can be written as:
+
+ \begin{equation}
+ \begin{aligned}                                                                                                                          
+ &=  \frac{\displaystyle \sum_{ij}^{N}  \text{D}_{ij}^1 \Braket{ \phi_{i}(1)  |  \phi_{j}(1)  }}{N} 
+ \label{total_norm}
+     \end{aligned}
+     \end{equation}
+
+\subsection{Two electron term}
+
+The expression for the two electron integral is similar:
+
+
+\begin{equation}
+ \begin{aligned}
+         =& \sum_{io}^{orbitals}\sum_{jo\leq io}\sum_{ko}^{orbitals}\sum_{lo\leq ko}                                                                                                                                                
+     \Big( \big(\text{D}_{T_1, io,ko,jo,lo}^2 + \text{D}_{T_2, io,ko,jo,lo}^2 +...\big) \Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{ko}(1) \phi_{lo}(2) }        \\                                                                                                                                       
+    &-  \big(\text{D}_{T_1,exch, io,ko,jo,lo}^2+\text{D}_{T_2,exch, io,ko,jo,lo}^2+...\big)\Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{lo}(1) \phi_{ko}(2) } \Big) \\
+    =&  \sum_{io}^{orbitals}\sum_{jo\leq io}\sum_{ko}^{orbitals}\sum_{lo\leq ko}                                                                                                                                                
+    \Big(\text{D}_{io,ko,jo,lo}^2\Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{ko}(1) \phi_{lo}(2) }    -  \text{D}_{exch,io,ko,jo,lo}^2\Braket{ \phi_{io}(1) \phi_{jo}(2) | \phi_{lo}(1) \phi_{ko}(2) } \Big)
+    \label{total_twoe}
+    \end{aligned}
+     \end{equation}
+
+
+where we let $\displaystyle \text{D}_{io,ko,jo,lo}^2 = \sum_q^{M_{sc}} \text{D}_{T_q, io,ko,jo,lo}^2$
+
+\section{Calculating the matrix elements} 
+
+In general, $\hat{H}$ can be split into a one-electron operator, which sums over all electrons in the system ($\displaystyle \sum_i^N\hat{O}(i)$) and a two-electron operator, which sums over all pairs of electrons in the system
+($ \displaystyle  \sum_i^N  \sum_{j<i} \hat{O}(i,j)$). 
+
+To give an idea of how the integrals are calculated, here we go over the evaluation of the normalization integral, a generic one-electron operator, and the electron repulsion operator. This is only shown for a single determinant wave function, but it could be made more general.
+
+\subsection{Normalization integral}
+ 
+ \begin{equation}
+ \begin{aligned}
+ &= \Braket{  \psi_1(1)\psi_2(2)...\psi_N(N)  |
+ \begin{vmatrix} \psi_1(1) & \psi_2(1)& \psi_3(1) & ... & \psi_N(1) \\
+    \psi_1(2) & \psi_2(2) & \psi_3(2) &...& \psi_N(2) \\
+    \psi_1(3) & \psi_2(3) & \psi_3(3) &...& \psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_1(N) & \psi_2(N) & \psi_3(N) &...& \psi_N(N)\\
+    \end{vmatrix} } \\
+    &=
+    \Braket{ 
+     \begin{vmatrix} \psi_1(1) &0 & 0&... & 0 \\
+    0 & \psi_2(2) & 0& ...& 0\\
+    0 & 0 & \psi_3(3)& ...& 0\\
+    ... & ... & ... & ... &...\\
+    0 & 0 & 0&...& \psi_N(N)\\
+    \end{vmatrix}  
+    |
+   \begin{vmatrix} \psi_1(1) & \psi_2(1)& \psi_3(1) & ... & \psi_N(1) \\
+    \psi_1(2) & \psi_2(2) & \psi_3(2) &...& \psi_N(2) \\
+    \psi_1(3) & \psi_2(3) & \psi_3(3) &...& \psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_1(N) & \psi_2(N) & \psi_3(N) &...& \psi_N(N)\\
+    \end{vmatrix} } \\
+    &=
+      \Braket{ 
+    \begin{vmatrix} 
+    \psi_1(1) \psi_1(1) & \psi_1(1)\psi_2(1)& \psi_1(1)\psi_3(1) & ... & \psi_1(1) \psi_N(1) \\
+    \psi_2(2) \psi_1(2) & \psi_2(2)\psi_2(2) & \psi_2(2) \psi_3(2) &...& \psi_2(2)\psi_N(2) \\
+    \psi_3(3) \psi_1(3) & \psi_3(3)\psi_2(3) & \psi_3(3) \psi_3(3) &...& \psi_3(3)\psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_N(N) \psi_1(N) &\psi_N(N) \psi_2(N) & \psi_N(N) \psi_3(N) &...& \psi_N(N)\psi_N(N)\\
+    \end{vmatrix} } \\
+        &= 
+    \begin{vmatrix}  
+     \Braket{\psi_1(1) \psi_1(1) }&  \Braket{\psi_1(1)\psi_2(1)}& \Braket{\psi_1(1)\psi_3(1) }& ... &  \Braket{\psi_1(1) \psi_N(1) }\\
+     \Braket{\psi_2(2) \psi_1(2) }&  \Braket{\psi_2(2)\psi_2(2)} &  \Braket{\psi_2(2) \psi_3(2) }&...& \Braket{ \psi_2(2)\psi_N(2)} \\
+     \Braket{\psi_3(3) \psi_1(3)} &  \Braket{\psi_3(3)\psi_2(3) }&  \Braket{\psi_3(3) \psi_3(3)} &...& \Braket{ \psi_3(3)\psi_N(3) }\\
+    ... & ... & ... & ...& ... \\
+    \Braket{ \psi_N(N) \psi_1(N) }& \Braket{\psi_N(N) \psi_2(N) }&  \Braket{\psi_N(N) \psi_3(N)} &...&  \Braket{\psi_N(N)\psi_N(N)}\\
+    \end{vmatrix}  
+    \label{deriv_overlap}
+ \end{aligned}
+ \end{equation}
+ 
+ 
+ 
+ Where we used the fact that the determinant of a diagonal matrix is the product of the terms in the diagonal, that det(A)det(B)=det(AB), and since each row depends on a different electron, and the integration is over electrons, the integration can be pulled into the determinant.
+
+Thus, the normalization integral is the determinant of the matrix of overlap integrals between spin orbitals.
+
+\subsection{One electron integral}
+
+The one electron term is $\displaystyle \sum_i^N\hat{h}(i)$. First we start with $\hat{h}(1)$ and generalize from there.
+
+ \begin{equation}
+ \begin{aligned}
+ &= \Braket{  \psi_1(1)\psi_2(2)...\psi_N(N)  | \hat{h}(1) |
+\begin{vmatrix} \psi_1(1) & \psi_2(1)& \psi_3(1) & ... & \psi_N(1) \\
+    \psi_1(2) & \psi_2(2) & \psi_3(2) &...& \psi_N(2) \\
+    \psi_1(3) & \psi_2(3) & \psi_3(3) &...& \psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_1(N) & \psi_2(N) & \psi_3(N) &...& \psi_N(N)\\
+    \end{vmatrix} } \\
+    &=
+    \Braket{ 
+     \begin{vmatrix} \psi_1(1) &0 & 0&... & 0 \\
+    0 & \psi_2(2) & 0& ...& 0\\
+    0 & 0 & \psi_3(3)& ...& 0\\
+    ... & ... & ... & ... &...\\
+    0 & 0 & 0&...& \psi_N(N)\\
+    \end{vmatrix}  
+    |\hat{h}(1) |
+    \begin{vmatrix} \psi_1(1) & \psi_2(1)& \psi_3(1) & ... & \psi_N(1) \\
+    \psi_1(2) & \psi_2(2) & \psi_3(2) &...& \psi_N(2) \\
+    \psi_1(3) & \psi_2(3) & \psi_3(3) &...& \psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_1(N) & \psi_2(N) & \psi_3(N) &...& \psi_N(N)\\
+    \end{vmatrix} } \\
+    &=
+      \Braket{ 
+     \begin{vmatrix} 
+    \psi_1(1)\hat{h}(1) \psi_1(1) & \psi_1(1)\hat{h}(1)\psi_2(1)& \psi_1(1)\hat{h}(1)\psi_3(1) & ... & \psi_1(1) \hat{h}(1)\psi_N(1) \\
+    \psi_2(2) \psi_1(2) & \psi_2(2)\psi_2(2) & \psi_2(2) \psi_3(2) &...& \psi_2(2)\psi_N(2) \\
+    \psi_3(3) \psi_1(3) & \psi_3(3)\psi_2(3) & \psi_3(3) \psi_3(3) &...& \psi_3(3)\psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_N(N) \psi_1(N) &\psi_N(N) \psi_2(N) & \psi_N(N) \psi_3(N) &...& \psi_N(N)\psi_N(N)\\
+    \end{vmatrix} } \\
+        &= 
+   \begin{vmatrix}  
+     \Braket{\psi_1(1) \hat{h}(1)\psi_1(1) }&  \Braket{\psi_1(1)\hat{h}(1)\psi_2(1)}& \Braket{\psi_1(1)\hat{h}(1)\psi_3(1) }& ... &  \Braket{\psi_1(1)\hat{h}(1) \psi_N(1) }\\
+     \Braket{\psi_2(2) \psi_1(2) }&  \Braket{\psi_2(2)\psi_2(2)} &  \Braket{\psi_2(2) \psi_3(2) }&...& \Braket{ \psi_2(2)\psi_N(2)} \\
+     \Braket{\psi_3(3) \psi_1(3)} &  \Braket{\psi_3(3)\psi_2(3) }&  \Braket{\psi_3(3) \psi_3(3)} &...& \Braket{ \psi_3(3)\psi_N(3) }\\
+    ... & ... & ... & ...& ... \\
+    \Braket{ \psi_N(N) \psi_1(N) }& \Braket{\psi_N(N) \psi_2(N) }&  \Braket{\psi_N(N) \psi_3(N)} &...&  \Braket{\psi_N(N)\psi_N(N)}\\
+    \end{vmatrix}  
+     \\   &= 
+     \sum_j^N d^1_{1j}h_{1j} 
+    \label{deriv_onee}
+ \end{aligned}
+ \end{equation}
+
+where $d^1_{ij}$ is a first-order cofactor of the matrix of overlap integrals between spin orbitals, and $h_{1j} = \Braket{ \psi_1(1) \hat{h}(1)\psi_j(1) }$. 
+
+(Again we used the fact that the determinant of a diagonal matrix is the product of the terms in the diagonal, that det(A)det(B)=det(AB), and since each column depends on a different electron, and the integration is over electrons, the integration can be pulled into the determinant. Also that multiplying a determinant is the same as multiplying down one row or column.)
+
+The same thing can be done for all $\hat{h}(i)$ in the one-electron term, which leads to $\Braket{\Phi| \sum_i^N\hat{h}(i) |\Phi} =  \sum_{ij}^{N} d^1_{ij} h_{ij} $.
+
+
+\subsection{Two electron integral}
+
+The two electron term is $\displaystyle \sum_i^N\sum_{j<i} \hat{g}(i,j)$. First we start with $\hat{g}(1,2)$ and generalize from there.
+
+
+ \begin{equation}
+ \begin{aligned}
+ &= \Braket{  \psi_1(1)\psi_2(2)...\psi_N(N)  | \hat{g}(1,2) |
+\begin{vmatrix} \psi_1(1) & \psi_2(1)& \psi_3(1) & ... & \psi_N(1) \\
+    \psi_1(2) & \psi_2(2) & \psi_3(2) &...& \psi_N(2) \\
+    \psi_1(3) & \psi_2(3) & \psi_3(3) &...& \psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_1(N) & \psi_2(N) & \psi_3(N) &...& \psi_N(N)\\
+    \end{vmatrix} } \\
+    &=
+    \Braket{ 
+     \begin{vmatrix} \psi_1(1) &0 & 0&... & 0 \\
+    0 & \psi_2(2) & 0& ...& 0\\
+    0 & 0 & \psi_3(3)& ...& 0\\
+    ... & ... & ... & ... &...\\
+    0 & 0 & 0&...& \psi_N(N)\\
+    \end{vmatrix}  
+    |\hat{g}(1,2) |
+    \begin{vmatrix} \psi_1(1) & \psi_2(1)& \psi_3(1) & ... & \psi_N(1) \\
+    \psi_1(2) & \psi_2(2) & \psi_3(2) &...& \psi_N(2) \\
+    \psi_1(3) & \psi_2(3) & \psi_3(3) &...& \psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_1(N) & \psi_2(N) & \psi_3(N) &...& \psi_N(N)\\
+    \end{vmatrix} } \\
+    &=
+      \Braket{ 
+     \begin{vmatrix} 
+    \psi_1(1)\hat{g}(1,2) \psi_1(1) & \psi_1(1) \hat{g}(1,2) \psi_2(1)& \psi_1(1) \hat{g}(1,2) \psi_3(1) & ... & \psi_1(1)\hat{g}(1,2)\psi_N(1) \\
+    \psi_2(2) \psi_1(2) & \psi_2(2)\psi_2(2) & \psi_2(2) \psi_3(2) &...& \psi_2(2)\psi_N(2) \\
+    \psi_3(3) \psi_1(3) & \psi_3(3)\psi_2(3) & \psi_3(3) \psi_3(3) &...& \psi_3(3)\psi_N(3) \\
+    ... & ... & ... & ...& ... \\
+    \psi_N(N) \psi_1(N) &\psi_N(N) \psi_2(N) & \psi_N(N) \psi_3(N) &...& \psi_N(N)\psi_N(N)\\
+    \end{vmatrix} } \\
+        &=  \int  \int  d1d2
+   \begin{vmatrix}  
+      \psi_1(1)\hat{g}(1,2) \psi_1(1) & \psi_1(1) \hat{g}(1,2) \psi_2(1)& \psi_1(1) \hat{g}(1,2) \psi_3(1) & ... & \psi_1(1)\hat{g}(1,2)\psi_N(1) \\
+    \psi_2(2) \psi_1(2) & \psi_2(2)\psi_2(2) & \psi_2(2) \psi_3(2) &...& \psi_2(2)\psi_N(2) \\
+     \Braket{\psi_3(3) \psi_1(3)} &  \Braket{\psi_3(3)\psi_2(3) }&  \Braket{\psi_3(3) \psi_3(3)} &...& \Braket{ \psi_3(3)\psi_N(3) }\\
+    ... & ... & ... & ...& ... \\
+    \Braket{ \psi_N(N) \psi_1(N) }& \Braket{\psi_N(N) \psi_2(N) }&  \Braket{\psi_N(N) \psi_3(N)} &...&  \Braket{\psi_N(N)\psi_N(N)}\\
+    \end{vmatrix}  
+     \\   &= 
+     \sum_k^N\sum_{l \neq k}^N d^2_{12kl}m_{kl}g_{12kl} 
+    \label{deriv_twoe}
+ \end{aligned}
+ \end{equation}
+
+
+where $d^2_{ijkl}$ is a second-order cofactor of the matrix of overlap integrals between spin orbitals. $m_{kl}$ gets the proper sign, which comes from evaluating the determinant.
+
+We used the techniques from before, but can't pull the integration for electrons 1 and 2 inside the determinant because of the $\hat{g}(1,2)$ operator, which acts on electrons 1 and 2. 
+However, we can still calculate the determinant using the cofactor and sign fix. 
+
+The same thing can be done for all $\hat{g}(i,j)$ in the two-electron term, which leads to 
+
+$\displaystyle \Braket{\Phi| \sum_i^N\sum_{j<i} \hat{g}(i,j) |\Phi } =   \sum_i^N\sum_{j<i} \sum_k^N\sum_{l \neq k}^N d^2_{ijkl}m_{kl}g_{ijkl}  $.
+
+We can use symmetry of the cofactor in $k$ and $l$ to get the form in \ref{spin_orb_form}.
+
+\section{Code} 
+
+In \emph{VALENCE}, routine vsvb\_energy calculates the one electron term, two electron term, and normalization integral. The one electron term and normalization terms are done in a loop over electrons (spin orbitals), and the two electron term is done in a loop over spatial orbitals.
+
+The one electron term, normalization integral, and two electron term are calculated as in Eq. \ref{total_onee}, \ref{total_norm}, and \ref{total_twoe}. 
+
+The density cofactors $\text{D}_{io,ko,jo,lo}^2$ and $\text{D}_{ij}^1$ are split into alpha and beta blocks, so two determinants of half the size are calculated for each cofactor in the equations above.
+ 
+%\section{Notes} 
+
+% Need to add more about how the determinant is calculated--split into alpha and beta blocks, 0s and 1s the rows/columns.
+
+
+
+\end{document}
+
+\begin{equation}
+ \begin{aligned}
+   E &= \\
+     =& \frac{\Braket{ \begin{aligned}
+        &\hat{A} \{ ... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)... \}
+     \\ &-
+     \hat{A} \{  ... \phi_i(i) \phi_j(j) \alpha(j)\beta(i)...\} 
+     +... \end{aligned} |
+     H
+     |  \begin{aligned} &( ... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)...)
+     \\ &-
+     ( ... \phi_i(i) \phi_j(j) \alpha(j)\beta(i)...)
+     +... \end{aligned}
+     }}{\Braket{\hat{A} \{ ... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)... \}
+     -\hat{A} \{ ... \phi_i(i) \phi_j(j) \alpha(j)\beta(i)...\} 
+     +...|  ( ... \phi_i(i) \phi_j(j) \alpha(i)\beta(j)...)
+     -(  ... \phi_i(i) \phi_j(j) \alpha(j)\beta(i)...)
+     +...}} 
+     \label{gen_energy}
+     \end{aligned}
+     \end{equation}
