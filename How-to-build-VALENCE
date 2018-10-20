@@ -50,7 +50,7 @@ Next, to build VALENCE itself, please edit the Makefile to reflect your choices 
 
 ... type 'make'
 
-You can also try:
+Optionally, you can also try:
 
 'make test' to run a < 5 minute set of tests to do a short validation of the build.
 'make doc' to build Doxygen documentation in the doc/ directory, if Doxygen is installed.
