@@ -19,7 +19,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 # check if $1 exists and is executable
-  if [[ -x "./$1" ]]
+  if [[ -x "$1" ]]
   then
       for i in ${examples[@]}
       do
@@ -27,5 +27,7 @@ fi
           python ./testing/testing.py $i.out $i
       done
   else
-      echo "Input file './testing/test_cases/$1' is not executable or found"
+      echo "Input file '$1' is not executable or found."
+      echo "Couldn't find/execute it after looking with"
+      echo "`pwd` as the base directory."
   fi
