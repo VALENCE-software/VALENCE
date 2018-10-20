@@ -8,7 +8,7 @@
 #
 #        for i in $(ls /path/testing/test_cases/)
 #        do
-#            /path/valence.exe < /path/testing/test_cases/$i > $i.out
+#            /path/valence < /path/testing/test_cases/$i > $i.out
 #            python /path/testing.py $i.out $i
 #        done
 #
