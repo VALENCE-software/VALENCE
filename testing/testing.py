@@ -50,11 +50,16 @@ class vsvb_output:
                  self.nuclear_repulsion, test.nuclear_repulsion, nuc_tol )
         error += compare_number( "  guess energy comparison",
                  self.guess_energy, test.guess_energy, energy_tol )
-        if not (self.calculation_converged == test.calculation_converged):
-            error += 1
-            print("  calculation did (not) converge when it should(n't) have")
-        error += compare_number( "  total energy comparison",
-                 self.total_energy, test.total_energy, opt_energy_tol )
+# only check total energy comparison if we expect it to converge
+        if test.calculation_converged :
+            if not self.calculation_converged : 
+                error += 1
+                print("  calculation did not converge when it should have")
+            error += compare_number( "  total energy comparison",
+                                     self.total_energy, test.total_energy,
+                                     opt_energy_tol )
+        else :
+            print( "  No total energy comparison, since not a orbital optimization run")
         return error
             
 
