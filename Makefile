@@ -16,8 +16,8 @@ endif
 
 ifeq ($(COMPILER_VENDOR), GNU)
   ifeq ($(SEQUENTIAL), false) 
-    FC=mpif90
-    F77=mpif90
+    FC=mpifort
+    F77=mpifort
     CC=mpicc
   else
     FC=gfortran
@@ -41,7 +41,7 @@ endif
 
 # 3. choose SIMINT base path
 
-SIMINT_BASE=/Users/grahamfletcher/quantum_chemistry/vsvb/distrib/open_source/simint/
+SIMINT_BASE=./simint
 INTEGRALS=USE_SIMINT
 ifeq ($(INTEGRALS), USE_SIMINT)
   SIMINT_LIBRARY=$(SIMINT_BASE)/lib/
@@ -83,13 +83,11 @@ ifeq ($(findstring theta,$(HOSTNAME)),theta)
 endif
 
 ifeq ($(findstring mira,$(HOSTNAME)),mira)
- FC=mpixlf90_r
- F77=mpixlf77_r
- CC=mpixlc
+  FC=mpixlf90_r
+  F77=mpixlf77_r
+  CC=mpixlc
 endif
 
-TARGET=bin/valence
-TARGETLIB=lib/libvalence.a
 
 CFLAGS=-O3 -g
 FFLAGS+=-O3 -g
@@ -124,17 +122,25 @@ endif
 ifeq ($(PRINT_COUNTERS), yes)
   FFLAGS+=-DPRINT_COUNTERS
 endif
+
 # change these to proper directories where each file should be
 SRCDIR   = src
 BINDIR   = bin
+LIBDIR   = lib
 
-all: $(TARGETLIB) $(TARGET) clean
+TARGET=valence
+TARGETMK=modelkit
+TARGETLIB=libvalence.a
+
+all: $(TARGETLIB) $(TARGET) $(TARGETMK) clean
 $(TARGETLIB): $(OBJS)
 	mkdir -p lib
-	ar rcs $(TARGETLIB) $(OBJS)
+	ar rcs $(LIBDIR)/$(TARGETLIB) $(OBJS)
 $(TARGET): $(OBJS) valence_driver.o
 	mkdir -p bin
-	$(FC) -o $(TARGET) $(FFLAGS) valence_driver.o $(TARGETLIB) $(LINK_FLAGS)
+	$(FC) -o $(BINDIR)/$(TARGET) $(FFLAGS) valence_driver.o $(LIBDIR)/$(TARGETLIB) $(LINK_FLAGS)
+$(TARGETMK) : 
+	$(FC) $(FFLAGS) $(SRCDIR)/modelkit.F90 -o $(BINDIR)/$(TARGETMK) 
 valence_driver.o : $(SRCDIR)/valence_driver.F90 moduletools.o  tools.mod
 	$(FC) $(FFLAGS) -c $< -o $@
 givens.o : $(SRCDIR)/givens.F90 moduletools.o  tools.mod
@@ -168,10 +174,9 @@ doc:
 clean:
 	rm -f *.o *.mod 
 veryclean:
-	rm -f *.o *.mod $(TARGETLIB) $(TARGET)
+	rm -f *.o *.mod $(BINDIR)/$(TARGETLIB) $(BINDIR)/$(TARGET) $(BINDIR)/$(TARGETMK)
 test:
-	testing/test_script_small $(TARGET)
+	testing/test_script_small $(PWD)/$(BINDIR)/$(TARGET)
 test-large:
-	testing/test_script $(TARGET)
-
+	testing/test_script $(PWD)/$(BINDIR)/$(TARGET) $(SEQUENTIAL)
 .PHONY: all clean doc test
