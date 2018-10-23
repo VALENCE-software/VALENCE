@@ -1,5 +1,4 @@
-https://travis-ci.com/gdfletcher/VALENCE.svg?token=1dsodd4zp5dDabEwBcNA&branch=master
-
+[![Build Status](https://travis-ci.com/gdfletcher/VALENCE.svg?token=1dsodd4zp5dDabEwBcNA&branch=master)](https://travis-ci.com/gdfletcher/VALENCE)
 # VALENCE 
 A Massively Parallel Implementation of Variational Subspace Valence Bond 
 
