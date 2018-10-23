@@ -28,9 +28,9 @@ The code is in ./outdir. This can be moved to where you need it, if necessary.
 b) library build phase
 
 [where you've placed 'outdir' ...]
-12. mkdir [choose a path here]/simint
-13. cd outdir
-14. CC=[your c compiler] CXX=[your c++ compiler] FC=[your fortran compiler] cmake -DSIMINT_C_FLAGS=-g  -DENABLE_FORTRAN=ON -DSIMINT_VECTOR=scalar -DCMAKE_INSTALL_PREFIX=[the same path you chose]/simint/ ../
+12. mkdir outdir/build
+13. cd outdir/build
+14. CC=[your c compiler] CXX=[your c++ compiler] FC=[your fortran compiler] cmake -DSIMINT_C_FLAGS=-g  -DENABLE_FORTRAN=ON -DSIMINT_VECTOR=scalar -DCMAKE_INSTALL_PREFIX=[Choose a path to install simint, i.e. PATH_TO_VALANCE/simint] ../
 
 Step 14 is given for a scalar processor (-DSIMINT_VECTOR=scalar). Vectorization options are available. If, for example, you are building for Intel Xeon Phi with AVX2 instructions, then use  -DSIMINT_VECTOR=avx2. 
 
