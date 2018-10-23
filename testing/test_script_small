@@ -18,14 +18,22 @@ if [ "$#" -ne 1 ]; then
     exit
 fi
 
+datestamp=`date +%d%b%Y_%H%M%S`
+SECONDS=0
 # check if $1 exists and is executable
   if [[ -x "$1" ]]
   then
+      cd testing
+      echo "Running tests in" $(PWD) on $(uname -a) | tee -a testing.log
       for i in ${examples[@]}
       do
-          $1 < ./testing/test_cases/$i > $i.out
-          python ./testing/testing.py $i.out $i
+          OUTPUT=$i_$datestamp.out
+          $1 < test_cases/$i > $OUTPUT
+          python testing.py $OUTPUT $i | tee -a testing.log
       done
+      echo Tests completed in $SECONDS seconds on $(date) | tee -a testing.log
+      echo ----------------------------------------------------------------------\n >> testing.log
+      cd ..
   else
       echo "Input file '$1' is not executable or found."
       echo "Couldn't find/execute it after looking with"
