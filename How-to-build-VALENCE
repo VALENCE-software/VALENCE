@@ -59,6 +59,6 @@ Optionally, you can also try:
 'make doc' to build Doxygen documentation in the doc/ directory, if Doxygen
     is installed.
 
-Next, cd to 'vsvbtools' and read the README file.
+Next, cd to 'vtools' and read the README file.
 
 
