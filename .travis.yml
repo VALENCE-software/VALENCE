@@ -1,2 +1,5 @@
 language: C
-script: make && make test
+sudo: required
+before_install:
+  - sudo apt-get install gfortran
+script: make
