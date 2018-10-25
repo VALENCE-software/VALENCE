@@ -27,7 +27,7 @@ SECONDS=0
       echo "Running tests in" $(PWD) on $(uname -a) | tee -a testing.log
       for i in ${examples[@]}
       do
-          OUTPUT=$i_$datestamp.out
+          OUTPUT=${i}_$datestamp.out
           $1 < test_cases/$i > $OUTPUT
           python testing.py $OUTPUT $i | tee -a testing.log
       done
