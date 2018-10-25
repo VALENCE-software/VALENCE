@@ -3,8 +3,10 @@
 #  This is an example bash script to run each test case in the "examples" array below
 #  and compare the output to the correct output in testing.py
 #  Usage:
-#
-#  ./test_script executable
+#  For a serial run:
+#   $ ./test_script executable true
+#  For a parallel run:
+#   $ ./test_script executable false
 #
 #  This assumes you're running from the base valence directory.
 #
