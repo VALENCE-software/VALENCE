@@ -19,8 +19,14 @@ else
   echo Using $NCORE ranks...
 fi
 # check number of arguments
-if [ "$#" -lt 1 ]; then
-    echo "Need one input--the name of the executable to test"
+if [ "$#" -lt 2 ]; then
+    echo "Need two inputs--the name of the executable to test, and"
+    echo "whether it's a serial run or MPI run."
+    echo "Usage:"
+    echo "  For a serial run: "
+    echo "  $ ./test_script executable true"
+    echo "  For a parallel MPI run, using number of processors in /proc/cpuinfo: "
+    echo "  $ ./test_script executable false"
     exit
 fi
 
@@ -33,7 +39,7 @@ SECONDS=0
       echo "Running tests in" $(PWD) on $(uname -a) | tee -a testing.log
       for i in ${examples[@]}
       do
-          OUTPUT=$i_$datestamp.out
+          OUTPUT=${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
           	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
           else

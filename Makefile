@@ -176,7 +176,7 @@ clean:
 veryclean:
 	rm -f *.o *.mod $(BINDIR)/$(TARGETLIB) $(BINDIR)/$(TARGET) $(BINDIR)/$(TARGETMK)
 test:
-	testing/test_script_small $(PWD)/$(BINDIR)/$(TARGET)
+	testing/test_script $(PWD)/$(BINDIR)/$(TARGET) $(SEQUENTIAL)
 test-large:
 	testing/test_script $(PWD)/$(BINDIR)/$(TARGET) $(SEQUENTIAL)
 .PHONY: all clean doc test
