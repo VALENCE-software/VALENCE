@@ -1,0 +1,41 @@
+
+Guess orbitals for 6-31G basis set
+
+Standard orientations:
+Symmetry      Axis
+ sigma         Z
+ 1st pi        X
+ 2nd pi        Y
+
+Orbital    Source/prototype
+ Type         Molecule
+Bonds                    Symmetry
+C-C_3-1        c2h2       sigma
+C-C_3-2        c2h2       1st pi
+C-C_3-3        c2h2       2nd pi
+C-C_2-1        c2h4       sigma
+C-C_2-2        c2h4       pi
+C-C_1-1        c2h6       sigma
+N-C_1-1        nh2ch3     sigma
+N-C_2-1        hnch2      sigma
+N-C_2-2        hnch2      pi
+O-C_1-1        ch3oh      sigma
+O-C_2-1        h2co       sigma
+O-C_2-2        h2co       pi
+C-H_1-1        c2h6       sigma
+N-H_1-1        nh2ch3     sigma
+O-H_1-1        ch3oh      sigma
+
+Lone Pairs    Symmetry
+N_2            sigma 
+O_2            sigma 
+O_3            pi
+
+Core Orbitals 
+C_1            1s
+N_1            1s
+O_1            1s
+
+
+Notes
+All molecular geometries are RHF/6-31G
