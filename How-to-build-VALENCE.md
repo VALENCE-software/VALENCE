@@ -1,5 +1,5 @@
 
-How to build VALENCE
+# How to build VALENCE
 
 VALENCE currently uses the SIMINT library to compute integrals. 
 To build SIMINT, please see the instructions given at https://github.com/simint-chem, or feel free to try the instructions below.
@@ -48,16 +48,13 @@ Next, to build VALENCE itself, please edit the Makefile to reflect your choices 
 3.  SIMINT base path (SIMINT_BASE)
 4.  (optional) MPI library path (MPI_LIBRARY)
 
-... type 'make'
+... type `make`
 
 Optionally, you can also try:
 
-'make test' to run a < 5 minute set of tests to do a quick validation of
-    the build.
-'make test-large' to run a much longer set of tests to do a more thorough
-    validation of the build (this requires that the code was built with MPI).
-'make doc' to build Doxygen documentation in the doc/ directory, if Doxygen
-    is installed.
+- `make test` to run a < 5 minute set of tests to do a quick validation of the build.
+- `make test-large` to run a much longer set of tests to do a more thorough validation of the build (this requires that the code was built with MPI).
+- `make doc` to build Doxygen documentation in the doc/ directory, if Doxygen is installed.
 
 Next, cd to 'vtools' and read the README file.
 
