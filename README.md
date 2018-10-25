@@ -256,7 +256,7 @@ In this section, five examples are described in detail. Narrative text is contai
 
 This example uses two DOCC orbitals to model the singlet-S ground state of beryllium, with electronic configuration, 1s^2 2s^2, expanded over a basis set of three 's'-type functions. The variational subspace (VS) of the first orbital consists of functions 1 and 3, with function 1 as its unique degree-of-freedom (UDF). The second orbital's VS contains functions 2 and 3, with 2 as the UDF. Thus, function 3 is the 'shared' basis. Other choices exist (in fact there are two, accounting for symmetry), but this is the most efficient choice given the chemical intuition that function 1 resembles a '1s' orbital, function 2 a '2s' orbital, and so on, in accordance with the structure of a typical atomic basis set. Since there are only DOCC orbitals involved, this run optimizes a VSHF wave function.
 
-
+```
 [counts and array dims]
      1   1   0   0     2     4   2   0   3  17   0   0   1   0   1
 
@@ -296,12 +296,12 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
    1    1.0   3    0.0
       1        1   2
    2    1.0   3    0.0
-
+```
 
 
 [A guess consisting of ones for the UDF and zeros elsewhere may be termed a 'unit guess' by analogy with a unit matrix. The output to the screen is given below.]
 
-
+```
  guess energy in atomic units          -14.4746666438408660
  orbital optimization                                                   
 
@@ -324,14 +324,14 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
  calculation converged                                                  
 
  total energy in atomic units          -14.5723376136726923
+```
 
 
 
+[After six cycles through the orbital list, the final energy (which matches the Hartree-Fock energy) is printed. The 'orbitals' file looks like this:]
 
-[After six cycles through the orbital list, the final energy (which matches the Hartree-Fock energy) is printed. The 'orbitals' file looks like this-]
-
-
-      1       1   2
+```
+      1    1   2
    1    1.00065097   3   -0.00375468
       1        1   2
    2    0.48912818   3    0.58002975
@@ -339,7 +339,7 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
 
  total energy in atomic units             -14.5723376136726923
  converged to   0.10E-02 kCal/mol
-
+```
 
 
 [There is no 'nelecwfn' file with this run]
@@ -416,10 +416,9 @@ This example highlights chemically intuitive choices for the UDF, so just the op
   11   -0.03046886  13   -0.03046865
     1 1         2
    4    0.63677843   7    0.51530766   
-```
 
 [ The total energy is:     -75.97812747 AU ]
-
+```
 
 Here, the UDF for the orbitals are as follows:
         Orbital     UDF      AO label
@@ -468,11 +467,10 @@ Hydrogen molecule with spin-coupled orbitals and a single-Zeta basis set. This i
    1    0.89622388   2    0.17099192
     2 1 2         2
    1    0.17099207   2    0.89622378
-```
 
 
 [ The total energy is:     -1.06381067 AU ]
-
+```
 
 The main qualitative difference between this input and the previous ones is the presence of the spin-coupling information in the middle, indicating that electrons 1 and 2 be coupled to a singlet. 
 
@@ -556,9 +554,8 @@ Lithium Hydride singlet-Sigma ground state. This wave function has a double-occu
    9    0.00230970  10   -0.00033165  12   -0.00033165  15   -0.00706813
   17    0.00999584  20   -0.00141802
 
-```
 [ The total energy is:     -8.00046053 AU ]
-
+```
 
 The first two orbitals are read as the spin-coupled pair and the third is read as the double-occupied Li 1s core. As in the H2 example above, the presence of the spin-coupled Li-H bond means the wave function will dissociate correctly when the interatomic separation is increased. The bonding here is not strong. The lithium valence electron is polarized toward H.
 
@@ -625,11 +622,10 @@ This is the simplest closed-shell case with two spin-couplings. Convergence is m
    2    0.40901809   3    0.66520392   4    0.38644720   5    0.11934164
       1        1   4
    2    0.14161563   3   -0.17596193   4    0.71862322   5    0.47255306
-```
 
 
 [ The total energy is:     -14.58839772 AU ]
-
+```
 
 This run creates a file called 'nelecwfn' with the spin-coupling information,weights given above as its contents.
 
