@@ -12,6 +12,11 @@
 #  This assumes you're running from the base valence directory.
 #
 
+# because we're using pipe to tee and output to a file, it's
+# useful to make sure the pipe doesn't hide the error 
+set -e
+set -o pipefail
+
 error=0
 
 # check which set of examples to run
