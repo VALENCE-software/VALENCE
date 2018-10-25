@@ -320,10 +320,10 @@ subroutine  guess_energy ( energy )
   use xm
   implicit    none
 
-  real(dp)     energy(1)
+  real(dp)     energy
 
   integer     num_non_docc,idocc,num_spatial_orbs,i
-  real(dp)     wfnorm(1)
+  real(dp)     wfnorm
 
   !     compute a single energy with the current orbitals
   !     setup the wave function: bra and ket
@@ -345,9 +345,9 @@ subroutine  guess_energy ( energy )
   num_spatial_orbs  =  num_non_docc + ndocc
   call  schwarz_ints( num_spatial_orbs, num_non_docc )
   store_eri  =  .false.
-  call  vsvb_energy( 0 ,num_non_docc,num_spatial_orbs, energy(1), wfnorm(1), .false., .true. )
-  call  xm_equalize( energy, 1 )
-  call  xm_equalize( wfnorm, 1 )
+  call  vsvb_energy( 0 ,num_non_docc,num_spatial_orbs, energy, wfnorm, .false., .true. )
+  call  xm_equalize( [energy], 1 )
+  call  xm_equalize( [wfnorm], 1 )
   energy  =  energy/wfnorm  +  enucrep
 end subroutine  guess_energy
 
@@ -363,7 +363,7 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
   implicit    none
 
   integer     iorb,num_iter
-  real(dp)     cumulx,energy(1),etol
+  real(dp)     cumulx,energy,etol
 
   !     generic print buffers
 
@@ -371,7 +371,7 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
   real(dp)     dbl_out(4)    !   protected
 
   integer     i,icoeff,ncoeff,num_non_docc,idocc,eorb,k,num_spatial_orbs,micro_iter,nnrgy
-  real(dp)     tokcal, relaxn, perturb,eprev,origc,wfnorm(1)
+  real(dp)     tokcal, relaxn, perturb,eprev,origc,wfnorm
   parameter ( tokcal = 627.509469_dp )
   logical     updated, coefflock(*)
 
@@ -421,7 +421,7 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
         do  i  =  1, ncoeff
            if  (  .not. coefflock( i )  )  then
               icoeff  =  i  +  map_orbs( iorb ) - 1
-              eprev  =  energy(1)
+              eprev  =  energy
               origc  =  coeff( icoeff )
 
               !     add the perturbation, update wfn, compute its energy
@@ -437,16 +437,16 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                     wdet( k, eorb-1 ) = sint
                  end  if
               end  do
-              call  vsvb_energy( iorb,num_non_docc,num_spatial_orbs, energy(1), wfnorm(1), .false.,.false. )
-              call  xm_equalize( energy, 1 )
-              call  xm_equalize( wfnorm, 1 )
-              energy(1)  =  energy(1)/wfnorm(1)  +  enucrep
+              call  vsvb_energy( iorb,num_non_docc,num_spatial_orbs, energy, wfnorm, .false.,.false. )
+              call  xm_equalize( [energy], 1 )
+              call  xm_equalize( [wfnorm], 1 )
+              energy  =  energy/wfnorm  +  enucrep
               nnrgy = nnrgy + 1
               eri_stored  =  .true.
 
-              if  (  energy(1) .lt. eprev  )  then
+              if  (  energy .lt. eprev  )  then
                  updated  =  .true.
-                 relaxn  =  ( energy(1) - eprev )*tokcal
+                 relaxn  =  ( energy - eprev )*tokcal
                  cumulx  =  cumulx  +  relaxn
                  int_out( 1 ) = num_iter
                  int_out( 2 ) = micro_iter
@@ -457,8 +457,8 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                  dbl_out( 3 ) = perturb
                  dbl_out( 4 ) = coeff( icoeff )
                  call  xm_print( 'demgs', ' ', int_out, dbl_out )
-                 call xm_output( 'save', energy(1),etol )
-                 eprev  =  energy(1)
+                 call xm_output( 'save', energy,etol )
+                 eprev  =  energy
               else
 
                  !     subtract the perturbation
@@ -474,15 +474,15 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                        wdet( k, eorb-1 ) = sint
                     end  if
                  end  do
-                 call  vsvb_energy( iorb,num_non_docc,num_spatial_orbs, energy(1), wfnorm(1), .false.,.false. )
-                 call  xm_equalize( energy, 1 )
-                 call  xm_equalize( wfnorm, 1 )
-                 energy(1)  =  energy(1)/wfnorm(1)  +  enucrep
+                 call  vsvb_energy( iorb,num_non_docc,num_spatial_orbs, energy, wfnorm, .false.,.false. )
+                 call  xm_equalize( [energy], 1 )
+                 call  xm_equalize( [wfnorm], 1 )
+                 energy  =  energy/wfnorm  +  enucrep
                  nnrgy = nnrgy + 1
 
-                 if  (  energy(1) .lt. eprev  )  then
+                 if  (  energy .lt. eprev  )  then
                     updated  =  .true.
-                    relaxn  =  ( energy(1) - eprev )*tokcal
+                    relaxn  =  ( energy - eprev )*tokcal
                     cumulx  =  cumulx  +  relaxn
                     int_out( 1 ) = num_iter
                     int_out( 2 ) = micro_iter
@@ -493,8 +493,8 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                     dbl_out( 3 ) = -perturb
                     dbl_out( 4 ) = coeff( icoeff )
                     call  xm_print( 'demgs', ' ', int_out, dbl_out )
-                    call xm_output( 'save', energy(1),etol )
-                    eprev  =  energy(1)
+                    call xm_output( 'save', energy,etol )
+                    eprev  =  energy
                  else
 
                     !     restore the original weight and lock it for this perturbation
