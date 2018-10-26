@@ -59,10 +59,11 @@ SECONDS=0
   if [[ -x "$1" ]]
   then
       cd testing
+      mkdir -p $datestamp
       echo "Running tests in" $(PWD) on $(uname -a) | tee -a testing.log
       for i in ${examples[@]}
       do
-          OUTPUT=${i}_$datestamp.out
+          OUTPUT=${datestamp}/${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
           	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
           else
