@@ -55,12 +55,13 @@ fi
 
 datestamp=`date +%d%b%Y_%H%M%S`
 SECONDS=0
+LOGFILE=${datestamp}/testing.log
 # check if $1 exists and is executable
   if [[ -x "$1" ]]
   then
       cd testing
       mkdir -p $datestamp
-      echo "Running tests in" $(PWD) on $(uname -a) | tee -a testing.log
+      echo "Running tests in" $(PWD) on $(uname -a) | tee -a $LOGFILE
       for i in ${examples[@]}
       do
           OUTPUT=${datestamp}/${i}_$datestamp.out
@@ -69,10 +70,10 @@ SECONDS=0
           else
           	$1 < ./test_cases/$i > $OUTPUT
           fi
-          python testing.py $OUTPUT $i | tee -a testing.log
+          python testing.py $OUTPUT $i | tee -a $LOGFILE
       done
-      echo Tests completed in $SECONDS seconds on $(date) | tee -a testing.log
-      echo ----------------------------------------------------------------------\n >> testing.log
+      echo Tests completed in $SECONDS seconds on $(date) | tee -a $LOGFILE
+      echo ----------------------------------------------------------------------\n >> $LOGFILE
       cd ..
   else
       echo "Input file '$1' is not executable or found."
