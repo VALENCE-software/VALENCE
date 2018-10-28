@@ -16,6 +16,7 @@
 #        but it's a reasonable start for acceptance testing.
 
 from sys import argv
+import sys
 
 # standard tolerances
 nuc_tol = 10**-10
@@ -59,7 +60,7 @@ class vsvb_output:
                                      self.total_energy, test.total_energy,
                                      opt_energy_tol )
         else :
-            print( "  No total energy comparison, since not a orbital optimization run")
+            print( "  No total energy comparison, since not an orbital optimization run")
         return error
             
 
@@ -197,3 +198,7 @@ else:
 
 # print result 
 print("Number of errors:  %d" % errors)
+if errors:
+    sys.exit(1)
+else:
+    sys.exit(0)

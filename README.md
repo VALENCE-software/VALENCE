@@ -1,4 +1,4 @@
-https://travis-ci.com/gdfletcher/VALENCE.svg?token=1dsodd4zp5dDabEwBcNA&branch=master
+[![Build Status](https://travis-ci.com/gdfletcher/VALENCE.svg?token=1dsodd4zp5dDabEwBcNA&branch=master)](https://travis-ci.com/gdfletcher/VALENCE)
 
 # VALENCE 
 A Massively Parallel Implementation of Variational Subspace Valence Bond 
@@ -9,7 +9,7 @@ A Massively Parallel Implementation of Variational Subspace Valence Bond
 
 
 
-Contents:
+## Contents:
 
  1. Overview
  2. Introduction to VSVB
@@ -28,7 +28,7 @@ Contents:
 
 
 
-Section 1. Overview
+## Section 1. Overview
 
 
 When first downloaded, this repository includes-
@@ -50,7 +50,7 @@ Most of the above items are self-explanatory. The directories, /examples/ and /t
 
 
 
-Section 2. Introduction to VSVB
+## Section 2. Introduction to VSVB
 
 
 In molecular electronic structure theory, variational subspace valence bond, or VSVB, is a type of generalized valence bond theory using gaussian atomic basis sets. Unlike the majority of methods in the mainstream of quantum chemistry such as Hartree-Fock, MP2, coupled-cluster, DFT, and so on, VSVB is based purely on orbitals that are allowed to overlap with one another. That is, VSVB does not use orthogonal ('molecular') orbitals. The first benefit is that VSVB orbitals tend to be highly local, typically involving just one or two atoms, in contrast to molecular orbitals which are typically delocalized over all the atoms in any given problem. The highly local orbitals have obvious advantages for chemical interpretability and computational scalability. 
@@ -76,7 +76,7 @@ As mentioned above, the tendency for VSVB orbitals to be highly local also bring
 
 
 
-Section 3. About the code
+## Section 3. About the code
 
 
 VALENCE is the 'number-crunching' code in an overall system for executing VSVB calculations that includes various tools (the 'vtools') for generating input and processing output. Currently, VALENCE can compute energies and optimize single-reference wave functions for the following types of situation-
@@ -96,7 +96,7 @@ Currently, VALENCE can optimize two types of linear parameter - orbital weights,
 
 VALENCE is written in Fortran-90 and runs in parallel using MPI. To compute integrals, VALENCE currently uses the vectorized integral package, SIMINT (https://github.com/simint-chem). This release includes instructions on how to build SIMINT. Once the SIMINT library is built, building VALENCE itself begins with setting options in a simple Makefile. The Makefile also contains some optimizations for various platforms, and an option to build the sequential form. A binary called 'valence' should result. VALENCE takes an input file on standard input. To run VALENCE sequentially just type,
 
-./valence < [name of input file]
+`./valence < [name of input file]`
 
 See section 5 for example input files. To run VALENCE in parallel, please consult the documentation for your target platform as to how MPI runs are specified.
 
@@ -105,7 +105,7 @@ See section 5 for example input files. To run VALENCE in parallel, please consul
 
 
 
-Section 4. Input
+## Section 4. Input
 
 
 The 'valence' binary makes no choices regarding the orbitals, it merely processes the wave function specified by the input to compute energies, execute optimization procedures, and so forth. That said, a highly versatile system for defining the orbitals is supported, together with the N-electron form of the wave function, and this is described in this section.
@@ -231,7 +231,7 @@ DBFs are input using the same OBS format as described in (F) for the main orbita
 
 
 
-Section 5. Output
+## Section 5. Output
 
 
 Broadly, the output of VALENCE is the VSVB wave function and its total energy. VALENCE first prints the outcome of a 'guess' energy calculation, preceded by the nuclear repulsion energy in the case of a molecule, optionally followed by an optimization run with a progress update at each iteration. Each optimization step reports the cumulative relaxation in kCal/Mol compared to the 'guess energy'. Also printed is the relaxation obtained at that step divided by the convergence tolerance to indicate how near the optimization is to convergence. Every energy calculation or optimization step prints a file called 'orbitals' which contains the updated orbitals together with the current total energy at the end. If spin-coupled orbitals are used with more than one spin-coupling, an additional file called 'nelecwfn' is produced, containing the updated spin-coupling weights. 
@@ -241,12 +241,12 @@ Broadly, the output of VALENCE is the VSVB wave function and its total energy. V
 
 
 
-Section 6. Examples
+## Section 6. Examples
 
 
 The current release includes many examples (see directory './examples/') chosen to illustrate the main features and types of calculation that can currently be performed with VALENCE, while also being of a convenient size for verifying correct execution. The examples can be tested using the 'test_all' script and take less than five minutes on a typical processor. In /examples/, simply type-
 
-./test_all valence
+`./test_all valence`
 
 In this section, five examples are described in detail. Narrative text is contained within brackets where it is helpful to distinguish it from the example input text. It is also helpful to note the following: the magnitude of a linear weight can occasionally be greater than unity; the overall sign of an orbital is arbitrary as the wave function is only determined to within a phase; agreement between total energies from the same run on different hardware is rarely greater than 10 places, and 6 places is more typical.
 
@@ -256,7 +256,7 @@ In this section, five examples are described in detail. Narrative text is contai
 
 This example uses two DOCC orbitals to model the singlet-S ground state of beryllium, with electronic configuration, 1s^2 2s^2, expanded over a basis set of three 's'-type functions. The variational subspace (VS) of the first orbital consists of functions 1 and 3, with function 1 as its unique degree-of-freedom (UDF). The second orbital's VS contains functions 2 and 3, with 2 as the UDF. Thus, function 3 is the 'shared' basis. Other choices exist (in fact there are two, accounting for symmetry), but this is the most efficient choice given the chemical intuition that function 1 resembles a '1s' orbital, function 2 a '2s' orbital, and so on, in accordance with the structure of a typical atomic basis set. Since there are only DOCC orbitals involved, this run optimizes a VSHF wave function.
 
-
+```
 [counts and array dims]
      1   1   0   0     2     4   2   0   3  17   0   0   1   0   1
 
@@ -296,12 +296,12 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
    1    1.0   3    0.0
       1        1   2
    2    1.0   3    0.0
-
+```
 
 
 [A guess consisting of ones for the UDF and zeros elsewhere may be termed a 'unit guess' by analogy with a unit matrix. The output to the screen is given below.]
 
-
+```
  guess energy in atomic units          -14.4746666438408660
  orbital optimization                                                   
 
@@ -324,15 +324,14 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
  calculation converged                                                  
 
  total energy in atomic units          -14.5723376136726923
+```
 
 
 
+[After six cycles through the orbital list, the final energy (which matches the Hartree-Fock energy) is printed. The 'orbitals' file looks like this:]
 
-[After six cycles through the orbital list, the final energy (which matches the Hartree-Fock energy) is printed. The 'orbitals' file looks like this-]
-
-
-
-      1        1   2
+```
+      1    1   2
    1    1.00065097   3   -0.00375468
       1        1   2
    2    0.48912818   3    0.58002975
@@ -340,7 +339,7 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
 
  total energy in atomic units             -14.5723376136726923
  converged to   0.10E-02 kCal/mol
-
+```
 
 
 [There is no 'nelecwfn' file with this run]
@@ -352,7 +351,7 @@ This example uses two DOCC orbitals to model the singlet-S ground state of beryl
 
 This example highlights chemically intuitive choices for the UDF, so just the optimized wave function and energy are given.
 
-
+```
   3 2    0 0 5    30 8 0    7 25 1    0 1 0    3
 
 
@@ -418,9 +417,8 @@ This example highlights chemically intuitive choices for the UDF, so just the op
     1 1         2
    4    0.63677843   7    0.51530766   
 
-
 [ The total energy is:     -75.97812747 AU ]
-
+```
 
 Here, the UDF for the orbitals are as follows:
         Orbital     UDF      AO label
@@ -443,7 +441,7 @@ Yet another alternative would be to hybridize the O2s,y,z (and/or the O3s,y,z) A
 
 Hydrogen molecule with spin-coupled orbitals and a single-Zeta basis set. This is the simplest example of using spin-coupled orbitals. The (optimized) wave function will dissociate correctly when the interatomic distance is increased. As with H2O, above, just the result is given.
 
-
+```
  2 1   1 0 0   4 2 1   1 3 0   0 1 0    2
 
 
@@ -471,9 +469,8 @@ Hydrogen molecule with spin-coupled orbitals and a single-Zeta basis set. This i
    1    0.17099207   2    0.89622378
 
 
-
 [ The total energy is:     -1.06381067 AU ]
-
+```
 
 The main qualitative difference between this input and the previous ones is the presence of the spin-coupling information in the middle, indicating that electrons 1 and 2 be coupled to a singlet. 
 
@@ -486,7 +483,7 @@ The spatial polarization of the two orbitals toward either atom is evident in th
 
 Lithium Hydride singlet-Sigma ground state. This wave function has a double-occupied Li core and a spin-coupled Li-H 'bond'.
 
-
+```
   2 2   1 0 1   30 10 1   9 27 2   0 1 0  2
 
 
@@ -557,9 +554,8 @@ Lithium Hydride singlet-Sigma ground state. This wave function has a double-occu
    9    0.00230970  10   -0.00033165  12   -0.00033165  15   -0.00706813
   17    0.00999584  20   -0.00141802
 
-
 [ The total energy is:     -8.00046053 AU ]
-
+```
 
 The first two orbitals are read as the spin-coupled pair and the third is read as the double-occupied Li 1s core. As in the H2 example above, the presence of the spin-coupled Li-H bond means the wave function will dissociate correctly when the interatomic separation is increased. The bonding here is not strong. The lithium valence electron is polarized toward H.
 
@@ -571,7 +567,7 @@ The first two orbitals are read as the spin-coupled pair and the third is read a
 This is the simplest closed-shell case with two spin-couplings. Convergence is more efficient when the orbitals are obtained with one spin-coupling first, then allowed to relax in the presence of the two couplings. Again, the choice of the first (dominant) spin-coupling is based on the chemical intuition of which electrons are paired to make bonds, lone-pairs, and so forth.
 
 
-
+```
   1 1   2 0 0   16 4 2   5 21 0   0 1 0    1
 
 
@@ -628,9 +624,8 @@ This is the simplest closed-shell case with two spin-couplings. Convergence is m
    2    0.14161563   3   -0.17596193   4    0.71862322   5    0.47255306
 
 
-
 [ The total energy is:     -14.58839772 AU ]
-
+```
 
 This run creates a file called 'nelecwfn' with the spin-coupling information,weights given above as its contents.
 
@@ -641,7 +636,7 @@ The energy with one spin-coupling (1 2)(3 4) is  -14.58808261 AU, so the relaxat
 
 
 
-Section 7. Automatic input generation with vtools
+## Section 7. Automatic input generation with vtools
 
 
 The previous sections describe how the input to VALENCE can be generated 'by hand'. However, it is also possible to generate this input automatically using the 'vtools' software provided in this package. A description of the vtools command syntax is provided in the file,  ./vtools/README.md. 
@@ -660,7 +655,7 @@ Whenever orbitals are used (especially if they are generated for the first time)
 
 
 
-Section 8. How to make spin-coupled orbitals
+## Section 8. How to make spin-coupled orbitals
 
 
 The following procedure is recommended. It is advisable to begin a pair of spin-coupled (SC) orbitals from the corresponding converged double-occupied (DOCC) orbital. So, first, choose the DOCC orbital of interest from a previously obtained optimized wave function. In a suitable text editor, cut the DOCC orbital from the DOCC list in the input, make a copy, so there are now two identicle orbitals, and paste this pair into the list of SC orbitals. Be sure to adjust the relevant counters among the 'dims' (section 3 (A)). To initialize the subsequent optimization run for the SC pair, use the following method to provide a 'nudge' in the right direction. Locate the first- and second-largest magnitude weights in either of the SC orbitals. In one of the SC pair, increase the largest magnitude weight by 0.1, reduce the second largest by 0.1. In the other SC orbital, do the opposite - decrease the largest magnitude weight by 0.1, increase the second largest by 0.1. The value of 0.1 is just a suggestion, but this has proved to be a reasonable choice. Execute an optimization run for the pair of SC orbitals, keeping the others fixed. If necessary, re-optimize, including any other orbitals that interact significantly with the new SC pair. 
@@ -670,7 +665,7 @@ The following procedure is recommended. It is advisable to begin a pair of spin-
 
 
 
-Section 9. How to use derived basis functions (DBF)
+## Section 9. How to use derived basis functions (DBF)
 
 
 As mentioned in section 2, VALENCE allows the user to define combinations of the atomic basis functions to form new functions over which to expand the electronic orbitals. A typical use of this feature is to symmetry-adapt the basis set to yield more convenient degrees-of-freedom. For example, making spherical harmonic functions from the cartesian functions (useful for transition metals) and hybridized basis sets consisting of sp,sp2, and sp3 'hybrid' functions. 
@@ -679,7 +674,7 @@ To use DBF, set the total number required (item 12 in part A of section 3) and a
 
 In the following example, four spherical harmonic functions used to model the 3d10 configuration of copper (I) cation with a double-Zeta basis set are defined. The DBF correspond (nominally) to the 3d'z2', 4d'z2', 3dx2-y2, and 4dx2-y2 functions, with indices 0, -1, -2, and -3, respectively. The DBF are used in two of the valence orbitals of Cu+ to provide variational flexbility.
 
-
+```
      1   1   0   0    14    29   3   0   7  18   2   4   1   0   1
 
  20 20 20   2 2 50 0.0 0.0   1 5
@@ -751,12 +746,12 @@ In the following example, four spherical harmonic functions used to model the 3d
   21    1.00000000  16   -0.50000000  18   -0.50000000
     1 1         3
   15    1.00000000  10   -0.50000000  12   -0.50000000
-
+```
 
 
 The example below is for the ground state of dinitrogen. Bonding and anti-bonding combinations of the two 2Pz functions on each nitrogen provide well-defined UDF for the sigma-bonding orbital without losing quality in the basis set.
 
-
+```
      2   1   0   0     7    76  12   0   6  15   2   2   0   0   2
 
  20 20 20  0 0 0 0.0 0.0  
@@ -820,12 +815,12 @@ The example below is for the ground state of dinitrogen. Bonding and anti-bondin
       2        1   2   2
    6    0.87759376  21    0.87759376
 
+```
 
 
 
 
-
-Section 10. Acknowledgements
+## Section 10. Acknowledgements
 
 
 This work was supported by Argonne Leadership Computing Facility, which is a DOE Office of Science User Facility supported under Contract DE-AC02-06CH11357. 
@@ -836,7 +831,7 @@ The name, 'VALENCE', was chosen in honor of the famous book of that name by Char
 
 
 
-Section 11. Contact information
+## Section 11. Contact information
 
 
 Please feel free to send questions/comments to any/all members of 'The VALENCE Group, at Argonne':

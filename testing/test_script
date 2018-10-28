@@ -2,47 +2,78 @@
 #
 #  This is an example bash script to run each test case in the "examples" array below
 #  and compare the output to the correct output in testing.py
-#  Usage:
 #
-#  ./test_script executable
+#  Usage:
+#  For a serial run of the small test set:
+#   $ ./test_script executable true small
+#  For a parallel run of the large test set:
+#   $ ./test_script executable false large
 #
 #  This assumes you're running from the base valence directory.
 #
 
+# because we're using pipe to tee and output to a file, it's
+# useful to make sure the pipe doesn't hide the error 
+set -e
+set -o pipefail
+
+error=0
+
+# check which set of examples to run
+if [ $3 = "small" ]; then
+  examples=(li li- lih lih-sv li_opt h h+ndf he h2-sz h2-dz \
+        h2o-vdz-sc1 b be-sv be be+ndf be-sc he3s-1s3s he1s2s be3s2 be-scv3s+2sc)
+elif [ $3 = "large" ]; then
   examples=(li li- lih lih-sv li_opt h h+ndf he h2-sz h2-dz h2o-vdz-sc1 h2o-vdz \
-      h2o-vdz-dem cu+ b be-sv be be+ndf ethane ethane2 be-sc he3s-1s3s he1s2s \
-      be3s2 be-scv3s+2sc f2-scval-p2 n2.sc4val-b.p2 c2-pt-vshf-p2)
+        h2o-vdz-dem cu+ b be-sv be be+ndf ethane ethane2 be-sc he3s-1s3s he1s2s \
+        be3s2 be-scv3s+2sc f2-scval-p2 n2.sc4val-b.p2 c2-pt-vshf-p2)
+else
+    error=1
+fi
+
+# check how to run (serial or MPI)
 if [ $2 = "true" ]; then
   NCORE=1	
-else  
+elif [ $2 = "false" ]; then
   NCORE=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
   echo Using $NCORE ranks...
+else
+    error=1
 fi
+
 # check number of arguments
-if [ "$#" -lt 1 ]; then
-    echo "Need one input--the name of the executable to test"
+if [ "$#" -lt 3 ] || [ $error == 1 ]; then
+    echo "Need three inputs--the name of the executable to test, whether it's"
+    echo "a serial run or MPI run, and whether to run the small or large test set."
+    echo "Usage:"
+    echo "  For a serial run of the small test set: "
+    echo "  $ ./test_script executable true small"
+    echo "  For a parallel MPI run of the large test set, using number of processors in /proc/cpuinfo: "
+    echo "  $ ./test_script executable false large"
     exit
 fi
 
 datestamp=`date +%d%b%Y_%H%M%S`
 SECONDS=0
+LOGFILE=${datestamp}/testing.log
 # check if $1 exists and is executable
   if [[ -x "$1" ]]
   then
       cd testing
-      echo "Running tests in" $(PWD) on $(uname -a) | tee -a testing.log
+      mkdir -p $datestamp
+      echo "Running tests in" $(PWD) on $(uname -a) | tee -a $LOGFILE
       for i in ${examples[@]}
       do
-          OUTPUT=$i_$datestamp.out
+          OUTPUT=${datestamp}/${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
           	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
           else
           	$1 < ./test_cases/$i > $OUTPUT
           fi
-          python testing.py $OUTPUT $i | tee -a testing.log
+          python testing.py $OUTPUT $i | tee -a $LOGFILE
       done
-      echo Tests completed in $SECONDS seconds on $(date) | tee -a testing.log
-      echo ----------------------------------------------------------------------\n >> testing.log
+      echo Tests completed in $SECONDS seconds on $(date) | tee -a $LOGFILE
+      echo ----------------------------------------------------------------------\n >> $LOGFILE
       cd ..
   else
       echo "Input file '$1' is not executable or found."
