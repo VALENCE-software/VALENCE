@@ -9,7 +9,9 @@ script:
   - make
   - make test
   - sed 's/SEQUENTIAL=true/SEQUENTIAL=false/' Makefile > Makefile_par
-  - export PATH=/usr/local/bin:$PATH
-  - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+  - export PATH=/usr/local/bin/:$PATH
+  - export LD_LIBRARY_PATH=/usr/local/lib:/$LD_LIBRARY_PATH
+  - ls -ltr /usr/local/
+  - ls -ltr /usr/local/bin
   - make -f Makefile_par
   - make test-large
