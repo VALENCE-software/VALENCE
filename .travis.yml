@@ -3,10 +3,12 @@ sudo: required
 before_install:
   - sudo apt-get install -y gfortran cmake
   - ./install-simint.sh
-  - sudo apt-get -qq install -y mpich2
+  - sudo apt-get -qq install -y mpich > file
 script: 
+  - cat file
   - make
   - make test
-#  - sed 's/SEQUENTIAL=true/SEQUENTIAL=false/' Makefile > Makefile_par
-#  - make -f Makefile_par
-#  - make test-large
+  - sed 's/SEQUENTIAL=true/SEQUENTIAL=false/' Makefile > Makefile_par
+  - cat Makefile_par
+  - make -f Makefile_par
+  - make test-large
