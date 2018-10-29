@@ -13,5 +13,7 @@ script:
   - export LD_LIBRARY_PATH=`pwd`/lib:/$LD_LIBRARY_PATH
   - ls -ltr `pwd`
   - ls -ltr `pwd`/bin
+  - echo $PATH
+  - which mpifort
   - make -f Makefile_par
   - make test-large
