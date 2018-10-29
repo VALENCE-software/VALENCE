@@ -19,6 +19,10 @@ set -o pipefail
 
 error=0
 
+# print something so we know it's not hanging
+bash -c "while true; do echo Still building...; sleep 120s; done" &
+PID_HANG=$!
+
 # check which set of examples to run
 if [ $3 = "small" ]; then
   examples=(li li- lih lih-sv li_opt h h+ndf he h2-sz h2-dz \
@@ -50,6 +54,7 @@ if [ "$#" -lt 3 ] || [ $error == 1 ]; then
     echo "  $ ./test_script executable true small"
     echo "  For a parallel MPI run of the large test set, using number of processors in /proc/cpuinfo: "
     echo "  $ ./test_script executable false large"
+    kill $PID_HANG
     exit
 fi
 
@@ -80,3 +85,5 @@ LOGFILE=${datestamp}/testing.log
       echo "Couldn't find/execute it after looking with"
       echo "`pwd` as the base directory."
   fi
+
+kill $PID_HANG
