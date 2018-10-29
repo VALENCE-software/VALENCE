@@ -30,6 +30,10 @@ if [ $3 = "small" ]; then
 elif [ $3 = "large" ]; then
   examples=(li li- lih lih-sv li_opt h h+ndf he h2-sz h2-dz h2o-vdz-sc1 h2o-vdz \
         h2o-vdz-dem cu+ b be-sv be be+ndf ethane ethane2 be-sc he3s-1s3s he1s2s \
+        be3s2 be-scv3s+2sc n2.sc4val-b.p2)
+elif [ $3 = "largest" ]; then
+  examples=(li li- lih lih-sv li_opt h h+ndf he h2-sz h2-dz h2o-vdz-sc1 h2o-vdz \
+        h2o-vdz-dem cu+ b be-sv be be+ndf ethane ethane2 be-sc he3s-1s3s he1s2s \
         be3s2 be-scv3s+2sc f2-scval-p2 n2.sc4val-b.p2 c2-pt-vshf-p2)
 else
     error=1
