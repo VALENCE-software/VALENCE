@@ -11,9 +11,6 @@ script:
   - sed 's/SEQUENTIAL=true/SEQUENTIAL=false/' Makefile > Makefile_par
   - export PATH=/home/travis/bin/:$PATH
   - export LD_LIBRARY_PATH=/home/travis/lib:/$LD_LIBRARY_PATH
-  - ls -ltr `pwd`
-  - ls -ltr `pwd`/bin
-  - echo $PATH
   - which mpifort
   - make -f Makefile_par
-  - make test-large
+  - make -f Makefile_par test-large
