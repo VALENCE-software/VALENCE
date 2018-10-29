@@ -80,6 +80,10 @@ LOGFILE=${datestamp}/testing.log
           	$1 < ./test_cases/$i > $OUTPUT
           fi
           python testing.py $OUTPUT $i | tee -a $LOGFILE
+          if [ "$?" != "0" ]
+          then
+              cat $OUTPUT
+          fi
       done
       echo Tests completed in $SECONDS seconds on $(date) | tee -a $LOGFILE
       echo ----------------------------------------------------------------------\n >> $LOGFILE
