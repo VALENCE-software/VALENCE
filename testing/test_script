@@ -14,14 +14,14 @@
 
 # because we're using pipe to tee and output to a file, it's
 # useful to make sure the pipe doesn't hide the error 
-set -e
+# set -e
 set -o pipefail
 
 error=0
 
 # print something so we know it's not hanging
-bash -c "while true; do echo Still building...; sleep 120s; done" &
-PID_HANG=$!
+#bash -c "while true; do echo Still building...; sleep 120s; done" &
+#PID_HANG=$!
 
 # check which set of examples to run
 if [ $3 = "small" ]; then
@@ -58,7 +58,7 @@ if [ "$#" -lt 3 ] || [ $error == 1 ]; then
     echo "  $ ./test_script executable true small"
     echo "  For a parallel MPI run of the large test set, using number of processors in /proc/cpuinfo: "
     echo "  $ ./test_script executable false large"
-    kill $PID_HANG
+#    kill $PID_HANG
     exit 1
 fi
 
@@ -75,11 +75,24 @@ LOGFILE=${datestamp}/testing.log
       do
           OUTPUT=${datestamp}/${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
-          	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
+          	aprun -n 64 $1 < ./test_cases/$i > $OUTPUT
+            if [ "$?" -ne "0" ]; then
+#              kill $PID_HANG
+              exit 1
+            fi
           else
           	$1 < ./test_cases/$i > $OUTPUT
+            if [ "$?" -ne "0" ]; then
+#              kill $PID_HANG
+              exit 1
+            fi
           fi
           python testing.py $OUTPUT $i | tee -a $LOGFILE
+          if [ "$?" -ne "0" ]; then
+#              kill $PID_HANG
+	      cat $OUTPUT
+              exit 1
+          fi
       done
       echo Tests completed in $SECONDS seconds on $(date) | tee -a $LOGFILE
       echo ----------------------------------------------------------------------\n >> $LOGFILE
@@ -88,9 +101,11 @@ LOGFILE=${datestamp}/testing.log
       echo "Input file '$1' is not executable or found."
       echo "Couldn't find/execute it after looking with"
       echo "`pwd` as the base directory."
+      kill $PID_HANG
+      exit 1
   fi
   
 # if ther was an error, still need to kill the background job
-trap 'kill $PID_HANG; echo "There was an error"; cat $OUTPUT' ERR
+#trap 'kill $PID_HANG; echo "There was an error"; cat $OUTPUT' ERR
 
-kill $PID_HANG
+#kill $PID_HANG
