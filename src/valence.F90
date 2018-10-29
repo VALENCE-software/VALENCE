@@ -1424,6 +1424,11 @@ subroutine  vsvb_energy ( iorb,num_non_docc,num_spatial_orbs, energy, wfnorm, sp
      end  if    !  density for significant ERI
 
 
+     ! print a message every 10000
+     if( mod(task, 10000) .eq. 0 ) then
+        print '(A14,I20,A7,I20)', "Finished task ", task, " out of", ntasks 
+     endif
+
      !     accumulate the total energy
      if( ijkl_symmetry_is_enabled ) then
         if( ko .eq. io .and. lo .eq. jo ) then

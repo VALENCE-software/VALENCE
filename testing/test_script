@@ -20,8 +20,8 @@ set -o pipefail
 error=0
 
 # print something so we know it's not hanging
-bash -c "while true; do echo Still building...; sleep 120s; done" &
-PID_HANG=$!
+#bash -c "while true; do echo Still building...; sleep 120s; done" &
+#PID_HANG=$!
 
 # check which set of examples to run
 if [ $3 = "small" ]; then
@@ -58,7 +58,7 @@ if [ "$#" -lt 3 ] || [ $error == 1 ]; then
     echo "  $ ./test_script executable true small"
     echo "  For a parallel MPI run of the large test set, using number of processors in /proc/cpuinfo: "
     echo "  $ ./test_script executable false large"
-    kill $PID_HANG
+#    kill $PID_HANG
     exit 1
 fi
 
@@ -75,21 +75,22 @@ LOGFILE=${datestamp}/testing.log
       do
           OUTPUT=${datestamp}/${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
-          	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
-            if ["$?" -ne "0"]; then
-              kill $PID_HANG
+          	aprun -n 64 $1 < ./test_cases/$i > $OUTPUT
+            if [ "$?" -ne "0" ]; then
+#              kill $PID_HANG
               exit 1
             fi
           else
           	$1 < ./test_cases/$i > $OUTPUT
-            if ["$?" -ne "0"]; then
-              kill $PID_HANG
+            if [ "$?" -ne "0" ]; then
+#              kill $PID_HANG
               exit 1
             fi
           fi
           python testing.py $OUTPUT $i | tee -a $LOGFILE
-          if ["$?" -ne "0"]; then
-              kill $PID_HANG
+          if [ "$?" -ne "0" ]; then
+#              kill $PID_HANG
+	      cat $OUTPUT
               exit 1
           fi
       done
@@ -107,4 +108,4 @@ LOGFILE=${datestamp}/testing.log
 # if ther was an error, still need to kill the background job
 #trap 'kill $PID_HANG; echo "There was an error"; cat $OUTPUT' ERR
 
-kill $PID_HANG
+#kill $PID_HANG
