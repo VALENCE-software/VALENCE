@@ -65,23 +65,26 @@ LOGFILE=${datestamp}/testing.log
   then
       cd testing
       mkdir -p $datestamp
-      echo "Running tests in" $(PWD) on $(uname -a) | tee -a $LOGFILE
+      echo "Running tests in" $PWD on $(uname -a) | tee -a $LOGFILE
       for i in ${examples[@]}
       do
           OUTPUT=${datestamp}/${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
-          	mpirun -n $NCORE $1 < ./test_cases/$i | tee -a $LOGFILE $OUTPUT
+          	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
             if [ "$?" -ne "0" ]; then
+	      cat $OUTPUT
               exit 1
             fi
           else
-          	$1 < ./test_cases/$i | tee -a $LOGFILE $OUTPUT
+          	$1 < ./test_cases/$i > $OUTPUT
             if [ "$?" -ne "0" ]; then
+	      cat $OUTPUT
               exit 1
             fi
           fi
           python testing.py $OUTPUT $i | tee -a $LOGFILE
           if [ "$?" -ne "0" ]; then
+	      cat $OUTPUT
               exit 1
           fi
       done
