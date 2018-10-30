@@ -11,5 +11,5 @@ script:
   - export PATH=/home/travis/bin/:$PATH
   - export LD_LIBRARY_PATH=/home/travis/lib:/$LD_LIBRARY_PATH
   - make -f Makefile_par
-  - make -f Makefile_par test-large
+  - travis_wait 60 make -f Makefile_par test-large
   - ls -ltr testing/

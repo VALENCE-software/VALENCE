@@ -4,6 +4,7 @@
 VALENCE currently uses the SIMINT library to compute integrals. 
 To build SIMINT, please see the instructions given at https://github.com/simint-chem, or feel free to try the instructions below.
 (Unfortunately, the code at https://www.bennyp.org/research/simint/ currently lacks one-electron integrals and cannot be used.)
+For an example of how to build SIMINT see  install-simint.sh, or see the instructions below.
 
 Requirements:
 gcc 8.2.0 or later
