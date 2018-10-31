@@ -61,7 +61,7 @@ Graham D. Fletcher, "The variational subspace valence bond method",
 J. Chem. Phys. 142, 134112 (2015).
 http://dx.doi.org/10.1063/1.4916743
 
-In addition to a general background in quantum chemistry, it helps to read the above paper and references therein. 
+In addition to a general background in quantum chemistry, it helps to read the above paper and references therein. The document doc/notes-vsvb-energy.pdf also contain detailed information about the method.
 
 In general, VSVB orbitals are linear combinations of the atomic orbitals (LCAO) of the basis set. As mentioned above, no consideration is given to how much the VSVB orbitals overlap with one another. This gives the user complete control over how the orbitals are defined. For example, orbitals can be tailored to represent intuitive concepts in chemistry such as bonds and lone-pairs, and calculations can be performed to test these ideas. Typically, the basis set expansion of an orbital together with guesses for the LCAO expansion weights are input to an optimization run where the weight values are refined to minimize the total energy. The user is free to enter any guess because VALENCE always ensures normalization of the orbitals to machine precision, internally. Once obtained, such orbitals can be used repeatedly to build other wave functions where similar orbitals are needed. If orbitals with the desired forms are available, qualitatively correct wave functions can be made 'for free'.
  

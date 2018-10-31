@@ -657,14 +657,13 @@ sum_determinants = count_determinants
 
 #ifdef VALENCE_MPI
     include    'mpif.h'
-#endif
+
     integer     type, oper, comm, ierr
     integer     maxrcv
     parameter  (maxrcv = 16384 )
     real(dp)     rcv( maxrcv )
     integer     i,j,loc,npass,len
 
-#ifdef VALENCE_MPI
     type = mpi_real8
     oper = mpi_sum
     comm = valence_global_communicator
