@@ -268,7 +268,7 @@ subroutine givens_orig( a, lda, nord, tol )
   !!  unroll,
   !     real*8     a( lda, *), tol, r,cx,sx,t1,t2
   !
-  real(dp)    a( lda, *), tol, r,cx,sx, t0,u0, t1,u1, t2,u2, t3,u3
+  real(dp)    a( lda, *), tol, r,cx,sx, t1, t2 !t0,u0, u1, u2, t3,u3
   integer    nrem
 
   integer    i,j,k

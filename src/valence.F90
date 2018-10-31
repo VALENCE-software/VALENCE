@@ -49,20 +49,18 @@ subroutine      calculate_vsvb_energy( energy )
 
   integer      ierr, i,j,k,it,n, mnshi,mxshi
   integer      nao_type, mxcf2
-  real(dp) zij,rsq
   real(dp)      tokcal
   parameter  ( tokcal = 627.509469_dp )
 
   !     optimization control
   !     etol = total energy convergence tolerance
 
-  integer      norbas,norbz
-  integer      ntol_c,ntol_d,ntol_i
-  real(dp)      energy,eprev,eprv_sc,eprv_orb
-  real(dp)      etol,  relaxn
+  integer      norbz
+!  integer      ntol_c,ntol_d,ntol_i
+  real(dp)      energy
+  real(dp)      etol
   real(dp)      zero,         ten,            rln10
   parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
-  integer     nproc,myrank,master      ! for Nstore calc.
 
   !     generic print buffers
 
@@ -529,7 +527,7 @@ subroutine  first_order_opt ( iorb, w,eig,v1,v2, energy )
   real(dp)     w( hdim, *), eig(*),v1(*),v2(*), energy
 
   integer     num_non_docc,idocc,norbas,num_spatial_orbs,eorb
-  integer     iorbas,iat,it,ish,iao,i,j,k,n,mnshi,mxshi
+  integer     iorbas,iat,it,ish,iao,i,j,k,mnshi,mxshi
   integer     new_orb,new_atm,new_typ, ib,jb,idf
   integer     dovecs,ifail
   parameter ( dovecs = 1 )    !  =0 for eigenvalues only
@@ -1008,17 +1006,17 @@ subroutine  vsvb_energy ( iorb,num_non_docc,num_spatial_orbs, energy, wfnorm, sp
   integer     iorb,num_non_docc,num_spatial_orbs
   real(dp)     energy,wfnorm
 
-  integer     i,j,k,l, io,jo,ko,lo, ib,jb,kb,lb, is,js,ks,ls
+  integer     i,j,k,l, io,jo,ko,lo, is,js,ks,ls
   integer     ie,je,ke,le, iso,jso,kso,lso
-  real(dp)     zero, d1,d2,erep_int, exchanged_erep_int,&
+  real(dp)     zero, d1,erep_int, exchanged_erep_int,&
        erep_sum, exchanged_erep_sum, dummy
   parameter ( zero = 0.0d+00 )
 
   real(dp)  erep_density,exchanged_erep_density
 
   integer     ijorb,klorb
-  integer     nproc,myrank,master, indx,ericount,jorb
-  logical     nonsub,signif, spinav
+  integer     indx,ericount,jorb
+  logical     nonsub,spinav
 
   logical erep_is_signif, exchange_is_signif, calculate_integrals, &
        ijkl_symmetry_is_enabled
@@ -1484,7 +1482,7 @@ subroutine  schwarz_ints ( num_spatial_orbs, num_non_docc )
   implicit    none
 
   integer     num_spatial_orbs, num_non_docc
-  integer     nproc,myrank,master,task, i,j,indx,ij,ie,je
+  integer     task, i,j,indx,ij,ie,je
 
 
   ij  =  0
@@ -1528,7 +1526,7 @@ subroutine  density ( nord, erep_density,exchanged_erep_density,&
   use         densitywork
   use         integrals
   implicit    none
-  integer     nord,k,l,dima,dimb
+  integer     nord,dima,dimb
   real(dp)    erep_density,exchanged_erep_density, erep_int, &
        exchanged_erep_int
 
@@ -1605,10 +1603,10 @@ subroutine  density_sc ( nord, isc, jsc, erep_density,exchanged_erep_density,&
   use         densitywork
   use         integrals
   implicit    none
-  integer     nord, isc,jsc, previously_computed
+  integer     nord, isc,jsc
   real(dp)    erep_density,exchanged_erep_density
 
-  integer     i,j,nexb,nexk, dima,dimb
+  integer     nexb,nexk, dima,dimb
   logical     calc_dens, calc_exchange_dens
 
   erep_density = 0.0_dp
@@ -1644,7 +1642,7 @@ subroutine  dbra ( nord, nexb,nexk, dima,dimb, erep_density,&
   integer     nord, nexb,nexk, dima,dimb,isc,jsc
   real(dp)    erep_density,exchanged_erep_density
 
-  integer    io,i,j,k,l,tmp
+  integer    io,i,k,l,tmp
   logical    calc_dens, calc_exchange_dens
 
 
@@ -1773,7 +1771,7 @@ subroutine  dket ( nord, nexk,dima,dimb, erep_density,&
   integer     nord, nexk,dima,dimb,isc,jsc
   real(dp)    erep_density,exchanged_erep_density
 
-  integer     jo,i,j,k,l,tmp
+  integer     jo,j,k,l,tmp
   logical     calc_dens, calc_exchange_dens
 
   !     'ket' list - these operations 'mirror' the bra ones
@@ -2174,7 +2172,7 @@ subroutine  ndf2obs ( iorb, indf )
   use         integrals
   implicit    none
 
-  integer     indf,iorb,mnshi,mxshi,it,jt,ib,jb,ia,iat,jat,ish,i,j
+  integer     indf,iorb,mnshi,mxshi,it,ib,ia,iat,jat,ish,i,j
 
 
   !     NDF atom AO ranges avoid strict ordering of input AOs
@@ -2850,17 +2848,17 @@ subroutine  ovint ( io, jo )
   use SimintFortran
   implicit    none
   integer     io, jo, indf, i,j,k, n
-  integer     mini,maxi,minj,maxj, mnshj,mxshj,jmax,ij
+  integer     mini,maxi,minj,maxj, mnshj,mxshj,ij
   integer     loxi,loxj, iao,jao, mnshi,mxshi
-  integer     ic,ia,ii,lit,it,ig,li, jc,ja,jj,ljt,jt,jg,lj
+  integer     ic,ia,ii,lit,it, jc,ja,jj,ljt,jt !,ig,li,lj,jg,jmax
   integer     funmin(7),funmax(7)
   data  funmin/ 1, 2, 5,11,21,36,57/
   data  funmax/ 1, 4,10,20,35,56,84/
-  real(dp)    xi,yi,zi,xj,yj,zj
+!  real(dp)    xi,yi,zi,xj,yj,zj
   real(dp)    zero
   parameter ( zero=0.0d+00 )
 
-  integer simint_ret,myrank,master,nproc
+  integer simint_ret
 
   !     initialize weights of a contiguous basis list
   do i  = 1, max_obs
@@ -2982,7 +2980,7 @@ subroutine  int1e ( io, jo )
   integer     io, jo, indf, i,j,k, ictr,nn 
   integer     mini,maxi,minj,maxj, mnshj,mxshj,jmax,ij
   integer     loxi,loxj, iao,jao, mnshi,mxshi
-  integer     ic,ia,ii,lit,it,ig,li, jc,ja,jj,ljt,jt,jg,lj
+  integer     ic,ia,ii,lit,it,jc,ja,jj,ljt,jt !,ig,li,jg,lj
   integer     funmin(7),funmax(7) 
   data  funmin/ 1, 2, 5,11,21,36,57/
   data  funmax/ 1, 4,10,20,35,56,84/
@@ -2990,7 +2988,7 @@ subroutine  int1e ( io, jo )
   real(dp)    zero
   parameter ( zero=0.0d+00 )
 
-  integer simint_ret,myrank,master,nproc
+  integer simint_ret,nproc
 
 
   !     initialize weights of a contiguous basis list
@@ -3153,7 +3151,7 @@ subroutine  int2e ( io,jo,ko,lo )
   integer    funmin(7), funmax(7),  ij,kl,kao,lao,iao,jao
   data funmin/ 1, 2, 5,11,21,36,57/
   data funmax/ 1, 4,10,20,35,56,84/
-  integer    l,m,n, lit,ljt,lkt,llt
+  integer    l,n, lit,ljt,lkt,llt
   integer    mini,maxi,minj,maxj,mink,maxk,minl,maxl
   type(c_simint_multi_shellpair), target :: s2p_msh, s1p_msh
   parameter ( zero = 0.0d+00 )
