@@ -329,8 +329,8 @@ subroutine  guess_energy ( energy )
   call  schwarz_ints( num_spatial_orbs, num_non_docc )
   store_eri  =  .false.
   call  vsvb_energy( 0 ,num_non_docc,num_spatial_orbs, energy, wfnorm, .false., .true. )
-  call  xm_equalize( [energy], 1 )
-  call  xm_equalize( [wfnorm], 1 )
+  call  xm_equalize_scalar( energy )
+  call  xm_equalize_scalar( wfnorm )
   energy  =  energy/wfnorm  +  enucrep
 end subroutine  guess_energy
 
@@ -421,8 +421,8 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                  end  if
               end  do
               call  vsvb_energy( iorb,num_non_docc,num_spatial_orbs, energy, wfnorm, .false.,.false. )
-              call  xm_equalize( [energy], 1 )
-              call  xm_equalize( [wfnorm], 1 )
+              call  xm_equalize_scalar( energy )
+              call  xm_equalize_scalar( wfnorm )
               energy  =  energy/wfnorm  +  enucrep
               nnrgy = nnrgy + 1
               eri_stored  =  .true.
@@ -458,8 +458,8 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                     end  if
                  end  do
                  call  vsvb_energy( iorb,num_non_docc,num_spatial_orbs, energy, wfnorm, .false.,.false. )
-                 call  xm_equalize( [energy], 1 )
-                 call  xm_equalize( [wfnorm], 1 )
+                 call  xm_equalize_scalar( energy )
+                 call  xm_equalize_scalar( wfnorm )
                  energy  =  energy/wfnorm  +  enucrep
                  nnrgy = nnrgy + 1
 

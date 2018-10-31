@@ -17,6 +17,7 @@ module xm
   integer :: valence_global_communicator
   integer :: nrank
   integer :: irank
+
 contains
 
   subroutine   xm_getdims ( natom,natom_t, npair,nunpd,ndocc,  &
@@ -684,6 +685,28 @@ sum_determinants = count_determinants
     end do
 #endif
   end subroutine  xm_equalize
+
+
+  subroutine  xm_equalize_scalar ( buff )
+    use tools, only: dp
+    implicit    none
+    real(dp)     buff
+
+#ifdef VALENCE_MPI
+    include    'mpif.h'
+
+    integer     type, oper, comm, ierr
+    real(dp)     rcv( 1 )
+
+    type = mpi_real8
+    oper = mpi_sum
+    comm = valence_global_communicator
+
+    call mpi_allreduce( buff, rcv, 1, type,  &
+      oper, comm, ierr )
+
+#endif
+  end subroutine  xm_equalize_scalar
 
 
 
