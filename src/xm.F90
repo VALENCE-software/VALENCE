@@ -695,7 +695,7 @@ sum_determinants = count_determinants
     include    'mpif.h'
 
     integer     type, oper, comm, ierr
-    real(dp)     rcv( 1 )
+    real(dp)     rcv
 
     type = mpi_real8
     oper = mpi_sum
