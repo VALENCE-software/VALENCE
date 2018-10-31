@@ -17,8 +17,6 @@ subroutine      valence( energy )
 ! this handles all reading of input, allocating for input arrays, and MPI initialization
   call valence_initialize
 
-! yes, this is overly broad, but I wanted to separate the initialization/input reading,
-! finalization, and the rest of the code so that it's easier to call this from a library
   call calculate_vsvb_energy( energy )
 
 ! handles deallocation of what was allocated in valence_initialize
@@ -70,21 +68,6 @@ subroutine      calculate_vsvb_energy( energy )
 
   integer   int_out(2)    !  lengths not
   real(dp)   dbl_out(2)    !   protected
-
-! ! input parameters
-!   real(8) external_coords(*)
-!   logical use_external_coords
-
-  ! if( use_external_coords ) then
-  !    k = 0
-  !    do    i  =  1,  natom
-  !       do    j  =  1,  3
-  !          k = k + 1
-  !          coords( j, i )  =  external_coords( k )
-  !       end   do
-  !    end   do
-  !    call angs2bohr(natom,coords)
-  ! endif
 
 #ifdef SIMINT_INT
      ! initialize simint, based on basis set that was read in

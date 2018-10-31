@@ -18,7 +18,7 @@ subroutine valence_initialize( comm )
      call xm_propagate
   endif
   call xm_print(   'title', 'variational subspace valence bond;' )
-  call xm_print( 'comment', 'written by C. Bertoni and G. Fletcher;' )
+  call xm_print( 'comment', 'written by G. Fletcher;' )
   call read_allocate_input
   !     scale the geometry to bohrs for the energy in au
   call angs2bohr(natom,coords)
