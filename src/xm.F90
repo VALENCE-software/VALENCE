@@ -695,7 +695,7 @@ sum_determinants = count_determinants
     include    'mpif.h'
 
     integer     type, oper, comm, ierr
-    real(dp)     rcv( 1 )
+    real(dp)     rcv
 
     type = mpi_real8
     oper = mpi_sum
@@ -704,6 +704,7 @@ sum_determinants = count_determinants
     call mpi_allreduce( buff, rcv, 1, type,  &
       oper, comm, ierr )
 
+    buff = rcv
 #endif
   end subroutine  xm_equalize_scalar
 
