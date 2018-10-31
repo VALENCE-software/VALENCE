@@ -704,6 +704,7 @@ sum_determinants = count_determinants
     call mpi_allreduce( buff, rcv, 1, type,  &
       oper, comm, ierr )
 
+    buff = rcv
 #endif
   end subroutine  xm_equalize_scalar
 
