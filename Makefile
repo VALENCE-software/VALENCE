@@ -92,7 +92,7 @@ endif
 CFLAGS=-O3 -g
 FFLAGS+=-O3 -g
 
-OBJS=givens.o rsg.o tools_module.o modulevalence_simint.o density_module.o\
+OBJS=givens.o rsg.o tools_module.o valence_simint_module.o density_module.o\
 	 integrals_module.o valence.o timing_flops_module.o xm_module.o \
 	 valence_api_nitrogen.o valence_initialize_module.o  \
 	 valence_finalize_module.o
@@ -152,9 +152,9 @@ rsg.o : $(SRCDIR)/rsg.F
 	$(F77) $(FFLAGS) -c $< -o $@
 tools_module.o tools.mod : $(SRCDIR)/tools_module.F90
 	$(FC) $(FFLAGS) -c $< -o tools_module.o
-modulevalence_simint.o valence_simint.mod : $(SRCDIR)/modulevalence_simint.F90 \
+valence_simint_module.o valence_simint.mod : $(SRCDIR)/valence_simint_module.F90 \
 	integrals_module.o integrals.mod
-	$(FC) $(FFLAGS) -c $< -o modulevalence_simint.o
+	$(FC) $(FFLAGS) -c $< -o valence_simint_module.o
 density_module.o densitywork.mod : $(SRCDIR)/density_module.F90 tools_module.o tools.mod
 	$(FC) $(FFLAGS) -c $< -o density_module.o
 integrals_module.o integrals.mod : $(SRCDIR)/integrals_module.F90 tools_module.o tools.mod
@@ -163,7 +163,7 @@ timing_flops_module.o timing_flops.mod : $(SRCDIR)/timing_flops_module.F90
 	$(FC) $(FFLAGS) -c $< -o timing_flops_module.o
 valence.o : $(SRCDIR)/valence.F90 tools_module.o density_module.o integrals_module.o \
 	tools.mod integrals.mod densitywork.mod timing_flops_module.o \
-	timing_flops.mod modulevalence_simint.o valence_simint.mod \
+	timing_flops.mod valence_simint_module.o valence_simint.mod \
 	 xm_module.o xm.mod valence_initialize_module.o \
 	 valence_finalize_module.o valence_finit.mod
 	$(FC) $(FFLAGS) -c $< -o $@ 
