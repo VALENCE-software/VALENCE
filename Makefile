@@ -2,8 +2,20 @@
 #
 # 1. choose parallel or sequential build
 
- SEQUENTIAL=true
-#SEQUENTIAL=false
+# if it's defined
+ifdef SEQUENTIAL
+    ifeq ($(SEQUENTIAL), false) 
+        check=1
+    else ifeq ($(SEQUENTIAL), true)
+        check=1
+    else
+        check=0
+    endif 
+else
+  check=1
+  SEQUENTIAL=true
+ #SEQUENTIAL=false
+endif
 
 ifeq ($(SEQUENTIAL), false) 
   FFLAGS+=-DVALENCE_MPI
@@ -135,7 +147,12 @@ TARGET=valence
 TARGETMK=modelkit
 TARGETLIB=libvalence.a
 
+ifeq ($(check),1)
 all: $(TARGETLIB) $(TARGET) $(TARGETMK) clean
+else
+all:
+	echo "Error--SEQUENTIAL environment variable should be set to 'true' or 'false'"
+endif
 $(TARGETLIB): $(OBJS)
 	mkdir -p $(LIBDIR)
 	ar rcs $(LIBDIR)/$(TARGETLIB) $(OBJS)
