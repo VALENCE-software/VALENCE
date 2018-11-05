@@ -137,10 +137,10 @@ TARGETLIB=libvalence.a
 
 all: $(TARGETLIB) $(TARGET) $(TARGETMK) clean
 $(TARGETLIB): $(OBJS)
-	mkdir -p lib
+	mkdir -p $(LIBDIR)
 	ar rcs $(LIBDIR)/$(TARGETLIB) $(OBJS)
 $(TARGET): $(OBJS) valence_driver.o
-	mkdir -p bin
+	mkdir -p $(BINDIR)
 	$(FC) -o $(BINDIR)/$(TARGET) $(FFLAGS) valence_driver.o $(LIBDIR)/$(TARGETLIB) $(LINK_FLAGS)
 $(TARGETMK) : 
 	$(FC) $(FFLAGS) $(SRCDIR)/modelkit.F90 -o $(BINDIR)/$(TARGETMK) 
