@@ -10,4 +10,4 @@ script:
   - export PATH=/home/travis/bin/:$PATH
   - export LD_LIBRARY_PATH=/home/travis/lib:/$LD_LIBRARY_PATH
   - SEQUENTIAL=false make
-  - travis_wait 60 SEQUENTIAL=false make test-large
+  - SEQUENTIAL=false travis_wait 60 make test-large
