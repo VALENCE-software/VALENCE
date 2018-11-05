@@ -92,7 +92,10 @@ endif
 CFLAGS=-O3 -g
 FFLAGS+=-O3 -g
 
-OBJS=givens.o rsg.o moduletools.o modulevalence_simint.o moduledensity.o moduleintegrals.o valence.o timing_flops.o xm.o valence_api.o valence_initialize.o  valence_finalize.o
+OBJS=givens.o rsg.o tools_module.o valence_simint_module.o density_module.o\
+	 integrals_module.o valence.o timing_flops_module.o xm_module.o \
+	 valence_api_nitrogen.o valence_initialize_module.o  \
+	 valence_finalize_module.o
 
 ifeq ($(GIVENS), USE_C)
   FFLAGS=-O3 -g -DUSE_C_VERSION
@@ -141,33 +144,40 @@ $(TARGET): $(OBJS) valence_driver.o
 	$(FC) -o $(BINDIR)/$(TARGET) $(FFLAGS) valence_driver.o $(LIBDIR)/$(TARGETLIB) $(LINK_FLAGS)
 $(TARGETMK) : 
 	$(FC) $(FFLAGS) $(SRCDIR)/modelkit.F90 -o $(BINDIR)/$(TARGETMK) 
-valence_driver.o : $(SRCDIR)/valence_driver.F90 moduletools.o  tools.mod
+valence_driver.o : $(SRCDIR)/valence_driver.F90 tools_module.o  tools.mod
 	$(FC) $(FFLAGS) -c $< -o $@
-givens.o : $(SRCDIR)/givens.F90 moduletools.o  tools.mod
+givens.o : $(SRCDIR)/givens.F90 tools_module.o  tools.mod
 	$(FC) $(FFLAGS) -c $< -o $@
 rsg.o : $(SRCDIR)/rsg.F
 	$(F77) $(FFLAGS) -c $< -o $@
-moduletools.o tools.mod : $(SRCDIR)/moduletools.F90
-	$(FC) $(FFLAGS) -c $< -o moduletools.o
-modulevalence_simint.o valence_simint.mod : $(SRCDIR)/modulevalence_simint.F90 moduleintegrals.o integrals.mod
-	$(FC) $(FFLAGS) -c $< -o modulevalence_simint.o
-moduledensity.o densitywork.mod : $(SRCDIR)/moduledensity.F90 moduletools.o tools.mod
-	$(FC) $(FFLAGS) -c $< -o moduledensity.o
-moduleintegrals.o integrals.mod : $(SRCDIR)/moduleintegrals.F90 moduletools.o tools.mod
-	$(FC) $(FFLAGS) -c $< -o moduleintegrals.o
-timing_flops.o timing_flops.mod : $(SRCDIR)/timing_flops.F90
-	$(FC) $(FFLAGS) -c $< -o timing_flops.o
-valence.o : $(SRCDIR)/valence.F90 moduletools.o moduledensity.o moduleintegrals.o tools.mod integrals.mod densitywork.mod timing_flops.o timing_flops.mod modulevalence_simint.o valence_simint.mod xm.o xm.mod valence_initialize.o valence_finalize.o valence_finit.mod
+tools_module.o tools.mod : $(SRCDIR)/tools_module.F90
+	$(FC) $(FFLAGS) -c $< -o tools_module.o
+valence_simint_module.o valence_simint.mod : $(SRCDIR)/valence_simint_module.F90 \
+	integrals_module.o integrals.mod
+	$(FC) $(FFLAGS) -c $< -o valence_simint_module.o
+density_module.o densitywork.mod : $(SRCDIR)/density_module.F90 tools_module.o tools.mod
+	$(FC) $(FFLAGS) -c $< -o density_module.o
+integrals_module.o integrals.mod : $(SRCDIR)/integrals_module.F90 tools_module.o tools.mod
+	$(FC) $(FFLAGS) -c $< -o integrals_module.o
+timing_flops_module.o timing_flops.mod : $(SRCDIR)/timing_flops_module.F90
+	$(FC) $(FFLAGS) -c $< -o timing_flops_module.o
+valence.o : $(SRCDIR)/valence.F90 tools_module.o density_module.o integrals_module.o \
+	tools.mod integrals.mod densitywork.mod timing_flops_module.o \
+	timing_flops.mod valence_simint_module.o valence_simint.mod \
+	 xm_module.o xm.mod valence_initialize_module.o \
+	 valence_finalize_module.o valence_finit.mod
 	$(FC) $(FFLAGS) -c $< -o $@ 
 givens_in_c.o : $(SRCDIR)/givens_in_c.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
-valence_api.o : $(SRCDIR)/valence_api.F90
+valence_api_nitrogen.o : $(SRCDIR)/valence_api_nitrogen.F90
 	$(FC) $(FFLAGS) -c $< -o $@
-valence_initialize.o : $(SRCDIR)/valence_initialize.F90 
+valence_initialize_module.o : $(SRCDIR)/valence_initialize_module.F90 xm_module.o xm.mod
 	$(FC) $(FFLAGS) -c $< -o $@
-valence_finalize.o : $(SRCDIR)/valence_finalize.F90 
+valence_finalize_module.o : $(SRCDIR)/valence_finalize_module.F90 
 	$(FC) $(FFLAGS) -c $< -o $@
-xm.o : $(SRCDIR)/xm.F90 moduletools.o moduledensity.o moduleintegrals.o integrals.mod densitywork.mod timing_flops.o timing_flops.mod tools.mod
+xm_module.o xm.mod : $(SRCDIR)/xm_module.F90 tools_module.o density_module.o \
+	integrals_module.o integrals.mod densitywork.mod timing_flops_module.o \
+	 timing_flops.mod tools.mod
 	$(FC) $(FFLAGS) -c $< -o $@
 doc:
 	doxygen doc/Doxyfile
