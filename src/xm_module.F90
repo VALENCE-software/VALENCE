@@ -26,11 +26,12 @@ contains
     implicit     none
 #ifdef VALENCE_MPI
     include "mpif.h"
+    integer      ierr, from,comm
 #endif
     integer      natom,ndocc,totlen,npair,nunpd, ndf, mxctr
     integer      natom_t,num_sh,num_pr,xpmax,nspinc,nang,nset,nxorb
 
-    integer      nproc, myrank, master, from,comm, ierr
+    integer      nproc, myrank, master
 
     call xm_inherit( nproc, myrank, master )
 
@@ -66,29 +67,24 @@ contains
   !     get the main molecule input data
 
   subroutine  xm_input ( ntol_c, ntol_e_min_in, ntol_e_max_in, ntol_d,  &
-       ntol_i, orbset_in,max_iter_in, mxctr_in )
+       ntol_i, max_iter_in )
     use         integrals
     use         densitywork
     use tools, only: dp
     implicit    none
 #ifdef VALENCE_MPI
     include "mpif.h"
+    integer     from, comm,ierr
 #endif
-    !     generic print buffers
-
-    integer     int_out(2)     !  lengths not 
-    real(dp)     dbl_out(2)     !   protected
-
     !     optimization control
 
     integer     ntol_c, ntol_e_min_in, ntol_e_max_in, ntol_d, ntol_i
-    integer     orbset_in( 2, *), max_iter_in
-    integer     mxctr_in
+    integer     max_iter_in
     !     parallel
 
-    integer     nproc, myrank, master, from, comm,ierr
+    integer     nproc, myrank, master
 
-    integer     i,j,k,n, it, istrt,ifnsh
+    integer     i,j,k,n
     integer     ns, np, nshell, con_length
 
 
@@ -513,12 +509,12 @@ contains
     implicit    none
 #ifdef VALENCE_MPI
     include    'mpif.h'
-#endif
     integer     ierr
     integer     int_out(2)     !  lengths not 
     real(dp)     dbl_out(2)     !   protected
-    integer, intent(in), optional :: comm
+#endif
 
+    integer, intent(in), optional :: comm
 
 #ifdef VALENCE_MPI
     ! if there is an argument, set valence_global_communicator = input
@@ -536,8 +532,8 @@ contains
     call xm_print( 'dimension', 'number of processors;',  &
          int_out, dbl_out ) 
 #else
-irank = 0
-nrank = 1
+    irank = 0
+    nrank = 1
 #endif
 
     kernel_time = 0.0_dp
@@ -559,14 +555,18 @@ nrank = 1
     implicit    none
 #ifdef VALENCE_MPI
     include    'mpif.h'
-#endif
     integer     ierr
+#endif
+
     integer nproc, myrank,master
     integer, intent(in), optional :: comm
-    real(dp) sum_guess_time, sum_kernel_time
+
+#ifdef PRINT_COUNTERS
     integer(8) sum_determinants
+#endif
 
 #ifdef PRINT_TIMING
+    real(dp) sum_guess_time, sum_kernel_time
     call MPI_Barrier( valence_global_communicator, ierr )
 #endif
 
@@ -595,7 +595,7 @@ nrank = 1
 #ifdef VALENCE_MPI
     call MPI_Allreduce( count_determinants, sum_determinants, 1, mpi_integer8, mpi_sum,valence_global_communicator, ierr )
 #else
-sum_determinants = count_determinants
+    sum_determinants = count_determinants
 #endif
     if ( myrank .eq. 0) then
        write( *,'(A, I20)' ) 'Average over ranks: Determinants count:', sum_determinants/ nrank
@@ -627,10 +627,8 @@ sum_determinants = count_determinants
 
 #ifdef VALENCE_MPI
     include    'mpif.h'
-#endif
     integer     type, from, comm, ierr
 
-#ifdef VALENCE_MPI
     if ( chtype .eq. 'i' ) then
        type = mpi_integer4
     else if ( chtype .eq. 'd' ) then
@@ -717,17 +715,17 @@ sum_determinants = count_determinants
     implicit    none
 #ifdef VALENCE_MPI
     include    'mpif.h'
+    integer     ierr
 #endif
     integer     num_proc, myrank, master
-    integer     ierr
 
     master   = 0
 #ifdef VALENCE_MPI
     call mpi_comm_rank( valence_global_communicator, myrank,   ierr ) 
     call mpi_comm_size( valence_global_communicator, num_proc, ierr )
 #else
-myrank = 0
-num_proc = 1
+    myrank = 0
+    num_proc = 1
 #endif
   end subroutine  xm_inherit
 

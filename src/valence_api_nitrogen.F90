@@ -8,19 +8,17 @@ subroutine init(info)
   implicit none
 #ifdef VALENCE_MPI
   include "mpif.h"
+  integer ierr, mpi_new_comm,status
 #endif
-  integer info,i, status, ierr, mpi_new_comm
-  integer d
-  real(dp) e
+  integer info
   ! call initialization of VSVB code
-  !  call valence( d, e, .false., .false. )
 #ifdef VALENCE_MPI
   call mpi_init(status)
   call mpi_comm_dup( mpi_comm_world, mpi_new_comm, ierr)
-#else
-  mpi_new_comm = 0
-#endif
   call valence_initialize( mpi_new_comm )
+#else
+  call valence_initialize( )
+#endif
   info = 0
 end subroutine init
 
@@ -48,8 +46,8 @@ subroutine calcsurface(x,v)
 #endif
   real(dp), dimension(*) :: x
   real(dp) v
-  integer i,k
-  integer ::  j, myiostat
+  integer i,k,j
+!  integer :: myiostat
 
   k = 0
   do    i  =  1,  natom
@@ -103,9 +101,7 @@ subroutine finalize
   implicit none
 #ifdef VALENCE_MPI
   include "mpif.h"
-#endif
   integer status
-#ifdef VALENCE_MPI
   call mpi_finalize( status )
   call valence_finalize( mpi_comm_world )
 #else

@@ -1668,7 +1668,7 @@ subroutine  dbra ( nord, nexb,nexk, dima,dimb, erep_density,&
   end do
 
   call  dket( nord, nexk,dima,dimb, erep_density,exchanged_erep_density,&
-       isc,jsc,calc_dens, calc_exchange_dens )
+       jsc,calc_dens, calc_exchange_dens )
 
   !     for the remaining bra terms - mimics the action of the
   !     spin function - offset from DME labels
@@ -1704,7 +1704,7 @@ subroutine  dbra ( nord, nexb,nexk, dima,dimb, erep_density,&
      end do
 
      call  dket( nord, nexk,dima,dimb, erep_density,exchanged_erep_density,&
-          isc,jsc,calc_dens, calc_exchange_dens )
+          jsc,calc_dens, calc_exchange_dens )
 
      !     loop over remaining combinations of 'io'th order
 
@@ -1738,7 +1738,7 @@ subroutine  dbra ( nord, nexb,nexk, dima,dimb, erep_density,&
            end do
 
            call  dket( nord, nexk,dima,dimb, erep_density,exchanged_erep_density,&
-                isc, jsc,calc_dens, calc_exchange_dens )
+                jsc,calc_dens, calc_exchange_dens )
 
            i = io
         else
@@ -1758,17 +1758,17 @@ end subroutine dbra
 !!    \param dima, dimb [in]: number of alpha and beta electrons
 !!    \param erep_density,exchanged_erep_density [in/out] density cofactors.
 !!           if nord == 1, only erep_density has output
-!!    \param isc, jsc [in]: spin couplings, only meaningful if nspinc>0
+!!    \param jsc [in]: spin couplings, only meaningful if nspinc>0
 !!    \param calc_dens, calc_exchange_dens [in] : logical flags controlling
 !!            whether or not to calculate the density or exchanged density.
 !!            (so for nord == 1, calc_exchange_dens should be false)
 subroutine  dket ( nord, nexk,dima,dimb, erep_density,&
-     exchanged_erep_density,isc,jsc,calc_dens, calc_exchange_dens )
+     exchanged_erep_density,jsc,calc_dens, calc_exchange_dens )
   use tools, only: dp
   use         densitywork
   use         integrals
   implicit    none
-  integer     nord, nexk,dima,dimb,isc,jsc
+  integer     nord, nexk,dima,dimb,jsc
   real(dp)    erep_density,exchanged_erep_density
 
   integer     jo,j,k,l,tmp
@@ -1901,10 +1901,18 @@ subroutine  det ( dima,dimb,nord, density,exchanged_density,&
   real(dp)    zero, one, ad,bd
   parameter  ( zero = 0.0d+00, one = 1.0d+00 )
 
+! initialize variables
   erep_spin_is_nonzero = .false.
   exchange_spin_is_nonzero = .false.
   ad = 0.0_dp
   bd = 0.0_dp
+  loc_alpha_bra = 0
+  loc_alpha_ket = 0
+  loc_beta_bra = 0
+  loc_beta_ket = 0
+  both_are_alpha_spin = .false.
+  both_are_beta_spin= .false.
+
   !     perform spin integration
 
   !  dme_b(1) is the row to strike, dme_k(1) is the column to strike
@@ -2051,13 +2059,14 @@ subroutine  givdr ( max_n, n, adet, tol, d, ipvt )
   implicit    none
 #ifdef PRINT_TIMING
   include "mpif.h"
+  real(dp) t1, t2
 #endif
   integer     max_n, n, ipvt(*)
   real(dp)      adet( max_n, *), d
 
   integer     i
   real(dp)      tol
-  real(dp) t1, t2
+
 
 
 #ifdef PRINT_TIMING
@@ -2117,9 +2126,8 @@ subroutine  givdr ( max_n, n, adet, tol, d, ipvt )
 
 #ifdef PRINT_TIMING
   t2 = MPI_Wtime()
-#endif
-
   kernel_time = kernel_time + (t2-t1)
+#endif
 
 end subroutine givdr
 
@@ -2210,6 +2218,7 @@ subroutine  ndf2obs ( iorb, indf )
   !     map the NDF expansion
 
   i  =  0
+  j  =  0
   do ib  =  map_orbs( indf ), map_orbs( indf + 1 ) - 1
 
      !     find which atom this AO belongs to
@@ -2714,6 +2723,8 @@ subroutine minimize_energy( energy,  &
   !     enter cycle of updating the wfn
 
   num_iter   = 0
+  eprv_sc  = 0.0_dp
+  eprv_orb = 0.0_dp
 
   !     tolerance feathering - effective only if there is more than
   !     one orbital optimization group

@@ -12,7 +12,6 @@ program      valence_driver
   use valence_finit
   implicit none
 ! the values are dummy variables, since the output is printed once to the screen
-  integer d
   real(kind(0.d0)) e
   call valence_initialize
   call calculate_vsvb_energy( e )
