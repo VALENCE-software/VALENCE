@@ -371,15 +371,7 @@
       allocate( glone_xpset( gpmax, nglone ),  stat = ierr )
       allocate( glone_coeff( gpmax, nglone ),  stat = ierr )
 
-      do i = 1, nglone
-         do j=1, gpmax
-            glone_xpset( j, i ) = 0
-            glone_coeff( j, i ) = 0.0d0
-         enddo
-      enddo
-
       do    i  =  1,  nglone
-         
       read *,   glone_atomt( i ), glone_xplen( i )
       read *, ( glone_xpset( j, i ), glone_coeff( j, i ),  &
             j = 1, glone_xplen( i ) )
