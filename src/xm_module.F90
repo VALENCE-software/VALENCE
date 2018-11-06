@@ -800,7 +800,7 @@ contains
     integer ::  i,j, myiostat
     integer, save :: counter = 0
     character :: charcounter*7
-    character, save :: oldfilename*30
+    character, save :: oldfilename*37
     if (present(filename)) then
       filename2 = filename
     else
