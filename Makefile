@@ -2,8 +2,16 @@
 #
 # 1. choose parallel or sequential build
 
- SEQUENTIAL=true
-#SEQUENTIAL=false
+# if it's defined
+ifdef SEQUENTIAL
+    ifeq ($(SEQUENTIAL), false) 
+    else
+	SEQUENTIAL=true
+    endif 
+else
+  SEQUENTIAL=true
+ #SEQUENTIAL=false
+endif
 
 ifeq ($(SEQUENTIAL), false) 
   FFLAGS+=-DVALENCE_MPI
