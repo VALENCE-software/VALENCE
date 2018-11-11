@@ -40,7 +40,6 @@ subroutine read_allocate_input
   integer mxctr_in, nset_in,max_iter_in
   integer      ntol_c,ntol_d,ntol_i, ntol_e_min_in,ntol_e_max_in
   integer i,k,j,ierr,mnshi,mxshi
-  real(dp)      zij,rsq
   real(dp)      zero,         ten,            rln10
   parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
 
@@ -91,7 +90,7 @@ subroutine read_allocate_input
 
 
   call xm_input( ntol_c, ntol_e_min_in, ntol_e_max_in, ntol_d, ntol_i, &
-       orbset, max_iter_in, mxctr )
+       max_iter_in )
   ntol_e_min = ntol_e_min_in
   ntol_e_max = ntol_e_max_in
   max_iter = max_iter_in

@@ -28,12 +28,12 @@
       program     modelkit
       implicit    none
       integer     i,j,k, shell_size, bat1,bat2,batm,batx
-      integer     iat, it, ish, iao, ib,jb, iorbas, molbf,ic
+      integer     it, jb
       integer     nshell,nbasis,ierr,ns
       real(8)     zw,vx,vy,vz, a1,a2,a3,b1,b2,b3,p1,p2,p3,dum
       real(8)     zero,           two
       parameter ( zero = 0.0d+00, two = 2.0d+00 )
-      logical     linear, pix,piy,sigma, orbat
+      logical     linear, pix,piy,sigma
 
 
 !     Array dimensions impractical to set by input
@@ -91,7 +91,7 @@
 
 !     define bonding orbitals in target molecule
 
-      integer     nbond_orbs, nbond_at, nbond_at2
+      integer     nbond_orbs, nbond_at
       integer,  allocatable ::   bond_atoms( : , : )
       integer,  allocatable ::    bond_type(     : )
 
@@ -616,7 +616,6 @@
       close ( unit = 10 )
 
 
-    1 format(1i6)
     2 format(5x,1i5,5x,10i5)
     3 format(4(1i10,1x,1f13.8))
     4 format( 1i6,3i10,2i10,9i10 )

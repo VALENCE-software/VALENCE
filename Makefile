@@ -192,7 +192,7 @@ doc:
 clean:
 	rm -f *.o *.mod 
 veryclean:
-	rm -f *.o *.mod $(BINDIR)/$(TARGETLIB) $(BINDIR)/$(TARGET) $(BINDIR)/$(TARGETMK)
+	rm -f *.o *.mod $(LIBDIR)/$(TARGETLIB) $(BINDIR)/$(TARGET) $(BINDIR)/$(TARGETMK)
 test:
 	testing/test_script $(PWD)/$(BINDIR)/$(TARGET) $(SEQUENTIAL) small
 test-large:
