@@ -67,6 +67,19 @@ endif
 
 #MPI_LIBRARY=/home/my_libs/mpi  
 
+# 5. choose shared object or static library
+# if BUILD_SHARED_LIB is set in the environment to false,
+# then build a static library. if it's set to anything else,
+# build a shared object. If it's not set, build a static
+# library.
+ifdef BUILD_SHARED_LIB
+    ifeq ($(BUILD_SHARED_LIB),false) 
+    else
+	BUILD_SHARED_LIB=true
+    endif 
+else
+	BUILD_SHARED_LIB=false
+endif
 
 ######   WARNING: some expertise required to edit below here!
 
@@ -98,7 +111,12 @@ endif
 
 
 CFLAGS=-O3 -g
-FFLAGS+=-O3 -g
+
+ifeq ($(BUILD_SHARED_LIB),false)
+   FFLAGS+=-O3 -g
+else
+   FFLAGS+=-fPIC -O3 -g
+endif
 
 OBJS=givens.o rsg.o tools_module.o valence_simint_module.o density_module.o\
 	 integrals_module.o valence.o timing_flops_module.o xm_module.o \
@@ -141,15 +159,27 @@ LIBDIR   = lib
 
 TARGET=valence
 TARGETMK=modelkit
-TARGETLIB=libvalence.a
+ifeq ($(BUILD_SHARED_LIB),false)
+   TARGETLIB=libvalence.a
+else
+   TARGETLIB=libvalence.so
+endif
 
 all: $(TARGETLIB) $(TARGET) $(TARGETMK) clean
 $(TARGETLIB): $(OBJS)
 	mkdir -p $(LIBDIR)
+ifeq ($(BUILD_SHARED_LIB),false)
 	ar rcs $(LIBDIR)/$(TARGETLIB) $(OBJS)
+else
+	$(FC) -shared -o $(LIBDIR)/$(TARGETLIB) $(OBJS) -L$(SIMINT_LIBRARY) -lsimint
+endif
 $(TARGET): $(OBJS) valence_driver.o
 	mkdir -p $(BINDIR)
+ifeq ($(BUILD_SHARED_LIB),false)
 	$(FC) -o $(BINDIR)/$(TARGET) $(FFLAGS) valence_driver.o $(LIBDIR)/$(TARGETLIB) $(LINK_FLAGS)
+else
+	$(FC) -o $(BINDIR)/$(TARGET) $(FFLAGS) valence_driver.o -L$(LIBDIR) -L$(SIMINT_LIBRARY) -lsimint -lvalence
+endif
 $(TARGETMK) : 
 	$(FC) $(FFLAGS) $(SRCDIR)/modelkit.F90 -o $(BINDIR)/$(TARGETMK) 
 valence_driver.o : $(SRCDIR)/valence_driver.F90 tools_module.o  tools.mod
