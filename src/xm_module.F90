@@ -159,7 +159,7 @@ contains
 
        !     input the excited orbitals and roots
 
-       read *, ( xorb( i ), root( i ), i = 1, nxorb )
+       if( nxorb .gt. 0 ) read *, ( xorb( i ), root( i ), i = 1, nxorb )
 
 
 
@@ -608,7 +608,6 @@ contains
     if( .not. present( comm ) ) call mpi_finalize( ierr )
 #endif
 
-  stop
   end subroutine  xm_end
 
 
@@ -743,7 +742,6 @@ contains
     
     call xm_print( 'error', error_message)
     call xm_end()
-    stop
   end subroutine  xm_abort
 
 
