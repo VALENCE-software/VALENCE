@@ -37,8 +37,8 @@ REF1 = 1.0 1.0 D110
 # Select BFGS optimization
 STAT_OPT = BFGS
 
-# Set gradient norm tolerance to 1e-1
-STAT_TOL = 1e-1
+# Set gradient norm tolerance
+STAT_TOL = 5e-2
 
 # Calculate frequencies after optimization
 CALC_FREQ
