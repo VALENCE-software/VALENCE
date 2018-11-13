@@ -1,0 +1,45 @@
+#
+# Example H2O stationary point
+# optimization and harmonic 
+# frequency calculation
+
+JOBTYPE = JOBTYPE_STAT
+
+USE_FORTRAN_PES
+
+# Optimizing MINimum geometry
+STAT_TYPE = MIN
+GRAD_STEP = 1.0E-03
+PES_GRAD_STEP = 1.0E-03
+FD_ORDER = 2
+
+# Use Z-matrix coordinate system
+COORD = ZMAT
+%ZMAT
+C
+H1   1 R12
+H2   1 R13  2  A123 
+H3   1 R14  2  A124   3 A134
+H4   1 R15  2  A125   3 A135
+%
+# Masses
+MASS = C H H H H
+
+# Select PES library
+PES = /home/bertoni/VALENCE/lib/libvalence.so
+
+# REF1 reference geometry is used
+# as initial geometry
+REF1 = 1.0821 1.0821 D109.471 1.0821 D109.471 D120 1.0821 D109.471 D-120
+
+# Select BFGS optimization
+STAT_OPT = BFGS
+
+# Set gradient norm tolerance
+STAT_TOL = 1e-1
+
+# Calculate frequencies after optimization
+CALC_FREQ
+# Print verbose optimization output
+STAT_VERBOSE
+

@@ -14,8 +14,9 @@ subroutine init(info)
   ! call initialization of VSVB code
 #ifdef VALENCE_MPI
   call mpi_init(status)
-  call mpi_comm_dup( mpi_comm_world, mpi_new_comm, ierr)
-  call valence_initialize( mpi_new_comm )
+!  call mpi_comm_dup( mpi_comm_world, mpi_new_comm, ierr)
+!  call valence_initialize( mpi_new_comm )
+  call valence_initialize( mpi_comm_world )
 #else
   call valence_initialize( )
 #endif
@@ -47,7 +48,14 @@ subroutine calcsurface(x,v)
   real(dp), dimension(*) :: x
   real(dp) v
   integer i,k,j
-!  integer :: myiostat
+#ifdef VALENCE_NITROGEN_READ
+  real(dp) energy, etol
+  real(dp)      zero,         ten,            rln10
+  parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
+  integer :: myiostat, ns, np, con_length, mnshi, mxshi
+  character(100) script
+  logical, save :: first_time=.true.
+#endif
 
   k = 0
   do    i  =  1,  natom
@@ -57,40 +65,102 @@ subroutine calcsurface(x,v)
      end   do
   end   do
      
-!  update coordinates somehow
-  ! open(unit=107, file='coords1', status='UNKNOWN', action='readwrite', &
-  !      position='rewind', iostat=myiostat)
-
-  ! do j=1,natom
-  !       write(107,"(i4,' ')",advance="no") atom_t(j)
-  !    do i=1,3
-  !       write(107,"(f16.12,' ')",advance="no")  coords(i,j)
-  !       write(*,"(f16.12,' ')",advance="no")  coords(i,j)
-  !    end do
-  !    write(107,*)
-  !    write(*,*)
-  ! end do
-
-  ! close(unit=107)
-  ! call system( "../examples/script" )
-
-  ! open(unit=108, file='fff', status='UNKNOWN', action='readwrite', &
-  !      position='rewind', iostat=myiostat)
-
-  ! read( 108, "(f19.15)") v
-  ! close(unit=108)
+!  update coordinates
+#ifdef VALENCE_NITROGEN_READ
+  open(unit=107, file='input', status='UNKNOWN', action='readwrite', &
+       position='rewind', iostat=myiostat)
 
 
-! if orbital file exists, read from it. otherwise, don't., 
+  write(107,"(15i4)") natom,natom_t, npair,nunpd,ndocc,  &
+         totlen,xpmax, nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr
 
+  write(107,*)
+
+  write(107,"(6i4, f16.12, f16.12 )",advance="no")  int(ctol/rln10), int(-log(dtol)/log(10.0_dp)), int(-log(itol)/log(10.0_dp)), &
+       ntol_e_min, ntol_e_max, max_iter, ptbnmax,feather
+
+  do j=1,nset
+     write(107,"(2i4)",advance="no") orbset( 1, j ), orbset( 2, j )
+  enddo
+
+     write(107,*)
+     write(107,*)
+
+  do j=1,natom
+        write(107,"(i4,' ')",advance="no") atom_t(j)
+     do i=1,3
+        write(107,"(f16.12,' ')",advance="no")  coords(i,j)
+        write(*,"(f16.12,' ')",advance="no")  coords(i,j)
+     end do
+     write(107,*)
+     write(*,*)
+  end do
+
+  write(107,*)
+! basis set
+
+     ns = 1
+     np = 1
+       do    i  =  1,  natom_t
+          write(107,"(f16.12,i4)")  nuc_charge( i ),num_shell_atom( i )
+          do    j  =  1,  num_shell_atom( i )
+             con_length = map_shell2prim( ns + 1 ) - map_shell2prim( ns )
+             write(107,"(2i4)")  ang_mom( ns ), con_length
+
+             !     avoid redundant input of unit weight for uncontracted GTO
+
+             if ( con_length .eq. 1 ) then
+                write(107,"(f18.12)")  exponent( np )
+                np = np + 1
+             else
+                do k  =  1,  con_length
+                   write(107,"(2f18.12)")  exponent( np ), con_coeff( np )
+                   np = np + 1
+                end   do
+             end if
+
+             ns = ns + 1
+          end   do
+       end   do
+
+     write(107,*)
+
+  close(unit=107)
+
+! add orbitals to the new_input file
+  if( first_time ) then
+     first_time = .false.
+     call xm_output( '', energy, etol, 'input',.true. )
+     call system( "mv input new_input" )
+  else
+     call system( "cat input orbitals > new_input" )
+  endif
+
+
+! call the script at location $VALENCE_SCRIPT to run VALENCE
+  call getenv( "VALENCE_SCRIPT", script)
+  call system( script )
+
+! pull out the energy
+  open(unit=108, file='energy_output', status='UNKNOWN', action='readwrite', &
+       position='rewind', iostat=myiostat)
+
+  read( 108, "(f19.15)") v
+  close(unit=108)
+#else
 
   call angs2bohr(natom,coords)
   call calculate_vsvb_energy( v )
+#endif
+
+
 #ifdef VALENCE_MPI
   call xm_end( mpi_comm_world )
 #else
   call xm_end( )
 #endif
+
+
 ! convert from hartrees to cm^{-1}
   v = v*219474.631_dp
   

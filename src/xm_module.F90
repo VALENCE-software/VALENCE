@@ -383,16 +383,17 @@ contains
 
 
 
-  subroutine    xm_output ( mode, energy,etol )
+  subroutine    xm_output ( mode, energy,etol, file_name, append )
     use           integrals
     use           densitywork
     use tools, only: dp
     implicit      none
-    character(*)  mode
+    character(*)  mode, file_name
 
     integer        i,j, nproc,myrank,master
     real(dp)        energy, etol
 
+    logical append
 
 
     call xm_inherit( nproc, myrank, master )
@@ -402,8 +403,13 @@ contains
 
           !     output N-electron wave function 
 
+          if( .not. append ) then
           open ( unit = 11, file = 'nelecwfn', form = 'formatted'  &
                ,      status = 'unknown' )
+          else
+          open ( unit = 11, file = file_name, form = 'formatted'  &
+               ,      status = 'unknown', access='append' )
+          endif
 
           if ( nspinc .eq. 1 ) then
              write ( 11, 3 ) ( pair_sc( i, 1, 1 ), pair_sc( i, 2, 1 ),  &
@@ -421,9 +427,14 @@ contains
        end  if
 
 
-       open ( unit = 10, file = 'orbitals', form = 'formatted'  &
+       if( .not. append ) then
+       open ( unit = 10, file = file_name, form = 'formatted'  &
             ,      status = 'unknown' )
+       else
+       open ( unit = 10, file = file_name, form = 'formatted'  &
+            ,      status = 'unknown', access='append' )
 
+       endif
 
        !     output spin coupled orbitals
 

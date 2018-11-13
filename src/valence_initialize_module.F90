@@ -101,6 +101,8 @@ subroutine read_allocate_input
   dtol =     ten**( -ntol_d  )
   itol =     ten**( -ntol_i )
 
+#ifdef VALENCE_NITROGEN_READ
+#else
   !     normalize the primitive weights
   ! this is here since you only want to do it once
   do    i  =  1,  natom_t
@@ -112,6 +114,6 @@ subroutine read_allocate_input
              exponent( k ), con_coeff( k ) )
      end   do
   end   do
-
+#endif
 end subroutine read_allocate_input
 end module valence_init
