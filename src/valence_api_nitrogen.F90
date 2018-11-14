@@ -76,7 +76,8 @@ subroutine calcsurface(x,v)
 
   write(107,*)
 
-  write(107,"(6i4, f16.12, f16.12 )",advance="no")  int(ctol/rln10), int(-log(dtol)/log(10.0_dp)), int(-log(itol)/log(10.0_dp)), &
+  write(107,"(6i4, f16.12, f16.12 )",advance="no")  int(ctol/rln10), &
+       int(-log(dtol)/log(10.0_dp)), int(-log(itol)/log(10.0_dp)), &
        ntol_e_min, ntol_e_max, max_iter, ptbnmax,feather
 
   do j=1,nset
@@ -114,7 +115,7 @@ subroutine calcsurface(x,v)
                 np = np + 1
              else
                 do k  =  1,  con_length
-                   write(107,"(2f18.12)")  exponent( np ), con_coeff( np )
+                   write(107,"(2f18.12)")  exponent( np ), unnormalized_con_coeff( np )
                    np = np + 1
                 end   do
              end if
@@ -137,7 +138,7 @@ subroutine calcsurface(x,v)
   endif
 
 
-! call the script at location $VALENCE_SCRIPT to run VALENCE
+! call the script at location $VALENCE_SCRIPT to run VALENCE with MPI
   call getenv( "VALENCE_SCRIPT", script)
   call system( script )
 
@@ -172,8 +173,8 @@ subroutine finalize
 #ifdef VALENCE_MPI
   include "mpif.h"
   integer status
-  call mpi_finalize( status )
   call valence_finalize( mpi_comm_world )
+  call mpi_finalize( status )
 #else
   call valence_finalize( )
 #endif

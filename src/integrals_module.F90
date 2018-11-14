@@ -35,7 +35,11 @@
       integer,  allocatable ::         ang_mom( : ) !< holds the shell angular momentum for a given shell index
       real(dp),  allocatable ::      nuc_charge( : )
       real(dp),  allocatable ::        exponent( : ) !< holds the exponent for a primitive gaussian
+      real(dp),  allocatable ::    unnormalized_con_coeff( : ) !< holds the contraction
+                                                 ! coefficient for a primitive gaussian before it's been normalized
       real(dp),  allocatable ::       con_coeff( : ) !< holds the contraction coefficient for a primitive gaussian
+                                                 ! after it's been normalized
+
 
 !     wave function information
 

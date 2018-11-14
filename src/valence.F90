@@ -67,19 +67,16 @@ subroutine      calculate_vsvb_energy( energy )
   integer   int_out(2)    !  lengths not
   real(dp)   dbl_out(2)    !   protected
 
-#ifdef VALENCE_NITROGEN_READ
-  !     normalize the primitive weights
-  ! this is here since you only want to do it once
+  !     normalize the primitive weights, put output in con_coeff
   do    i  =  1,  natom_t
      mnshi =         map_atom2shell( i )
      mxshi = mnshi + num_shell_atom( i ) - 1
      do    j  =  mnshi, mxshi
         k = map_shell2prim( j )
         call  norm_prim( ang_mom( j ), map_shell2prim( j+1 ) - k,  &
-             exponent( k ), con_coeff( k ) )
+             exponent( k ), con_coeff( k ), unnormalized_con_coeff( k ) )
      end   do
   end   do
-#endif
 
 #ifdef SIMINT_INT
      ! initialize simint, based on basis set that was read in
@@ -2260,14 +2257,16 @@ end subroutine  ndf2obs
 !! \param con_length [in] : number of primitives in the shell--dimension of
 !!  exponent and con_coeff
 !! \param exponent [in] : array of exponents of primitive GTOs in the shell
-!! \param con_coeff [in/out] : array of coefficients of primitive GTOs in the
-!!                             shell
+!! \param con_coeff [out] : array of coefficients of primitive GTOs in the
+!!                          shell that have been normalized
+!! \param unnormalized_con_coeff [in] : array of coefficients of primitive GTOs in the
+!!                             shell that are not normalized
 subroutine norm_prim (  ang_mom, con_length,   &
-     exponent, con_coeff )
+     exponent, con_coeff, unnormalized_con_coeff )
   use tools, only: dp
   implicit   none
   integer    ang_mom,  con_length
-  real(dp)     exponent(*),  con_coeff(*)
+  real(dp)   exponent(*), con_coeff(*), unnormalized_con_coeff(*)
 
   integer    ig, jg
   real(dp)     two, dblfac, pi32, sovl, fac, fax
@@ -2282,7 +2281,8 @@ subroutine norm_prim (  ang_mom, con_length,   &
   fax = -1.5_dp -ang_mom
   do ig = 1,  con_length
      sovl  =  fac*( ( two * exponent( ig ) )**fax )
-     con_coeff( ig )  =  con_coeff( ig )*( sovl**( -0.5_dp ) )
+!     con_coeff( ig )  =  con_coeff( ig )*( sovl**( -0.5_dp ) )
+     con_coeff( ig )  =  unnormalized_con_coeff( ig )*( sovl**( -0.5_dp ) )
   end do
 
   !     compute the normalization factor for the whole CGTO

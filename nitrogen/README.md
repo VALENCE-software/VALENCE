@@ -8,13 +8,13 @@ of as a static library.
 
 This starts with recompiling simint as a shared object: 
 
-For SIMINT, 
+1. Compile SIMINT as a shared object 
 
 you can use 
 
 ``` $ SIMINT_EXTRA=-DBUILD_SHARED_LIBS:Bool=True ./install-simint.sh```
 
-For VALENCE, 
+2. Compile VALENCE as a shared object
 
 ``` $ BUILD_SHARED_LIB=true make ```
 
@@ -24,7 +24,7 @@ libary path at runtime:
 ``` $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/VALENCE/simint/lib64/:/home/user/VALENCE/lib/ ```
 
 
-Then write a VALENCE input file with the basis and geometry that you wish to use as an initial starting point:
+3. Then write a VALENCE input file with the basis and geometry that you wish to use as an initial starting point:
 
 ```
 $ cat nh3_atoms.inp 
@@ -88,7 +88,7 @@ $ cat nh3_atoms.inp
   13    0.07253393  14    0.13644964  15    0.07253391
 ```
 
-Then write a NITROGEN input file, as shown in the standard NITROGEN examples.
+4. Then write a NITROGEN input file, as shown in the standard NITROGEN examples.
 For a VALENCE run, it is important to include `USE_FORTRAN_PES`, and point to
 the libvalence shared object. An example NITROGEN input file is below.
 
@@ -144,14 +144,12 @@ STAT_VERBOSE
 The possibly tricky part is producing internal coordinates to match the cartesian coordinates which
 were used in the VALENCE input file.
 
-Then put the appropriate environment variable in the path, and export VALENCE_SCRIPT:
+5. Run the calculation. There is a run_script, `run_script.sh`, which can be modified and used to run
+VALENCE/NITROGEN jobs.
 
-```
- $ export LD_LIBRARY_PATH=/home/user/VALENCE/lib/:/home/user/VALENCE/simint/lib/:$LD_LIBRARY_PATH
- $ export VALENCE_SCRIPT=/home/user/VALENCE/nitrogen/parallel_run_script.sh
-```
- run the NITROGEN binary while passing the VALENCE input on stdin: 
+This script sets the appropriate paths, and exports VALENCE_SCRIPT.
+If VALENCE is compiled with -D.., and MPI, and one wishes to run the
+VALENCE energy calculations in parallel, then $VALENCE_SCRIPT is the
+script which will be called from the VALENCE API and run a single point
+energy in parallel.
 
-`$ ~/path_to_nitrogen/nitrogen/bin/nitrogen VSVB_STAT.job < nh3_atoms.inp `
-
-This is in a run_script, `run_script.sh`, which can be modified.

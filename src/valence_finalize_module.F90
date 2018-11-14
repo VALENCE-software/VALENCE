@@ -39,6 +39,7 @@ subroutine deallocate_input
   deallocate(  pair_sc,  stat = ierr )
 
   deallocate(      con_coeff,  stat = ierr )
+  deallocate( unnormalized_con_coeff,  stat = ierr )
   deallocate(       exponent,  stat = ierr )
   deallocate(     nuc_charge,  stat = ierr )
   deallocate(        ang_mom,  stat = ierr )

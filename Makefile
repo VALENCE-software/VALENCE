@@ -116,6 +116,12 @@ ifeq ($(BUILD_SHARED_LIB),false)
    FFLAGS+=-O3 -g
 else
    FFLAGS+=-fPIC -O3 -g
+# this option is for parallel VALENCE runs during
+# integration with NITROGEN. The integration will
+# still work with NITROGEN in serial if this flag
+# is not set. This is only for if one wishes to
+# run VALENCE in parallel during a NITROGEN run
+#   FFLAGS+=-fPIC -O3 -g -DVALENCE_NITROGEN_PARALLEL
 endif
 
 OBJS=givens.o rsg.o tools_module.o valence_simint_module.o density_module.o\

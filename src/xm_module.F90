@@ -124,11 +124,11 @@ contains
 
              if ( con_length .eq. 1 ) then
                 read *,  exponent( np )
-                con_coeff( np ) = 1.0d+00
+                unnormalized_con_coeff( np ) = 1.0d+00
                 np = np + 1
              else
                 do    k  =  1,  con_length
-                   read *,  exponent( np ), con_coeff( np )
+                   read *,  exponent( np ), unnormalized_con_coeff( np )
                    np = np + 1
                 end   do
              end if
@@ -249,7 +249,7 @@ contains
     call mpi_bcast( nuc_charge, natom_t, mpi_real8, from, comm, ierr )
     call mpi_bcast( coords, 3*natom, mpi_real8, from, comm, ierr )
     call mpi_bcast( exponent, num_pr, mpi_real8, from, comm, ierr )
-    call mpi_bcast( con_coeff, num_pr, mpi_real8, from, comm, ierr )
+    call mpi_bcast( unnormalized_con_coeff, num_pr, mpi_real8, from, comm, ierr )
     call mpi_bcast( coeff, totlen, mpi_real8, from, comm, ierr )
     call mpi_bcast( coeff_sc, nspinc, mpi_real8, from, comm, ierr )
 #endif

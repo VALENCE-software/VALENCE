@@ -59,6 +59,7 @@ subroutine read_allocate_input
   allocate(     nuc_charge( natom_t     ),  stat = ierr )
   allocate(       exponent( num_pr      ),  stat = ierr )
   allocate(      con_coeff( num_pr      ),  stat = ierr )
+  allocate( unnormalized_con_coeff( num_pr      ),  stat = ierr )
 
   spinopt  =  .false.
   !!  uncomment this for Blue Gene /Q
@@ -101,19 +102,5 @@ subroutine read_allocate_input
   dtol =     ten**( -ntol_d  )
   itol =     ten**( -ntol_i )
 
-#ifdef VALENCE_NITROGEN_READ
-#else
-  !     normalize the primitive weights
-  ! this is here since you only want to do it once
-  do    i  =  1,  natom_t
-     mnshi =         map_atom2shell( i )
-     mxshi = mnshi + num_shell_atom( i ) - 1
-     do    j  =  mnshi, mxshi
-        k = map_shell2prim( j )
-        call  norm_prim( ang_mom( j ), map_shell2prim( j+1 ) - k,  &
-             exponent( k ), con_coeff( k ) )
-     end   do
-  end   do
-#endif
 end subroutine read_allocate_input
 end module valence_init
