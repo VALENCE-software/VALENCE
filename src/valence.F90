@@ -67,10 +67,22 @@ subroutine      calculate_vsvb_energy( energy )
   integer   int_out(2)    !  lengths not
   real(dp)   dbl_out(2)    !   protected
 
+  !     normalize the primitive weights, put output in con_coeff
+  do    i  =  1,  natom_t
+     mnshi =         map_atom2shell( i )
+     mxshi = mnshi + num_shell_atom( i ) - 1
+     do    j  =  mnshi, mxshi
+        k = map_shell2prim( j )
+        call  norm_prim( ang_mom( j ), map_shell2prim( j+1 ) - k,  &
+             exponent( k ), con_coeff( k ), unnormalized_con_coeff( k ) )
+     end   do
+  end   do
+
 #ifdef SIMINT_INT
      ! initialize simint, based on basis set that was read in
      call valence_initialize_simint
 #endif
+
 
   !     compute the nuclear repulsion energy
 
@@ -177,7 +189,7 @@ subroutine      calculate_vsvb_energy( energy )
 #endif
   dbl_out( 1 ) = energy
   call xm_print( 'parameter', 'guess energy;', int_out, dbl_out )
-  call xm_output( 'save', energy,etol )
+  call xm_output( 'save', energy,etol, 'orbitals', .false. )
 
 
   !     max_iter=1 with nset=0 can be used to do just the spin optimization
@@ -438,7 +450,7 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                  dbl_out( 3 ) = perturb
                  dbl_out( 4 ) = coeff( icoeff )
                  call  xm_print( 'demgs', ' ', int_out, dbl_out )
-                 call xm_output( 'save', energy,etol )
+                 call xm_output( 'save', energy,etol,'orbitals', .false. )
                  eprev  =  energy
               else
 
@@ -474,7 +486,7 @@ subroutine  demgs_opt ( iorb,num_iter,cumulx,energy,etol,coefflock )
                     dbl_out( 3 ) = -perturb
                     dbl_out( 4 ) = coeff( icoeff )
                     call  xm_print( 'demgs', ' ', int_out, dbl_out )
-                    call xm_output( 'save', energy,etol )
+                    call xm_output( 'save', energy,etol,'orbitals', .false. )
                     eprev  =  energy
                  else
 
@@ -2245,14 +2257,16 @@ end subroutine  ndf2obs
 !! \param con_length [in] : number of primitives in the shell--dimension of
 !!  exponent and con_coeff
 !! \param exponent [in] : array of exponents of primitive GTOs in the shell
-!! \param con_coeff [in/out] : array of coefficients of primitive GTOs in the
-!!                             shell
+!! \param con_coeff [out] : array of coefficients of primitive GTOs in the
+!!                          shell that have been normalized
+!! \param unnormalized_con_coeff [in] : array of coefficients of primitive GTOs in the
+!!                             shell that are not normalized
 subroutine norm_prim (  ang_mom, con_length,   &
-     exponent, con_coeff )
+     exponent, con_coeff, unnormalized_con_coeff )
   use tools, only: dp
   implicit   none
   integer    ang_mom,  con_length
-  real(dp)     exponent(*),  con_coeff(*)
+  real(dp)   exponent(*), con_coeff(*), unnormalized_con_coeff(*)
 
   integer    ig, jg
   real(dp)     two, dblfac, pi32, sovl, fac, fax
@@ -2267,7 +2281,8 @@ subroutine norm_prim (  ang_mom, con_length,   &
   fax = -1.5_dp -ang_mom
   do ig = 1,  con_length
      sovl  =  fac*( ( two * exponent( ig ) )**fax )
-     con_coeff( ig )  =  con_coeff( ig )*( sovl**( -0.5_dp ) )
+!     con_coeff( ig )  =  con_coeff( ig )*( sovl**( -0.5_dp ) )
+     con_coeff( ig )  =  unnormalized_con_coeff( ig )*( sovl**( -0.5_dp ) )
   end do
 
   !     compute the normalization factor for the whole CGTO
@@ -2780,7 +2795,7 @@ subroutine minimize_energy( energy,  &
                        dbl_out( 1 ) = cumulx
                        dbl_out( 2 ) = relaxn/etol
                        call  xm_print( 'iters', ' ', int_out, dbl_out )
-                       call xm_output( 'save', energy,etol )
+                       call xm_output( 'save', energy,etol,'orbitals',.false. )
 
                     end  if    !  DEM or 1st-order optimization method
 
@@ -2817,7 +2832,7 @@ subroutine minimize_energy( energy,  &
            dbl_out( 1 ) = cumulx
            dbl_out( 2 ) = relaxn/etol
            call  xm_print( 'iters', ' ', int_out, dbl_out )
-           call xm_output( 'save', energy,etol )
+           call xm_output( 'save', energy,etol,'orbitals',.false. )
 
            finished = abs( energy - eprv_sc )*tokcal .lt. etol
         else
@@ -2839,7 +2854,7 @@ subroutine minimize_energy( energy,  &
      call xm_print( 'title', 'calculation converged;' )
      dbl_out( 1 ) = energy
      call xm_print('parameter', 'total energy;', int_out, dbl_out )
-     call xm_output( 'done', energy,etol )
+     call xm_output( 'done', energy,etol,'orbitals',.false. )
 
   else  if  (  num_iter .ge. max_iter  )  then
      call xm_print( 'title', 'reached iteration limit;' )

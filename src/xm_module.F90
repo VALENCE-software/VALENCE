@@ -124,11 +124,11 @@ contains
 
              if ( con_length .eq. 1 ) then
                 read *,  exponent( np )
-                con_coeff( np ) = 1.0d+00
+                unnormalized_con_coeff( np ) = 1.0d+00
                 np = np + 1
              else
                 do    k  =  1,  con_length
-                   read *,  exponent( np ), con_coeff( np )
+                   read *,  exponent( np ), unnormalized_con_coeff( np )
                    np = np + 1
                 end   do
              end if
@@ -249,7 +249,7 @@ contains
     call mpi_bcast( nuc_charge, natom_t, mpi_real8, from, comm, ierr )
     call mpi_bcast( coords, 3*natom, mpi_real8, from, comm, ierr )
     call mpi_bcast( exponent, num_pr, mpi_real8, from, comm, ierr )
-    call mpi_bcast( con_coeff, num_pr, mpi_real8, from, comm, ierr )
+    call mpi_bcast( unnormalized_con_coeff, num_pr, mpi_real8, from, comm, ierr )
     call mpi_bcast( coeff, totlen, mpi_real8, from, comm, ierr )
     call mpi_bcast( coeff_sc, nspinc, mpi_real8, from, comm, ierr )
 #endif
@@ -383,16 +383,17 @@ contains
 
 
 
-  subroutine    xm_output ( mode, energy,etol )
+  subroutine    xm_output ( mode, energy,etol, file_name, append )
     use           integrals
     use           densitywork
     use tools, only: dp
     implicit      none
-    character(*)  mode
+    character(*)  mode, file_name
 
     integer        i,j, nproc,myrank,master
     real(dp)        energy, etol
 
+    logical append
 
 
     call xm_inherit( nproc, myrank, master )
@@ -402,8 +403,13 @@ contains
 
           !     output N-electron wave function 
 
+          if( .not. append ) then
           open ( unit = 11, file = 'nelecwfn', form = 'formatted'  &
                ,      status = 'unknown' )
+          else
+          open ( unit = 11, file = file_name, form = 'formatted'  &
+               ,      status = 'unknown', access='append' )
+          endif
 
           if ( nspinc .eq. 1 ) then
              write ( 11, 3 ) ( pair_sc( i, 1, 1 ), pair_sc( i, 2, 1 ),  &
@@ -421,9 +427,14 @@ contains
        end  if
 
 
-       open ( unit = 10, file = 'orbitals', form = 'formatted'  &
+       if( .not. append ) then
+       open ( unit = 10, file = file_name, form = 'formatted'  &
             ,      status = 'unknown' )
+       else
+       open ( unit = 10, file = file_name, form = 'formatted'  &
+            ,      status = 'unknown', access='append' )
 
+       endif
 
        !     output spin coupled orbitals
 
@@ -487,6 +498,122 @@ contains
 7   format(1x,'converged to ',1e10.2 ,' kCal/mol')
   end subroutine  xm_output
 
+!> prints out the first two lines of the input file
+!! \param file_name [in]: name of file to write to
+!! \param append [in]: logical flag determining whether to append
+!!                     to file_name or not
+  subroutine    xm_output_dimensions_tolerances ( file_name, append )
+    use           integrals
+    use           densitywork
+    use tools, only: dp
+    implicit      none
+    character(*)  file_name
+
+    integer        i,j, nproc,myrank,master, myiostat
+    real(dp)      zero,         ten,            rln10
+    parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
+
+    logical append
+
+    call xm_inherit( nproc, myrank, master )
+
+    if ( myrank .eq. master ) then
+
+       if( .not. append ) then
+          open(unit=107, file=file_name, status='UNKNOWN', action='readwrite', &
+               position='rewind', iostat=myiostat)
+       else
+          open(unit=107, file=file_name, status='UNKNOWN', action='readwrite', &
+               access='append', iostat=myiostat)
+       endif
+
+       write(107,"(15i4)") natom,natom_t, npair,nunpd,ndocc,  &
+            totlen,xpmax, nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr
+
+       write(107,*)
+
+       write(107,"(6i4, f16.12, f16.12 )",advance="no")  int(ctol/rln10), &
+            int(-log(dtol)/log(10.0_dp)), int(-log(itol)/log(10.0_dp)), &
+            ntol_e_min, ntol_e_max, max_iter, ptbnmax,feather
+
+       do j=1,nset
+          write(107,"(2i4)",advance="no") orbset( 1, j ), orbset( 2, j )
+       enddo
+
+       close(unit=107)
+
+    end  if         !  myrank = master
+
+  end subroutine  xm_output_dimensions_tolerances
+
+!> prints out the coordinates and basis set from the input file
+!! \param file_name [in]: name of file to write to
+!! \param append [in]: logical flag determining whether to append
+!!                     to file_name or not
+  subroutine    xm_output_coords_basis ( file_name, append )
+    use           integrals
+    use           densitywork
+    use tools, only: dp
+    implicit      none
+    character(*)  file_name
+
+    integer        i,j, nproc,myrank,master, myiostat, ns, np, k, con_length
+
+    logical append
+
+    call xm_inherit( nproc, myrank, master )
+
+    if ( myrank .eq. master ) then
+
+       if( .not. append ) then
+          open(unit=107, file=file_name, status='UNKNOWN', action='readwrite', &
+               position='rewind', iostat=myiostat)
+       else
+          open(unit=107, file=file_name, status='UNKNOWN', action='readwrite', &
+               access='append', iostat=myiostat)
+       endif
+
+       do j=1,natom
+          write(107,"(i4,' ')",advance="no") atom_t(j)
+          do i=1,3
+             write(107,"(f16.12,' ')",advance="no")  coords(i,j)
+             write(*,"(f16.12,' ')",advance="no")  coords(i,j)
+          end do
+          write(107,*)
+          write(*,*)
+       end do
+
+       write(107,*)
+       ! basis set
+       ns = 1
+       np = 1
+       do    i  =  1,  natom_t
+          write(107,"(f16.12,i4)")  nuc_charge( i ),num_shell_atom( i )
+          do    j  =  1,  num_shell_atom( i )
+             con_length = map_shell2prim( ns + 1 ) - map_shell2prim( ns )
+             write(107,"(2i4)")  ang_mom( ns ), con_length
+
+             if ( con_length .eq. 1 ) then
+                write(107,"(f18.12)")  exponent( np )
+                np = np + 1
+             else
+                do k  =  1,  con_length
+                   write(107,"(2f18.12)")  exponent( np ), unnormalized_con_coeff( np )
+                   np = np + 1
+                end   do
+             end if
+
+             ns = ns + 1
+          end   do
+       end   do
+
+       write(107,*)
+
+       close(unit=107)
+
+    end  if         !  myrank = master
+
+  end subroutine  xm_output_coords_basis
 
 
 

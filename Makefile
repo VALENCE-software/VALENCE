@@ -116,11 +116,17 @@ ifeq ($(BUILD_SHARED_LIB),false)
    FFLAGS+=-O3 -g
 else
    FFLAGS+=-fPIC -O3 -g
+# this option is for parallel VALENCE runs during
+# integration with NITROGEN. The integration will
+# still work with NITROGEN in serial if this flag
+# is not set. This is only for if one wishes to
+# run VALENCE in parallel during a NITROGEN run
+#   FFLAGS+=-fPIC -O3 -g -DVALENCE_NITROGEN_PARALLEL
 endif
 
 OBJS=givens.o rsg.o tools_module.o valence_simint_module.o density_module.o\
 	 integrals_module.o valence.o timing_flops_module.o xm_module.o \
-	 valence_api_nitrogen.o valence_initialize_module.o  \
+	 valence_api_nitrogen.o valence_api.o valence_initialize_module.o  \
 	 valence_finalize_module.o
 
 ifeq ($(GIVENS), USE_C)
@@ -208,6 +214,8 @@ valence.o : $(SRCDIR)/valence.F90 tools_module.o density_module.o integrals_modu
 givens_in_c.o : $(SRCDIR)/givens_in_c.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 valence_api_nitrogen.o : $(SRCDIR)/valence_api_nitrogen.F90
+	$(FC) $(FFLAGS) -c $< -o $@
+valence_api.o : $(SRCDIR)/valence_api.F90
 	$(FC) $(FFLAGS) -c $< -o $@
 valence_initialize_module.o : $(SRCDIR)/valence_initialize_module.F90 xm_module.o xm.mod
 	$(FC) $(FFLAGS) -c $< -o $@
