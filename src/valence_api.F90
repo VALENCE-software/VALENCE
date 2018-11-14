@@ -56,63 +56,13 @@ subroutine valence_api_calculate_energy(x,v)
 
   !  update coordinates
 #ifdef VALENCE_NITROGEN_PARALLEL
-  open(unit=107, file='input', status='UNKNOWN', action='readwrite', &
-       position='rewind', iostat=myiostat)
 
-
-  write(107,"(15i4)") natom,natom_t, npair,nunpd,ndocc,  &
-       totlen,xpmax, nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr
-
-  write(107,*)
-
-  write(107,"(6i4, f16.12, f16.12 )",advance="no")  int(ctol/rln10), &
-       int(-log(dtol)/log(10.0_dp)), int(-log(itol)/log(10.0_dp)), &
-       ntol_e_min, ntol_e_max, max_iter, ptbnmax,feather
-
-  do j=1,nset
-     write(107,"(2i4)",advance="no") orbset( 1, j ), orbset( 2, j )
-  enddo
+  call xm_output_dimensions_tolerances( 'input', .false. )
 
   write(107,*)
   write(107,*)
 
-  do j=1,natom
-     write(107,"(i4,' ')",advance="no") atom_t(j)
-     do i=1,3
-        write(107,"(f16.12,' ')",advance="no")  coords(i,j)
-        write(*,"(f16.12,' ')",advance="no")  coords(i,j)
-     end do
-     write(107,*)
-     write(*,*)
-  end do
-
-  write(107,*)
-  ! basis set
-  ns = 1
-  np = 1
-  do    i  =  1,  natom_t
-     write(107,"(f16.12,i4)")  nuc_charge( i ),num_shell_atom( i )
-     do    j  =  1,  num_shell_atom( i )
-        con_length = map_shell2prim( ns + 1 ) - map_shell2prim( ns )
-        write(107,"(2i4)")  ang_mom( ns ), con_length
-
-        if ( con_length .eq. 1 ) then
-           write(107,"(f18.12)")  exponent( np )
-           np = np + 1
-        else
-           do k  =  1,  con_length
-              write(107,"(2f18.12)")  exponent( np ), unnormalized_con_coeff( np )
-              np = np + 1
-           end   do
-        end if
-
-        ns = ns + 1
-     end   do
-  end   do
-
-  write(107,*)
-
-  close(unit=107)
+  call xm_output_coords_basis( 'input', .true. )
 
   ! add orbitals to the new_input file
   if( first_time ) then
@@ -122,7 +72,6 @@ subroutine valence_api_calculate_energy(x,v)
   else
      call system( "cat input orbitals > new_input" )
   endif
-
 
   ! call the script at location $VALENCE_SCRIPT to run VALENCE with MPI
   call getenv( "VALENCE_SCRIPT", script)
