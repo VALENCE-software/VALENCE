@@ -48,7 +48,7 @@ subroutine calcsurface(x,v)
   real(dp), dimension(*) :: x
   real(dp) v
   integer i,k,j
-#ifdef VALENCE_NITROGEN_READ
+#ifdef VALENCE_NITROGEN_PARALLEL
   real(dp) energy, etol
   real(dp)      zero,         ten,            rln10
   parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
@@ -66,7 +66,7 @@ subroutine calcsurface(x,v)
   end   do
      
 !  update coordinates
-#ifdef VALENCE_NITROGEN_READ
+#ifdef VALENCE_NITROGEN_PARALLEL
   open(unit=107, file='input', status='UNKNOWN', action='readwrite', &
        position='rewind', iostat=myiostat)
 
