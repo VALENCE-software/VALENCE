@@ -126,7 +126,7 @@ endif
 
 OBJS=givens.o rsg.o tools_module.o valence_simint_module.o density_module.o\
 	 integrals_module.o valence.o timing_flops_module.o xm_module.o \
-	 valence_api_nitrogen.o valence_initialize_module.o  \
+	 valence_api_nitrogen.o valence_api.o valence_initialize_module.o  \
 	 valence_finalize_module.o
 
 ifeq ($(GIVENS), USE_C)
@@ -214,6 +214,8 @@ valence.o : $(SRCDIR)/valence.F90 tools_module.o density_module.o integrals_modu
 givens_in_c.o : $(SRCDIR)/givens_in_c.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 valence_api_nitrogen.o : $(SRCDIR)/valence_api_nitrogen.F90
+	$(FC) $(FFLAGS) -c $< -o $@
+valence_api.o : $(SRCDIR)/valence_api.F90
 	$(FC) $(FFLAGS) -c $< -o $@
 valence_initialize_module.o : $(SRCDIR)/valence_initialize_module.F90 xm_module.o xm.mod
 	$(FC) $(FFLAGS) -c $< -o $@
