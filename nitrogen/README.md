@@ -150,6 +150,8 @@ Then put the appropriate environment variable in the path, and export VALENCE_SC
  $ export LD_LIBRARY_PATH=/home/user/VALENCE/lib/:/home/user/VALENCE/simint/lib/:$LD_LIBRARY_PATH
  $ export VALENCE_SCRIPT=/home/user/VALENCE/nitrogen/parallel_run_script.sh
 ```
- run the NIROGEN binary while passing the VALENCE input on stdin: 
+ run the NITROGEN binary while passing the VALENCE input on stdin: 
 
 `$ ~/path_to_nitrogen/nitrogen/bin/nitrogen VSVB_STAT.job < nh3_atoms.inp `
+
+This is in a run_script, `run_script.sh`, which can be modified.
