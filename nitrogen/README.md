@@ -10,9 +10,11 @@ This starts with recompiling simint as a shared object:
 
 1. Compile SIMINT as a shared object 
 
-you can use 
+One option is to use 
 
 ``` $ SIMINT_EXTRA=-DBUILD_SHARED_LIBS:Bool=True ./install-simint.sh```
+
+But you may need to modify some of the compiler flags, like CC and CXX.
 
 2. Compile VALENCE as a shared object
 
@@ -23,6 +25,9 @@ libary path at runtime:
 
 ``` $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/user/VALENCE/simint/lib64/:/home/user/VALENCE/lib/ ```
 
+(If you wish to run each energy calculation from VALENCE in parallel,
+then modify the Makefile to include "-DVALENCE_NITROGEN_PARALLEL "
+in FFLAGS.)
 
 3. Then write a VALENCE input file with the basis and geometry that you wish to use as an initial starting point:
 
@@ -148,7 +153,7 @@ were used in the VALENCE input file.
 VALENCE/NITROGEN jobs.
 
 This script sets the appropriate paths, and exports VALENCE_SCRIPT.
-If VALENCE is compiled with -D.., and MPI, and one wishes to run the
+If VALENCE is compiled with -DVALENCE_NITROGEN_PARALLEL, and MPI, and one wishes to run the
 VALENCE energy calculations in parallel, then $VALENCE_SCRIPT is the
 script which will be called from the VALENCE API and run a single point
 energy in parallel.
