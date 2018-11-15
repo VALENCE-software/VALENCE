@@ -649,8 +649,8 @@ contains
     if( present( comm ) ) then
       valence_global_communicator = comm
     else
-       valence_global_communicator = mpi_comm_world
        call mpi_init( ierr )
+       valence_global_communicator = mpi_comm_world
     endif
 
     call mpi_comm_rank( valence_global_communicator, irank, ierr )
@@ -677,7 +677,7 @@ contains
 
   !     ... likewise, for tidy exit
 
-  subroutine  xm_end( comm )
+  subroutine  xm_end( skip_mpi_finalize )
     use timing_flops  
     implicit    none
 #ifdef VALENCE_MPI
@@ -686,7 +686,7 @@ contains
 #endif
 
     integer nproc, myrank,master
-    integer, intent(in), optional :: comm
+    integer, intent(in), optional :: skip_mpi_finalize
 
 #ifdef PRINT_COUNTERS
     integer(8) sum_determinants
@@ -731,8 +731,8 @@ contains
 
 
 #ifdef VALENCE_MPI
-    ! if the user input a communicator, don't finalize--they will finalize later
-    if( .not. present( comm ) ) call mpi_finalize( ierr )
+    ! if the user input a flag, don't finalize--they will finalize later
+    if( .not. present( skip_mpi_finalize ) ) call mpi_finalize( ierr )
 #endif
 
   end subroutine  xm_end

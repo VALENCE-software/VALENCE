@@ -2,8 +2,8 @@
 !> initializes VSVB info
 !! \param info [out] : set to 0 if initialization occurs successfully
 subroutine init(info)
-  integer info
-  call valence_api_initialize(info)
+  integer info, dummy
+  call valence_api_initialize(info, 1, dummy)
 end subroutine init
 
 !> returns the number of atoms
@@ -30,6 +30,7 @@ subroutine calcsurface(x,v)
 
 end subroutine calcsurface
 
+!> finalizes VSVB 
 subroutine finalize
-  call valence_api_finalize()
+  call valence_api_finalize( 1 )
 end subroutine finalize

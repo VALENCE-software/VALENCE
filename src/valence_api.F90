@@ -1,24 +1,32 @@
 
 !> initializes VSVB info
 !! \param info [out] : set to 0 if initialization occurs successfully
-subroutine valence_api_initialize(info)
+!! \param call_mpi_init [in] : flag to call mpi_init or not
+!!                if it's 0, do not call mpi_init.
+!!                if it's 1, call mpi_init.
+!! \param comm [in] : MPI communicator to be used if call_mpi_init == 0
+!!                and MPI is being used
+subroutine valence_api_initialize( info, call_mpi_init, comm )
   use tools, only: dp
   use integrals
   use valence_init
   implicit none
 #ifdef VALENCE_MPI
   include "mpif.h"
-  integer ierr, mpi_new_comm,status
+  integer ierr, status
 #endif
-  integer info
+  integer info, call_mpi_init, comm
   ! call initialization of VSVB code
+
 #ifdef VALENCE_MPI
-  call mpi_init(status)
-!  call mpi_comm_dup( mpi_comm_world, mpi_new_comm, ierr)
-!  call valence_initialize( mpi_new_comm )
-  call valence_initialize( mpi_comm_world )
+  if( call_mpi_init .eq. 0 ) then
+    call valence_initialize( comm )
+  else
+! passing no argument means that MPI_Init will be called internally
+     call valence_initialize( )
+  endif
 #else
-  call valence_initialize( )
+    call valence_initialize( )
 #endif
   info = 0
 end subroutine valence_api_initialize
@@ -87,11 +95,12 @@ subroutine valence_api_calculate_energy(x,v)
 
   call angs2bohr(natom,coords)
   call calculate_vsvb_energy( v )
+
 #endif
 
-
 #ifdef VALENCE_MPI
-  call xm_end( mpi_comm_world )
+! passing an argument means that MPI_Finalize will not be called internally
+  call xm_end( 1 )
 #else
   call xm_end( )
 #endif
@@ -99,15 +108,27 @@ subroutine valence_api_calculate_energy(x,v)
 end subroutine valence_api_calculate_energy
 
 !> finalizes VSVB run
-subroutine valence_api_finalize
+!! \param call_mpi_finalize [in] : flag to call mpi_finalize or not
+!!                if it's 0, do not call mpi_finalize.
+!!                if it's 1, call mpi_finalize.
+subroutine valence_api_finalize( call_mpi_finalize )
   use valence_finit
   implicit none
+  integer call_mpi_finalize
 #ifdef VALENCE_MPI
   include "mpif.h"
   integer status
-  call valence_finalize( mpi_comm_world )
-  call mpi_finalize( status )
+  if( call_mpi_finalize .eq. 0 ) then
+! passing an argument means that MPI_Finalize will not be called internally
+      call valence_finalize( 1 )
+  else
+! passing no argument means that MPI_Finalize will be called internally
+      call valence_finalize(  )
+  endif
 #else
+
   call valence_finalize( )
+
 #endif
+
 end subroutine valence_api_finalize
