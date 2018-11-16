@@ -33,17 +33,23 @@ A Massively Parallel Implementation of Variational Subspace Valence Bond
 
 When first downloaded, this repository includes
 
+- .travis.yml
 - How-to-build-VALENCE.md
 - LICENSE
 - Makefile
 - README.md
 - doc/
 - examples/
+- install-mpich.sh*
+- install-simint.sh*
+- nitrogen/
 - src/
 - testing/
+- valence_tutorial.ipynb
 - vtools/
 
-Most of the above items are self-explanatory. The directories, /examples/ and /testing/, both contain input files that can be used to validate the binary. /testing/ contains an established set of inputs primarily for internal use. While there is some overlap with /testing/, /examples/ is oriented more toward educating the user about the various functions of VALENCE and features of VSVB (see Section 6 for more details). /vtools/ contains tools for automatic input generation and is described in Section 7. /doc/ contains a write-up of the method and Doxygen-generated documentation. The next section contains a brief, practical introduction to VSVB - the method implemented by VALENCE.
+
+Most of the above items are self-explanatory. The directories, /examples/ and /testing/, both contain input files that can be used to validate the binary. /testing/ contains an established set of inputs primarily for internal use. While there is some overlap with /testing/, /examples/ is oriented more toward educating the user about the various functions of VALENCE and features of VSVB (see Section 6 for more details). /vtools/ contains tools for automatic input generation and is described in Section 7. /doc/ contains a write-up of the method and Doxygen-generated documentation. /nitrogen/ is concerned with the interface to NITROGEN (https://www.colorado.edu/nitrogen/) for optimizing molecular geometries and computing vibrational frequencies. The next section contains a brief, practical introduction to VSVB - the method implemented by VALENCE.
 
 
 
