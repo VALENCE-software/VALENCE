@@ -44,8 +44,7 @@ The SIMINT library path will resemble   [your path choice]/simint/libsimint.a   
 
 Next, to build VALENCE itself, please edit the Makefile to reflect your choices for the following options:
 
-1.  parallel or sequential build (SEQUENTIAL=true or false)
-    to help with building the parallel code please see  install-mpich.sh
+1.  parallel or sequential build (SEQUENTIAL=true or false). To help with building the parallel code please see  install-mpich.sh.
 2.  compiler (COMPILER_VENDOR=INTEL, GNU, ...)
 3.  SIMINT base path (SIMINT_BASE)
 4.  (optional) MPI library path (MPI_LIBRARY)
