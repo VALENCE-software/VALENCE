@@ -45,6 +45,7 @@ The SIMINT library path will resemble   [your path choice]/simint/libsimint.a   
 Next, to build VALENCE itself, please edit the Makefile to reflect your choices for the following options:
 
 1.  parallel or sequential build (SEQUENTIAL=true or false)
+    to help with building the parallel code please see  install-mpich.sh
 2.  compiler (COMPILER_VENDOR=INTEL, GNU, ...)
 3.  SIMINT base path (SIMINT_BASE)
 4.  (optional) MPI library path (MPI_LIBRARY)
@@ -54,7 +55,7 @@ Next, to build VALENCE itself, please edit the Makefile to reflect your choices 
 You can also try:
 
 - `make test` to run a < 5 minute set of tests to do a quick validation of the build (recommended).
-- `make test-large` to run a much longer set of tests to do a more thorough validation of the build (it is recommended to build the code with MPI).
+- `make test-large` to run a much longer set of tests to do a more thorough validation of the build. The longer tests may require multiprocessing (it is recommended to build the code with MPI).
 - `make doc` to build Doxygen documentation in the doc/ directory, if Doxygen is installed.
 
 Next, cd to 'vtools' and read the README file.
