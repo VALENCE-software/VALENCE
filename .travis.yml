@@ -1,10 +1,19 @@
-language: C
-sudo: required
+matrix:
+  include:
+   - language: c
+     sudo: required
+     env: 
+     - SIMINT_EXTRA=-DBUILD_SHARED_LIBS:Bool=True
+     - BUILD_SHARED_LIB=true
+     - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/simint/lib/:$PWD/lib/
+   - language: c
+     sudo: required
+
 before_install:
   - sudo apt-get install -y gfortran cmake
   - ./install-simint.sh
   - ./install-mpich.sh
-script: 
+script:
   - make
   - make test
   - export PATH=/home/travis/bin/:$PATH
