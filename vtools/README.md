@@ -4,30 +4,25 @@ Vtools provides tools to prepare input for VALENCE and parse the output.
 
 
 ## Installation
-Vtools is a python script so does not require installation; however,
-it depends on Open Babel python bindings so that must be installed on your
-system. The simplest way to install Open Babel is through Conda.
+Vtools does not require installation; however,
+it depends on other Python modules that requires installation. 
+We recommend Conda for the installation.
 
 If you do not have conda, you can follow the instructions at
 https://conda.io/miniconda.html to install miniconda.
 
-With conda you can install Open Babel with:
+You can create a conda environment with:
 
 ```
-conda install -c openbabel openbabel
+conda env create -f environment.yml
+```
+After conda creates the environment, you can activate it with
+```
+conda activate valence-env
 ```
 
-You also need to copy "ebsel" python module to be able to use
-an arbitrary basis set from EMSL Basis Set Exhange database. To do that
-you need to clone ebsel module within vtools directory.
-
 ```
-cd vtools
-git clone https://github.com/jaimergp/ebsel.git
-```
-## Usage
-```
-vtools.py [-h] [-i INPUT] [-b BASIS] [-d DIRECTORY] [-f FILENAME]
+python vtools.py [-h] [-i INPUT] [-b BASIS] [-d DIRECTORY] [-f FILENAME]
                     [-o ORBITALS] [-v VALENCE] [-m MODELKIT] [--opt OPT]
                     [-A] [-F] [-G] [-M] [-R] [-W]
 
