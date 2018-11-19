@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-import obtools as ob
-import iotools as io
+from . import obtools as ob
+from . import iotools as io
 import logging
 import json
 try:
