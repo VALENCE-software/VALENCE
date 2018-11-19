@@ -1,3 +1,3 @@
 # Testing
 
-This directory contains test files for testing and validation.
+This directory contains test inputs and scripts for testing and validation.
