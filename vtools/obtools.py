@@ -119,7 +119,7 @@ def get_mol(s, make3D=False, mult=None):
     import pybel
     if type(s) is pybel.Molecule:
         mol = s
-    elif type(s) is str:
+    elif type(s) is str or 'unicode' in str(type(s)):
         if s.endswith('.xyz'):
             mol = next(pybel.readfile('xyz', s))
         elif '_m' in s and len(s.splitlines()) == 1:
