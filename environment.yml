@@ -1,0 +1,16 @@
+name: valence-env
+
+channels:
+  - openbabel
+dependencies:
+  - python=2.7
+  - numpy
+  - matplotlib
+  - openbabel
+  - jupyter
+  - nb_conda
+  - ipykernel 
+  - pip:
+    - py3Dmol
+    - "--editable=git+https://github.com/jaimergp/ebsel.git#egg=ebsel"
+
