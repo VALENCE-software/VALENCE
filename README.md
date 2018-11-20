@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/VALENCE-software/VALENCE.svg?branch=master)](https://travis-ci.com/VALENCE-software/VALENCE)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/VALENCE-software/VALENCE/master?filepath=valence_tutorial.ipynb)
+[![codecov](https://codecov.io/gh/VALENCE-software/VALENCE/branch/master/graph/badge.svg)](https://codecov.io/gh/VALENCE-software/VALENCE)
 
 # VALENCE 
 A Massively Parallel Implementation of Variational Subspace Valence Bond 
