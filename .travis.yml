@@ -8,6 +8,10 @@ matrix:
      - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/simint/lib/:$PWD/lib/
    - language: c
      sudo: required
+   - language: c
+     sudo: required
+     env:
+     - VALENCE_EXTRA_FLAGS="-O0 -fprofile-arcs -ftest-coverage"
 
 before_install:
   - sudo apt-get install -y gfortran cmake
@@ -20,3 +24,5 @@ script:
   - export LD_LIBRARY_PATH=/home/travis/lib:/$LD_LIBRARY_PATH
   - SEQUENTIAL=false make
   - SEQUENTIAL=false travis_wait 60 make test-large
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
