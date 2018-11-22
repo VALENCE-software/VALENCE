@@ -1,0 +1,24 @@
+
+Implementation paper:
+
+@article{Fletcher2015,
+author = {Fletcher, G. D.},
+doi = {10.1063/1.4916743},
+issn = {00219606},
+journal = {Journal of Chemical Physics},
+number = {13},
+pages = {134112},
+pmid = {25854233},
+title = {{The variational subspace valence bond method}},
+url = {http://aip.scitation.org/doi/10.1063/1.4916743},
+volume = {142},
+year = {2015}
+}  
+
+Software:
+ 
+@misc{valence,
+title = {{VALENCE, Quantum chemistry software implementing the Variational Subspace Valence bond method, v1.0}},
+howpublished = {\url{https://github.com/VALENCE-software/VALENCE}, 
+doi = {10.5281/zenodo.1493601}
+}
