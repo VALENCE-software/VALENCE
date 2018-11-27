@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-from . import obtools as ob
-from . import iotools as io
+#from __future__ import absolute_import, division, print_function, unicode_literals
 import logging
 import json
+import obtools as ob
+import iotools as io
 try:
     #from ebsel.ebsel import EMSL_local  #not sure why this line doesn't work with python2.7
     from ebsel.EMSL_local import EMSL_local
@@ -33,15 +33,22 @@ def get_number_of_determinants(x):
     Return the number of determinants for the VALENCE calculation.
     Calculated by the formula:
     Number_of_det = 3 * n**4 / 2 - n**3 + 15 * n**2 / 2 - 2 * n
+    where n is the number of orbitals.
     Parameters
     -----------
-    x: int or any object that can return a mol object with obtools get_mol()
+    x: int (number of electrons) or any object that can return a mol object with obtools get_mol()
     """
+    import math
     try:
-        nelec = x + 2 - 2
-    except TypeError:
-        nelec = ob.get_nelectron(x)
-    return int(3*nelec**4/2-nelec**3+15*nelec**2/2-2*nelec)
+        norb = math.ceil(ob.get_nelectron(x) / 2)
+    except:
+        try:
+            norb = math.ceil(x / 2)
+        except TypeError:
+            logging.error("The input for get_number_of_determinants should be either an integer "
+            "for the number of electrons or an object that can return a mol object with ob.get_mol")
+            return 0
+    return int(3*norb**4/2-norb**3+15*norb**2/2-2*norb)
 
 
 def get_unique_atomic_numbers(x):
@@ -68,7 +75,9 @@ def get_unique_atomic_numbers(x):
 
 def get_nlonepair(mol,unique=False):
     """
-
+    Return the number of lone-pair orbitals. Currently
+    considers only O and N atoms as bearers of lone-pair
+    orbitals.
     """
     symbols = ob.get_symbol_list(mol)
     if unique:
@@ -1533,7 +1542,7 @@ def main():
             mkinputfile = io.get_unique_filename(prefix + '_mk.inp')
             print('Modelkit input file: {}'.format(mkinputfile))
             io.write_file(mkinput,mkinputfile)
-        if io.check_file(modelkit):
+        if io.check_exe(modelkit):
             guess = io.run(mkinput, modelkit)
         else:
             print('Cannot find {}. Specify the path to modelkit executable with --modelkit <pathtomodelkit>'.format(modelkit))
@@ -1566,6 +1575,11 @@ def main():
             print('VALENCE output: \n {}'.format(valenceoutput))
     return 0
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
+    if __package__ is None:
+        import sys
+        from os import path
+        sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+        import obtools as ob
+        import iotools as io
     main()

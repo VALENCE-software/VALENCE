@@ -488,7 +488,7 @@ def run(inp, exe):
     """
     """
     from subprocess import Popen, PIPE
-    process = Popen(exe, stdin= PIPE, stdout=PIPE, stderr=PIPE, encoding='utf8')
+    process = Popen(exe, stdin= PIPE, stdout=PIPE, stderr=PIPE)
     out, err = process.communicate(input=inp)
     if err:
         logging.error('ERROR in iotools.run: {}'.format(err))
