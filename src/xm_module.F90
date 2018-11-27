@@ -726,6 +726,7 @@ contains
 #endif
     if ( myrank .eq. 0) then
        write( *,'(A, I20)' ) 'Average over ranks: Determinants count:', sum_determinants/ nrank
+       write( *,'(A, I20)' ) 'Total over ranks: Determinants count:', sum_determinants
     endif
 #endif
 

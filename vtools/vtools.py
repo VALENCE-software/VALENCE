@@ -40,8 +40,8 @@ def get_number_of_determinants(x):
     try:
         nelec = x + 2 - 2
     except TypeError:
-        nelec = ob.get_nelectron(x)
-    return int(3*nelec**4/2-nelec**3+15*nelec**2/2-2*nelec)
+        nelec = ob.get_nelectron(x) / 2
+    return int(3*norb**4/2-norb**3+15*norb**2/2-2*norb)
 
 
 def get_unique_atomic_numbers(x):
