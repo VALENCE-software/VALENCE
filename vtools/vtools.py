@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+#from __future__ import absolute_import, division, print_function, unicode_literals
 import logging
 import json
+import obtools as ob
+import iotools as io
 try:
     #from ebsel.ebsel import EMSL_local  #not sure why this line doesn't work with python2.7
     from ebsel.EMSL_local import EMSL_local
@@ -43,8 +45,9 @@ def get_number_of_determinants(x):
         try:
             norb = math.ceil(x / 2)
         except TypeError:
-            logging.error("""The input for get_number_of_determinants should be either an integer
-            for the number of electrons or an object that can return a mol object with ob.get_mol""")
+            logging.error("The input for get_number_of_determinants should be either an integer "
+            "for the number of electrons or an object that can return a mol object with ob.get_mol")
+            return 0
     return int(3*norb**4/2-norb**3+15*norb**2/2-2*norb)
 
 
