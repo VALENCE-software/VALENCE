@@ -18,7 +18,7 @@ year = {2015}
 Software:
  
 @misc{valence,
-title = {{VALENCE, Quantum chemistry software implementing the Variational Subspace Valence bond method, v1.0}},
+title = {{VALENCE, Quantum chemistry software implementing the Variational Subspace Valence Bond Method, v1.0}},
 howpublished = {\url{https://github.com/VALENCE-software/VALENCE}, 
 doi = {10.5281/zenodo.1493601}
 }
