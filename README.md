@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/VALENCE-software/VALENCE.svg?branch=master)](https://travis-ci.com/VALENCE-software/VALENCE)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/VALENCE-software/VALENCE/master?filepath=valence_tutorial.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/VALENCE-software/VALENCE/determinants?filepath=valence_tutorial.ipynb)
 [![codecov](https://codecov.io/gh/VALENCE-software/VALENCE/branch/master/graph/badge.svg)](https://codecov.io/gh/VALENCE-software/VALENCE)
 [![DOI](https://zenodo.org/badge/152630099.svg)](https://zenodo.org/badge/latestdoi/152630099)
 
