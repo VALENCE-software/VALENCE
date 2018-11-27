@@ -1,5 +1,5 @@
 
-Implementation paper:
+- Method paper:
 
 @article{Fletcher2015,
 author = {Fletcher, G. D.},
@@ -15,10 +15,6 @@ volume = {142},
 year = {2015}
 }  
 
-Software:
- 
-@misc{valence,
-title = {{VALENCE, Quantum chemistry software implementing the Variational Subspace Valence Bond Method, v1.0}},
-howpublished = {\url{https://github.com/VALENCE-software/VALENCE}, 
-doi = {10.5281/zenodo.1493601}
-}
+- Software citation:
+
+VALENCE, Quantum chemistry software implementing the Variational Subspace Valence Bond Method, v1.0., doi:10.5281/zenodo.1493601, https://github.com/VALENCE-software/VALENCE.
