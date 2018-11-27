@@ -38,10 +38,10 @@ def get_number_of_determinants(x):
     x: int or any object that can return a mol object with obtools get_mol()
     """
     try:
-        nelec = x + 2 - 2
+        norbital = x + 2 - 2
     except TypeError:
-        nelec = ob.get_nelectron(x) / 2
-    return int(3*norb**4/2-norb**3+15*norb**2/2-2*norb)
+        norbital = int(ob.get_nelectron(x) / 2)
+    return int(3*norbital**4/2-norbital**3+15*norbital**2/2-2*norbital)
 
 
 def get_unique_atomic_numbers(x):
