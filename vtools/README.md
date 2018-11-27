@@ -20,6 +20,9 @@ After conda creates the environment, you can activate it with
 ```
 conda activate valence-env
 ```
+You can add valence-env as kernel to use it in Jupyter notebook files:
+
+python -m ipykernel install --user --name valence-env
 
 ```
 python vtools.py [-h] [-i INPUT] [-b BASIS] [-d DIRECTORY] [-f FILENAME]
