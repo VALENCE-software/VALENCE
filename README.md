@@ -834,7 +834,7 @@ The example below is for the ground state of dinitrogen. Bonding and anti-bondin
 
 
 This work was supported by Argonne Leadership Computing Facility, which is a DOE Office of Science User Facility supported under Contract DE-AC02-06CH11357. 
-The name, 'VALENCE', was chosen in honor of the famous book of that name by Charles Coulson, an early pioneer of valence bond theory.
+The name, 'VALENCE', was chosen in honor of the famous book by Charles Coulson, an early pioneer of valence bond theory.
 
 
 
