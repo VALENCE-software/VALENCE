@@ -64,11 +64,14 @@ Most of the above items are self-explanatory. The directories, /examples/ and /t
 
 In molecular electronic structure theory, variational subspace valence bond, or VSVB, is a type of generalized valence bond theory using gaussian atomic basis sets. Unlike the majority of methods in the mainstream of quantum chemistry such as Hartree-Fock, MP2, coupled-cluster, DFT, and so on, VSVB is based purely on orbitals that are allowed to overlap with one another. That is, VSVB does not use orthogonal ('molecular') orbitals. The first benefit is that VSVB orbitals tend to be highly local, typically involving just one or two atoms, in contrast to molecular orbitals which are typically delocalized over all the atoms in any given problem. The highly local orbitals have obvious advantages for chemical interpretability and computational scalability. 
 
-At the moment, the only paper on VSVB is:
+The first method paper is:
 
 Graham D. Fletcher, "The variational subspace valence bond method", 
 J. Chem. Phys. 142, 134112 (2015).
 http://dx.doi.org/10.1063/1.4916743
+
+See the CITATION file for more papers.
+
 
 In addition to a general background in quantum chemistry, it helps to read the above paper and references therein. The 
 document doc/notes-vsvb-energy.pdf also contain detailed information about the method.
