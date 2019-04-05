@@ -15,6 +15,21 @@ volume = {142},
 year = {2015}
 }  
 
+- Implementation paper:
+
+@article{doi:10.1002/jcc.25818,
+author = {Fletcher, Graham D. and Bertoni, Colleen and Keçeli, Murat and D'Mello, Michael},
+title = {Valence : A Massively Parallel Implementation of the Variational Subspace Valence Bond Method},
+journal = {Journal of Computational Chemistry},
+volume = {0},
+number = {0},
+pages = {},
+keywords = {electronic structure, valence bond, localized orbitals, strong scaling},
+doi = {10.1002/jcc.25818},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.25818},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/jcc.25818}
+}
+
 - Software citation:
 
 VALENCE, Quantum chemistry software implementing the Variational Subspace Valence Bond Method, v1.0., doi:10.5281/zenodo.1493601, https://github.com/VALENCE-software/VALENCE.
