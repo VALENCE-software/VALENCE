@@ -2274,7 +2274,6 @@ subroutine norm_prim (  ang_mom, con_length,   &
 
   !     multiply the coefficients of the primitive functions by their
   !     normalization factors (= 1/sqrt( self-overlap integral ))
-  !     the 'PT...' factor is (2L-1)!!/(2**L), 'pi32' = (Pi)**3/2
 
   pi32 = ( acos(-1.0_dp) )**( 1.5_dp )
   fac = pi32*dblfac( 2*ang_mom - 1 )*( two**( -ang_mom ) )
