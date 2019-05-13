@@ -2850,13 +2850,16 @@ subroutine minimize_energy( energy,  &
   if  (  nspinc  .gt.  1  )  eprev  =  eprv_sc
   if  (  abs( energy - eprev )*tokcal .lt. etol  )  then
 
-     call xm_print( 'title', 'calculation converged;' )
-     dbl_out( 1 ) = energy
-     call xm_print('parameter', 'total energy;', int_out, dbl_out )
-     call xm_output( 'done', energy,etol,'orbitals',.false. )
-
+     if( num_iter .ge. max_iter ) then
+        call xm_print( 'title', 'calculation unconverged. reached maximum number of iterations;' )
+     else
+        call xm_print( 'title', 'calculation converged;' )
+        dbl_out( 1 ) = energy
+        call xm_print('parameter', 'total energy;', int_out, dbl_out )
+        call xm_output( 'done', energy,etol,'orbitals',.false. )
+     end if
   else  if  (  num_iter .ge. max_iter  )  then
-     call xm_print( 'title', 'reached iteration limit;' )
+     call xm_print( 'title', 'calculation unconverged. reached maximum number of iterations;' )
   end if
 
 end subroutine minimize_energy
