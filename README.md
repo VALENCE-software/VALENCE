@@ -130,13 +130,13 @@ In what follows, a helpful concept is that of the 'orbital basis set' (OBS). In 
 Broadly, the input to VALENCE consists of specifications for the geometry, basis set, and a guess wave function, structured to facilitate dynamic memory. Thus, all the counts/sizes/dims/lengths, etc, are given on the first line so the program can allocate sufficient memory to read the data that follow. Lines may be separated by blank lines and items on a line by spaces, as permitted by FORTRAN free-format input rules. All data items are of INTeger type, unless specified to be FLOAT/REAL. Note also that VALENCE checks few input errors, but many errors can be avoided by using the 'vtools'.
 
 The input is organized in the order: 
-A) sizes, counts, array dims  (1 line)
-B) Wave function optimization control  (1 line)
-C) Geometry
-D) Basis set
-E) N-electron Wave function information  (spin-couplings, optional)
-F) Orbitals (various kinds, in order: spin-coupled, single-occupied, double-occupied) 
-G) Derived basis functions 
+- A) sizes, counts, array dims  (1 line)
+- B) Wave function optimization control  (1 line)
+- C) Geometry
+- D) Basis set
+- E) N-electron Wave function information  (spin-couplings, optional)
+- F) Orbitals (various kinds, in order: spin-coupled, single-occupied, double-occupied) 
+- G) Derived basis functions 
 
 
 Parts (A) through (G) are now described in more detail.
@@ -144,36 +144,36 @@ Parts (A) through (G) are now described in more detail.
 A) sizes, counts, array dims
 
 There are 15 integers on a single line, they are-
-Item  1. The number of atoms/point charges in the geometry
-Item  2. The number of unique atom types
-Item  3. Number of spin-coupled electron/orbital PAIRS
-Item  4. Number of unpaired electrons/orbitals
-Item  5. Number of double-occupied (DOCC) orbitals
-Item  6. Total length of the orbital weight list (array dim)
-Item  7. Length of the largest orbital expansion (array dim)
-Item  8. Number of spin-couplings
-Item  9. Number of unique atomic basis set shells
-Item 10. Number of unique atomic basis set primitives
-Item 11. Highest angular momentum in the basis set
-Item 12. Number of derived basis functions (DBF)
-Item 13. Number of orbital optimization groups
-Item 14. Number of orbital excitations 
-Item 15: Largest atom count of the orbital basis sets
+- Item  1. The number of atoms/point charges in the geometry
+- Item  2. The number of unique atom types
+- Item  3. Number of spin-coupled electron/orbital PAIRS
+- Item  4. Number of unpaired electrons/orbitals
+- Item  5. Number of double-occupied (DOCC) orbitals
+- Item  6. Total length of the orbital weight list (array dim)
+- Item  7. Length of the largest orbital expansion (array dim)
+- Item  8. Number of spin-couplings
+- Item  9. Number of unique atomic basis set shells
+- Item 10. Number of unique atomic basis set primitives
+- Item 11. Highest angular momentum in the basis set
+- Item 12. Number of derived basis functions (DBF)
+- Item 13. Number of orbital optimization groups
+- Item 14. Number of orbital excitations 
+- Item 15: Largest atom count of the orbital basis sets
 
 
 
 B) Optimization control 
 
 There are 8 or more items on a single line, they are-
-Item 1. The charge-cloud screening tolerance (integer), e.g. '5' means 0.00001 or 1d-5 or 10^-5.
-Item 2. The density screening tolerance 
-Item 3. The integral screening tolerance (Schwarz inequality) 
-Item 4: The coarsest wave function convergence tolerance, given in kilocalories per mole (kCal/Mol).
-Item 5: The finest wave function convergence tolerance. The optimization will proceed through multiple orbital groups from coarse to fine.
-Item 6: Maximum number of iterations.
-Item 7: Initial weight perturbation (DEM only)
-Item 8: Weight perturbation scalar (DEM only) 
-Item 9: The orbital optimization groups as begin/end pairs of orbital labels (in order), e.g. " 1 3  5 6 " shows 2 groups: first group optimizes orbitals 1 through 3, second group is orbitals 5 and 6 (skipping 4)
+- Item 1. The charge-cloud screening tolerance (integer), e.g. '5' means 0.00001 or 1d-5 or 10^-5.
+- Item 2. The density screening tolerance 
+- Item 3. The integral screening tolerance (Schwarz inequality) 
+- Item 4: The coarsest wave function convergence tolerance, given in kilocalories per mole (kCal/Mol).
+- Item 5: The finest wave function convergence tolerance. The optimization will proceed through multiple orbital groups from coarse to fine.
+- Item 6: Maximum number of iterations.
+- Item 7: Initial weight perturbation (DEM only)
+- Item 8: Weight perturbation scalar (DEM only) 
+- Item 9: The orbital optimization groups as begin/end pairs of orbital labels (in order), e.g. " 1 3  5 6 " shows 2 groups: first group optimizes orbitals 1 through 3, second group is orbitals 5 and 6 (skipping 4)
 
 
 
@@ -193,21 +193,21 @@ D) Basis Set
 
 VALENCE recognizes basis sets of cartesian atom-centered contracted gaussians. The basis set for each atom/etc type is given with the layout:
 
-Item 1: The nuclear/point charge (FLOAT)
-Item 2: The number of shells (zero or more), NS
+- Item 1: The nuclear/point charge (FLOAT)
+- Item 2: The number of shells (zero or more), NS
 
 There follow NS datasets defining the shells, as follows:
 
 Next line: 
-Item 1: The shell angular momentum
-Item 2: The number of primitive gaussian functions, NP, in the shell.
+- Item 1: The shell angular momentum
+- Item 2: The number of primitive gaussian functions, NP, in the shell.
 
 There follow NP lines, as follows:
 
 Next line: 
-Item 1: The primitive exponent (FLOAT)
+- Item 1: The primitive exponent (FLOAT)
 If NP>1, 
-Item 2: The primitive coefficient (FLOAT)
+- Item 2: The primitive coefficient (FLOAT)
 
 Note that VALENCE skips input of the redundant unit weight when NP=1. The counts, NS and NP, are iterated until all shells are input for all the atom types. A point charge can be input as a 'nuclear charge' with NS=0. This input is quite general. For example, 'floating' basis set shells can be placed anywhere using a nuclear charge of zero.
 
@@ -229,9 +229,9 @@ The spatial wave function in terms of the orbitals is now given. In general, the
 
 Whatever orbitals are needed, they must be entered in the order: spin-coupled; then unpaired; then DOCC, as per the intended use. The layout for each orbital is as follows. The first line defines the orbital basis set (OBS):
 
-Item 1.  The number of atoms, NN, whose basis sets make up the OBS.
-Item 2.  List of NN atoms.
-Item 3.  Total number of AO's, NA.
+- Item 1.  The number of atoms, NN, whose basis sets make up the OBS.
+- Item 2.  List of NN atoms.
+- Item 3.  Total number of AO's, NA.
 
 There follow NA  {AO address, coefficient (FLOAT)}-pairs. The AO addresses lie within the OBS specified by the NN atoms and in the order the atoms are listed. The scheme iterates until all orbitals required by the above formula, based on items 3-5 of (A), are input. 
 
