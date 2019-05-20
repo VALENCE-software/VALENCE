@@ -2715,6 +2715,32 @@ end subroutine check_spin_and_locate
 
 
 !> minimize energy
+!> 
+!> psuedo code for part of the calculation is:
+!>
+!> // while loop to ensure convergence with respect to orbitals in all sets
+!> while( !orbconv )
+!>
+!>    eprev_orb = energy
+!>    ! Loop over all sets of orbitals (defined in input file)
+!>    do i=1, nset
+!>
+!>        ! while loop to ensure convergence with respect to orbitals in set "i" 
+!>        while( ! orbsetconv )
+!>
+!>            eprev_set = energy
+!>            ! loop over orbitals in set "i"
+!>            do n=1,orbitals_in_set_i
+!>                calculate new energy
+!>            enddo
+!>           
+!>            orbsetconv = true if new energy - eprev_set < tolerance, false otherwise  
+!>        end while
+!>    enddo
+!>    orbconv = true if new energy - eprev_orb < tolerance, false otherwise
+!> end while
+!>
+!>
 subroutine minimize_energy( energy,  &
      w, eig, v1, v2, coefflock,int_out, dbl_out )
   use          integrals
@@ -2755,7 +2781,7 @@ subroutine minimize_energy( energy,  &
         !     orbital optimization loop
 
         orbconv   = .false.
-        do while ( .not. orbconv )
+        do while ( .not. orbconv .and. (num_iter .lt. max_iter) )
            eprv_orb  = energy
 
            !     orbital subset loop
@@ -2765,7 +2791,7 @@ subroutine minimize_energy( energy,  &
               !     orbital subset optimization loop
 
               orbsetcnv   = .false.
-              do while ( .not. orbsetcnv )
+              do while ( .not. orbsetcnv .and. (num_iter .lt. max_iter) )
                  eprv_set  = energy
                  num_iter   = num_iter + 1
 
@@ -2801,7 +2827,6 @@ subroutine minimize_energy( energy,  &
                  end  do    !  orbital list for this subset
 
                  orbsetcnv = abs( energy - eprv_set )*tokcal .lt. etol
-                 if ( num_iter .ge. max_iter ) orbsetcnv = .true.
                  if ( orbset( 1, iset ) - orbset( 2, iset ) .eq. 0  .and.   &
                       dem_gs  ) orbsetcnv = .true.
               end do                        !  orbital subset optimization loop
@@ -2809,7 +2834,7 @@ subroutine minimize_energy( energy,  &
            end do                        !  list of orbital subsets
 
            orbconv = abs( energy - eprv_orb )*tokcal .lt. etol
-           if ( num_iter .ge. max_iter ) orbconv = .true.
+! this prevents the code from doing a unecessary iteration.
            if ( nset .eq. 1 )  then
               orbconv = .true.   ;   eprv_orb  = energy
            end if
@@ -2848,15 +2873,13 @@ subroutine minimize_energy( energy,  &
 
   eprev  =  eprv_orb
   if  (  nspinc  .gt.  1  )  eprev  =  eprv_sc
-  if  (  abs( energy - eprev )*tokcal .lt. etol  )  then
-
+  if  (  num_iter .ge. max_iter  )  then
+     call xm_print( 'title', 'reached maximum number of iterations;' )
+  else if  (  abs( energy - eprev )*tokcal .lt. etol  )  then
      call xm_print( 'title', 'calculation converged;' )
      dbl_out( 1 ) = energy
      call xm_print('parameter', 'total energy;', int_out, dbl_out )
      call xm_output( 'done', energy,etol,'orbitals',.false. )
-
-  else  if  (  num_iter .ge. max_iter  )  then
-     call xm_print( 'title', 'reached iteration limit;' )
   end if
 
 end subroutine minimize_energy
