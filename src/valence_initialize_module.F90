@@ -42,7 +42,16 @@ subroutine read_allocate_input
   integer i,k,j,ierr,mnshi,mxshi
   real(dp)      zero,         ten,            rln10
   parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
+  character(len=1000) :: input_file
 
+! read in the input file
+#ifdef FILE_IN 
+ call get_command_argument(1, input_file)
+  if( len_trim(input_file) == 0 ) call xm_abort('must have one input file')
+  open( unit=100, file=input_file )
+! needs to be closed at some point
+!  close( 100 )
+#endif
   call xm_getdims( natom,natom_t, npair,nunpd,ndocc, totlen,  &
        xpmax,nspinc, num_sh,num_pr,nang, ndf,nset_in,nxorb, mxctr_in )
   if ( npair .gt. 0 .and. nspinc .lt. 1 ) call xm_abort('no spin couplings;')
