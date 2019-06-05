@@ -17,7 +17,8 @@ module xm
   integer :: valence_global_communicator
   integer :: nrank
   integer :: irank
-  integer :: file_input_unit
+! this is the input file unit number
+  integer, parameter :: file_input_unit = 100
 
 contains
 
