@@ -52,10 +52,8 @@ subroutine read_allocate_input
   if( len_trim(input_file) == 0 ) call xm_abort('must have one input file;')
   open( unit=file_input_unit, file=input_file, status="old", iostat=ios,readonly )
   if( .not. ios .eq. 0 ) call xm_abort('problems opening input file;')
-
-! needs to be closed at some point
-!  close( 100 )
 #endif
+
   call xm_getdims( natom,natom_t, npair,nunpd,ndocc, totlen,  &
        xpmax,nspinc, num_sh,num_pr,nang, ndf,nset_in,nxorb, mxctr_in )
   if ( npair .gt. 0 .and. nspinc .lt. 1 ) call xm_abort('no spin couplings;')
