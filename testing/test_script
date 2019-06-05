@@ -70,13 +70,13 @@ LOGFILE=${datestamp}/testing.log
       do
           OUTPUT=${datestamp}/${i}_$datestamp.out
           if [ $NCORE -gt 1 ]; then
-          	mpirun -n $NCORE $1 < ./test_cases/$i > $OUTPUT
+          	mpirun -n $NCORE $1 ./test_cases/$i > $OUTPUT
             if [ "$?" -ne "0" ]; then
 	      cat $OUTPUT
               exit 1
             fi
           else
-            $1 < ./test_cases/$i > $OUTPUT
+            $1 ./test_cases/$i > $OUTPUT
             if [ "$?" -ne "0" ]; then
 	      cat $OUTPUT
               exit 1

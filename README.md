@@ -107,9 +107,9 @@ In addition, VALENCE has the ability to expand orbitals in terms of other LCAOs,
 
 Currently, VALENCE can optimize two types of linear parameter - orbital weights, and spin-coupling weights - using a first-order method. The term, 'first-order', refers to taking the first derivative of the VSVB energy with respect to the linear weights. The method solves a generalized eigenproblem of the form  HC=SCE  beginning by forming the hamiltonian (H) and overlap matrices (S), where E are the eigenvalues (energies). The eigenvectors (C) contain the updated orbital or spin-coupling weights. The cost of this method is quadratic with the size of the orbital expansion or spin-coupling space. There is currently an option to use a 'direct energy minimization' (DEM) method, though this is still under development. 
 
-VALENCE is written in Fortran-90 and runs in parallel using MPI. To compute integrals, VALENCE currently uses the vectorized integral package, SIMINT (https://github.com/simint-chem). This release includes instructions on how to build SIMINT. Once the SIMINT library is built, building VALENCE itself begins with setting options in a simple Makefile. The Makefile also contains some optimizations for various platforms, and an option to build the sequential form. A binary called 'valence' should result. VALENCE takes an input file on standard input. To run VALENCE sequentially just type,
+VALENCE is written in Fortran-90 and runs in parallel using MPI. To compute integrals, VALENCE currently uses the vectorized integral package, SIMINT (https://github.com/simint-chem). This release includes instructions on how to build SIMINT. Once the SIMINT library is built, building VALENCE itself begins with setting options in a simple Makefile. The Makefile also contains some optimizations for various platforms, and an option to build the sequential form. A binary called 'valence' should result. VALENCE takes an input file on the command line. To run VALENCE sequentially just type,
 
-`./valence < [name of input file]`
+`./valence [name of input file]`
 
 See section 5 for example input files. To run VALENCE in parallel, please consult the documentation for your target platform as to how MPI runs are specified.
 
