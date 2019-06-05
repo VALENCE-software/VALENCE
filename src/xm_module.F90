@@ -18,7 +18,7 @@ module xm
   integer :: nrank
   integer :: irank
 ! this is the input file unit number
-  integer, parameter :: file_input_unit = 20
+  integer :: file_input_unit
 
 contains
 

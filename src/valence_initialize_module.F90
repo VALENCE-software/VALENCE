@@ -48,7 +48,7 @@ subroutine read_allocate_input
 #ifndef USE_STDIN 
  call get_command_argument(1, input_file)
   if( len_trim(input_file) == 0 ) call xm_abort('must have one input file;')
-  open( unit=file_input_unit, file=input_file, status="old", &
+  open( newunit=file_input_unit, file=input_file, status="old", &
        iostat=ios,action='read' )
   if( .not. ios .eq. 0 ) call xm_abort('problems opening input file;')
 #endif
