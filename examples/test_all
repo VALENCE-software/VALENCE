@@ -22,7 +22,7 @@ fi
   then
       for i in ${examples[@]}
       do
-          ../bin/$1 < ./$i > $i.out
+          ../bin/$1 ./$i > $i.out
           python ./test_examples.py $i.out $i
       done
   else

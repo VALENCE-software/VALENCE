@@ -39,9 +39,19 @@ subroutine read_allocate_input
 
   integer mxctr_in, nset_in,max_iter_in
   integer      ntol_c,ntol_d,ntol_i, ntol_e_min_in,ntol_e_max_in
-  integer i,k,j,ierr,mnshi,mxshi
+  integer i,k,j,ierr,mnshi,mxshi,ios
   real(dp)      zero,         ten,            rln10
   parameter  ( zero = 0.0_dp, ten = 10.0_dp, rln10=2.30258_dp )
+  character(len=1000) :: input_file
+
+! read in the input file
+#ifndef USE_STDIN 
+ call get_command_argument(1, input_file)
+  if( len_trim(input_file) == 0 ) call xm_abort('must have one input file;')
+  open( newunit=file_input_unit, file=input_file, status="old", &
+       iostat=ios,action='read' )
+  if( .not. ios .eq. 0 ) call xm_abort('problems opening input file;')
+#endif
 
   call xm_getdims( natom,natom_t, npair,nunpd,ndocc, totlen,  &
        xpmax,nspinc, num_sh,num_pr,nang, ndf,nset_in,nxorb, mxctr_in )
@@ -101,6 +111,11 @@ subroutine read_allocate_input
   ctol = rln10*dble( ntol_c  )
   dtol =     ten**( -ntol_d  )
   itol =     ten**( -ntol_i )
+
+#ifndef USE_STDIN 
+! needs to be closed at some point
+  close( unit=file_input_unit )
+#endif
 
 end subroutine read_allocate_input
 end module valence_init
