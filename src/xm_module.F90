@@ -17,6 +17,8 @@ module xm
   integer :: valence_global_communicator
   integer :: nrank
   integer :: irank
+! this is the input file unit number
+  integer :: file_input_unit
 
 contains
 
@@ -35,8 +37,13 @@ contains
 
     call xm_inherit( nproc, myrank, master )
 
+#ifndef USE_STDIN
+    if ( myrank .eq. master ) read(file_input_unit,*) natom,natom_t, npair,nunpd,ndocc,  &
+         totlen,xpmax, nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr
+#else
     if ( myrank .eq. master ) read *, natom,natom_t, npair,nunpd,ndocc,  &
          totlen,xpmax, nspinc, num_sh,num_pr,nang, ndf,nset,nxorb, mxctr
+#endif
 
 #ifdef VALENCE_MPI
     from = 0
@@ -95,15 +102,24 @@ contains
 
        !     optimization control 
 
+#ifndef USE_STDIN
+       read(file_input_unit,*)  ntol_c, ntol_d, ntol_i, &
+            ntol_e_min_in, ntol_e_max_in, max_iter_in, ptbnmax,feather,  &
+            ( orbset( 1, i ), orbset( 2, i ), i = 1, nset )
+#else
        read *,  ntol_c, ntol_d, ntol_i, &
             ntol_e_min_in, ntol_e_max_in, max_iter_in, ptbnmax,feather,  &
             ( orbset( 1, i ), orbset( 2, i ), i = 1, nset )
-
+#endif
 
        !     input the cartesian geometry 
 
        do    i  =  1,  natom
+#ifndef USE_STDIN
+          read(file_input_unit,*)  atom_t( i ), (coords( j, i ), j=1,3)
+#else
           read *,  atom_t( i ), (coords( j, i ), j=1,3)
+#endif
        end   do
 
 
@@ -113,22 +129,36 @@ contains
        np = 1
        do    i  =  1,  natom_t
           map_atom2shell( i ) = ns
-
+#ifndef USE_STDIN
+          read(file_input_unit,*)  nuc_charge( i ),  nshell
+#else
           read *,  nuc_charge( i ),  nshell
+#endif
           num_shell_atom( i ) = nshell
           do    j  =  1,  nshell
              map_shell2prim( ns ) = np
+#ifndef USE_STDIN
+             read(file_input_unit,*)  ang_mom( ns ), con_length
+#else
              read *,  ang_mom( ns ), con_length
-
+#endif
              !     avoid redundant input of unit weight for uncontracted GTO
 
              if ( con_length .eq. 1 ) then
+#ifndef USE_STDIN
+                read(file_input_unit,*)  exponent( np )
+#else
                 read *,  exponent( np )
+#endif
                 unnormalized_con_coeff( np ) = 1.0d+00
                 np = np + 1
              else
                 do    k  =  1,  con_length
+#ifndef USE_STDIN
+                   read(file_input_unit,*) exponent( np ), unnormalized_con_coeff( np )
+#else
                    read *,  exponent( np ), unnormalized_con_coeff( np )
+#endif
                    np = np + 1
                 end   do
              end if
@@ -149,18 +179,30 @@ contains
 
        coeff_sc( 1 ) = 1.0d+00
        if ( npair .gt. 0 ) then
+#ifndef USE_STDIN
+          if ( nspinc .eq. 1 ) then
+             read(file_input_unit,*) ( pair_sc( i, 1, 1 ), pair_sc( i, 2, 1 ), i = 1, npair )
+          else  if ( nspinc .gt. 1 ) then
+             read(file_input_unit,*) ( coeff_sc( j ), ( pair_sc( i, 1, j ),  &
+                  pair_sc( i, 2, j ), i = 1, npair ), j = 1, nspinc )
+          end if
+#else
           if ( nspinc .eq. 1 ) then
              read *, ( pair_sc( i, 1, 1 ), pair_sc( i, 2, 1 ), i = 1, npair )
           else  if ( nspinc .gt. 1 ) then
              read *, ( coeff_sc( j ), ( pair_sc( i, 1, j ),  &
                   pair_sc( i, 2, j ), i = 1, npair ), j = 1, nspinc )
           end if
+#endif
        end if
 
        !     input the excited orbitals and roots
 
+#ifndef USE_STDIN
+       if( nxorb .gt. 0 ) read(file_input_unit,*) ( xorb( i ), root( i ), i = 1, nxorb )
+#else
        if( nxorb .gt. 0 ) read *, ( xorb( i ), root( i ), i = 1, nxorb )
-
+#endif
 
 
        !     input the wave function; 
@@ -168,44 +210,80 @@ contains
 
        j  =  1
        do     i = 1, 2*npair
+#ifndef USE_STDIN
+          read(file_input_unit,*)   orbas_atnum( i ),   &
+               ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
+          map_orbs( i )  =  j
+          read(file_input_unit,*) ( xpset( k ), coeff( k ), k = j, j + n - 1 )
+          j  =  j  +  n
+#else
           read *,   orbas_atnum( i ),   &
                ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
           map_orbs( i )  =  j
           read *, ( xpset( k ), coeff( k ), k = j, j + n - 1 )
           j  =  j  +  n
+
+#endif
        end   do
 
 
        !     input unpaired orbitals
 
        do     i = 2*npair + 1, 2*npair + nunpd
+#ifndef USE_STDIN
+          read(file_input_unit,*)  orbas_atnum( i ),   &
+               ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
+          map_orbs( i )  =  j
+          read(file_input_unit,*) ( xpset( k ), coeff( k ), k = j, j + n - 1 )
+          j  =  j  +  n
+#else
           read *,   orbas_atnum( i ),   &
                ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
           map_orbs( i )  =  j
           read *, ( xpset( k ), coeff( k ), k = j, j + n - 1 )
           j  =  j  +  n
+
+#endif
        end   do
 
 
        !     input doubly-occupied orbitals
 
        do     i = 2*npair + nunpd + 1, 2*npair + nunpd + ndocc
+#ifndef USE_STDIN
+          read(file_input_unit,*)   orbas_atnum( i ),   &
+               ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
+          map_orbs( i )  =  j
+          read(file_input_unit,*) ( xpset( k ), coeff( k ), k = j, j + n - 1 )
+          j  =  j  +  n
+#else
           read *,   orbas_atnum( i ),   &
                ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
           map_orbs( i )  =  j
           read *, ( xpset( k ), coeff( k ), k = j, j + n - 1 )
           j  =  j  +  n
+
+#endif
        end   do
 
 
        !     input NDF's
 
        do     i = 2*npair + nunpd + ndocc + 1, 2*npair + nunpd + ndocc + ndf
+#ifndef USE_STDIN
+          read(file_input_unit,*)   orbas_atnum( i ),   &
+               ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
+          map_orbs( i )  =  j
+          read(file_input_unit,*) ( xpset( k ), coeff( k ), k = j, j + n - 1 )
+          j  =  j  +  n
+#else
           read *,   orbas_atnum( i ),   &
                ( orbas_atset( k, i ), k = 1, orbas_atnum( i ) ),   n
           map_orbs( i )  =  j
           read *, ( xpset( k ), coeff( k ), k = j, j + n - 1 )
           j  =  j  +  n
+
+#endif
        end   do
        norbs  =  2*npair  +  nunpd  +  ndocc + ndf
        map_orbs( norbs  +  1 )  =  j
@@ -734,7 +812,6 @@ contains
     ! if the user input a flag, don't finalize--they will finalize later
     if( .not. present( skip_mpi_finalize ) ) call mpi_finalize( ierr )
 #endif
-
   end subroutine  xm_end
 
 
@@ -869,6 +946,7 @@ contains
     
     call xm_print( 'error', error_message)
     call xm_end()
+    stop
   end subroutine  xm_abort
 
 
